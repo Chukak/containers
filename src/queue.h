@@ -67,7 +67,6 @@ void Queue<Elem>::enqueue(const Elem &element)
 {
     Node<Elem> *new_node = new Node<Elem>(element, NULL);
     if (qempty) {
-        std::cout << "da2" << "\n";
         qfront = new_node;
         qback = new_node;
         qempty = false;
