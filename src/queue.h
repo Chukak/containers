@@ -6,14 +6,6 @@
 #endif
 
 template<typename Elem>
-struct Node {
-    Elem value;
-    Node *next;
-    
-    Node(const Elem &v, Node *n) : value(v), next(n) {}
-};
-
-template<typename Elem>
 class Queue {
 public:
     Queue();
@@ -22,15 +14,22 @@ public:
     
     void enqueue(const Elem &element);
     Elem dequeue();
-    int count() const { return qnum_of_elements; };
+    unsigned int count() const { return qnum_of_elements; };
     
     Elem front() const;
     Elem back() const;
     
     bool empty() const { return qempty; }
 private:
-    Node<Elem> *qfront;
-    Node<Elem> *qback;
+    struct Node {
+        Elem value;
+        Node *next;
+
+        Node(const Elem &v, Node *n) : value(v), next(n) {}
+    };
+    
+    Node *qfront;
+    Node *qback;
     unsigned int qnum_of_elements;
     bool qempty;
     
@@ -54,7 +53,7 @@ qnum_of_elements(orig.count())
 template<typename Elem>
 Queue<Elem>::~Queue() 
 {
-    Node<Elem> *old = NULL;
+    Node *old = NULL;
     while (qfront) {
         old = qfront;
         qfront = qfront->next;
@@ -65,7 +64,7 @@ Queue<Elem>::~Queue()
 template<typename Elem>
 void Queue<Elem>::enqueue(const Elem &element) 
 {
-    Node<Elem> *new_node = new Node<Elem>(element, NULL);
+    Node *new_node = new Node(element, NULL);
     if (qempty) {
         qfront = new_node;
         qback = new_node;
@@ -80,7 +79,7 @@ void Queue<Elem>::enqueue(const Elem &element)
 template<typename Elem>
 Elem Queue<Elem>::dequeue() 
 {
-    Node<Elem> *temp = NULL;
+    Node*temp = NULL;
     Elem value;
     if (!qempty) {
         temp = qfront;
