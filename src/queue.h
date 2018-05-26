@@ -24,8 +24,8 @@ public:
     Elem dequeue();
     int count() const { return qnum_of_elements; };
     
-    Elem front() const { return qfront->value; }
-    Elem back() const { return qback->value; }
+    Elem front() const;
+    Elem back() const;
     
     bool empty() const { return qempty; }
 private:
@@ -93,5 +93,24 @@ Elem Queue<Elem>::dequeue()
     return value;
 }
 
+template<typename Elem>
+Elem Queue<Elem>::front() const
+{
+    Elem value;
+    if (qfront != NULL) {
+        value = qfront->value;
+    }
+    return value;
+}
+
+template<typename Elem>
+Elem Queue<Elem>::back() const
+{
+    Elem value;
+    if (qback != NULL) {
+        value = qback->value;
+    }
+    return value;
+}
 
 #endif /* QUEUE_H */
