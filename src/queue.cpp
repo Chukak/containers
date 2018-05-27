@@ -1,4 +1,14 @@
 #include "queue.h"
+#include <cstring>
+#include <new>
+
+
+void *copy_value(const void *pointer)
+{
+    void *p = ::operator new(sizeof(void *));
+    std::memcpy(p, pointer, sizeof(void *));
+    return p;
+}
 
 queue *q_create_queue()
 {
@@ -16,6 +26,7 @@ void q_delete_queue(queue *q)
     while (q->qfront) {
         old = q->qfront;
         q->qfront = q->qfront->next;
+        ::operator delete(old->value);
         delete old;
     }
     delete q;
@@ -25,7 +36,7 @@ void q_enqueue(queue *q, const void *element)
 {
     node *new_node = new node();
     new_node->next = NULL;
-    new_node->value = (void *)element;
+    new_node->value = copy_value(element);
     if (q->empty) {
         q->qfront = new_node;
         q->qback = new_node;
