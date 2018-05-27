@@ -17,7 +17,8 @@ all: $(TARGETDIR_containers)/containers
 ## Target: containers
 CCFLAGS_containers = 
 OBJS_containers =  \
-	$(TARGETDIR_containers)/main.o 
+	$(TARGETDIR_containers)/main.o \
+	$(TARGETDIR_containers)/queue.o 
 	
 
 
@@ -27,6 +28,9 @@ $(TARGETDIR_containers)/containers: $(TARGETDIR_containers) $(OBJS_containers)
 # Source files .o
 $(TARGETDIR_containers)/main.o: $(TARGETDIR_containers) main.cpp
 	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ main.cpp
+	
+$(TARGETDIR_containers)/queue.o: $(TARGETDIR_containers) $(SRCDIR)/queue.cpp
+	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ $(SRCDIR)/queue.cpp
 
 clean:
 	rm -f \
