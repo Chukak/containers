@@ -2,9 +2,14 @@
 #define QUEUE_H
 
 #ifndef NULL
+#ifdef __cplusplus
 #define NULL nullptr
+#else
+#define NULL (void *)0
+#endif
 #endif
 
+#ifdef __cplusplus
 template<typename Elem>
 class Queue {
 public:
@@ -79,7 +84,7 @@ void Queue<Elem>::enqueue(const Elem &element)
 template<typename Elem>
 Elem Queue<Elem>::dequeue() 
 {
-    Node*temp = NULL;
+    Node *temp = NULL;
     Elem value;
     if (!qempty) {
         temp = qfront;
@@ -111,5 +116,37 @@ Elem Queue<Elem>::back() const
     }
     return value;
 }
+#endif /* __cplusplus */
+
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
+    struct node {
+        void *value;
+        node *next;
+    };
+    
+    struct queue {
+        node *qfront;
+        node *qback;
+        unsigned int count;
+        int empty;
+    };
+    
+    queue *q_create_queue();
+    
+    void q_enqueue(queue *q, const void *element);
+    void *q_dequeue(queue *q);
+    
+    void *q_front(queue *q);
+    void *q_back(queue *q);
+    
+    unsigned int q_count(queue *q);
+    
+    void q_delete_queue(queue *q);
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* QUEUE_H */
