@@ -51,8 +51,25 @@ Queue<Elem>::Queue()
 
 template<typename Elem>
 Queue<Elem>::Queue(const Queue<Elem> &orig) : 
-qnum_of_elements(orig.count())
+    qfront(NULL),
+    qback(NULL),
+    qnum_of_elements(orig.qnum_of_elements),
+    qempty(false)
 {
+    if (orig.empty()) {
+        qempty = true;
+        return ;
+    }
+    Node *t = orig.qfront;
+    qfront = new Node(t->value, NULL);
+    qback = qfront;
+    t = t->next;
+    while (t) {
+        Node *new_node = new Node(t->value, NULL);
+        qback->next = new_node;
+        qback = new_node;
+        t = t->next;
+    } 
 }
 
 template<typename Elem>
