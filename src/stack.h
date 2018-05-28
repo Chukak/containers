@@ -1,6 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
-#include <iostream>
+
 #ifndef NULL
 #ifdef __cplusplus
 #define NULL nullptr
@@ -10,11 +10,14 @@
 #endif
 
 #ifdef __cplusplus
+#include <initializer_list>
+
 template<typename Elem>
 class Stack {
 public:
     Stack();
     Stack(const Stack<Elem> &orig);
+    Stack(std::initializer_list<Elem> lst);
     virtual ~Stack();
     
     void push(const Elem &element);
@@ -63,6 +66,17 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
         t->prev = new Node(temp->value, NULL);
         temp = temp->prev;
         t = t->prev;
+    }
+}
+
+template<typename Elem>
+Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
+    sfront(NULL), 
+    elements(0),
+    sempty(true)
+{
+    for (auto element : lst) {
+        push(element);
     }
 }
 
