@@ -18,7 +18,8 @@ all: $(TARGETDIR_containers)/containers
 CCFLAGS_containers = 
 OBJS_containers =  \
 	$(TARGETDIR_containers)/main.o \
-	$(TARGETDIR_containers)/queue.o 
+	$(TARGETDIR_containers)/queue.o \
+	$(TARGETDIR_containers)/stack.o 
 	
 
 
@@ -31,6 +32,9 @@ $(TARGETDIR_containers)/main.o: $(TARGETDIR_containers) main.cpp
 	
 $(TARGETDIR_containers)/queue.o: $(TARGETDIR_containers) $(SRCDIR)/queue.cpp
 	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ $(SRCDIR)/queue.cpp
+	
+$(TARGETDIR_containers)/stack.o: $(TARGETDIR_containers) $(SRCDIR)/stack.cpp
+	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ $(SRCDIR)/stack.cpp
 
 clean:
 	rm -f \
