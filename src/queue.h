@@ -122,14 +122,14 @@ Elem Queue<Elem>::back() const
 extern "C" {
 #endif 
 
-    struct node {
+    struct q_node {
         void *value;
-        node *next;
+        q_node *next;
     };
     
     struct queue {
-        node *qfront;
-        node *qback;
+        q_node *qfront;
+        q_node *qback;
         unsigned int count;
         int empty;
     };
