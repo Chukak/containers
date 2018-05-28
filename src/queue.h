@@ -10,11 +10,14 @@
 #endif
 
 #ifdef __cplusplus
+#include <initializer_list>
+
 template<typename Elem>
 class Queue {
 public:
     Queue();
     Queue(const Queue<Elem> &orig);
+    Queue(std::initializer_list<Elem> lst);
     virtual ~Queue();
     
     void enqueue(const Elem &element);
@@ -70,6 +73,18 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
         qback = new_node;
         t = t->next;
     } 
+}
+
+template<typename Elem>
+Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
+    qfront(NULL), 
+    qback(NULL),
+    qnum_of_elements(0),
+    qempty(true)
+{
+    for (auto element : lst) {
+        enqueue(element);
+    }
 }
 
 template<typename Elem>
