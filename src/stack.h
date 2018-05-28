@@ -1,6 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
-
+#include <iostream>
 #ifndef NULL
 #ifdef __cplusplus
 #define NULL nullptr
@@ -47,9 +47,23 @@ Stack<Elem>::Stack()
 }
 
 template<typename Elem>
-Stack<Elem>::Stack(const Stack<Elem> &orig) : 
-elements(orig.count())
+Stack<Elem>::Stack(const Stack<Elem> &orig) :
+    sfront(NULL),
+    elements(orig.elements),
+    sempty(false)
 {
+    if (orig.empty()) {
+        sempty = true;
+        return ;
+    }
+    sfront = new Node(orig.sfront->value, NULL);
+    Node *t = sfront;
+    Node *temp = orig.sfront->prev;
+    while (temp) {
+        t->prev = new Node(temp->value, NULL);
+        temp = temp->prev;
+        t = t->prev;
+    }
 }
 
 template<typename Elem>
