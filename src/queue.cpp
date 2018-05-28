@@ -3,7 +3,7 @@
 #include <new>
 
 
-void *copy_value(const void *pointer)
+static void *copy_value(const void *pointer)
 {
     void *p = ::operator new(sizeof(void *));
     std::memcpy(p, pointer, sizeof(void *));
@@ -22,7 +22,7 @@ queue *q_create_queue()
 
 void q_delete_queue(queue *q)
 {
-    node *old = NULL; 
+    q_node *old = NULL; 
     while (q->qfront) {
         old = q->qfront;
         q->qfront = q->qfront->next;
@@ -34,7 +34,7 @@ void q_delete_queue(queue *q)
 
 void q_enqueue(queue *q, const void *element)
 {
-    node *new_node = new node();
+    q_node *new_node = new q_node();
     new_node->next = NULL;
     new_node->value = copy_value(element);
     if (q->empty) {
@@ -50,7 +50,7 @@ void q_enqueue(queue *q, const void *element)
 
 void *q_dequeue(queue *q) 
 {
-    node *temp = NULL;
+    q_node *temp = NULL;
     void *value = NULL;
     if (!q->empty) {
         temp = q->qfront;
