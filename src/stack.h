@@ -135,17 +135,18 @@ Elem Stack<Elem>::front() const
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+    typedef struct s_node s_node;
 
     struct s_node {
         void *value;
         s_node *prev;
     };
     
-    struct stack {
+    typedef struct {
         s_node *front;
         unsigned int count;
         int empty;
-    };
+    } stack;
     
     stack *s_create_stack();
     
