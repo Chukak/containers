@@ -1,5 +1,6 @@
 #include "queue.h"
 #include <cstring>
+#include <stdexcept>
 #include <new>
 
 
@@ -8,6 +9,13 @@ static void *copy_value(const void *pointer)
     void *p = ::operator new(sizeof(void *));
     std::memcpy(p, pointer, sizeof(void *));
     return p;
+}
+
+static void check_queue(const void *q) 
+{
+    if (!q) {
+        throw std::runtime_error("The pointer to `queue` is NULL.");
+    }
 }
 
 queue *q_create_queue()
@@ -22,6 +30,7 @@ queue *q_create_queue()
 
 void q_delete_queue(queue *q)
 {
+    check_queue(q);
     q_node *old = NULL; 
     while (q->qfront) {
         old = q->qfront;
@@ -34,6 +43,10 @@ void q_delete_queue(queue *q)
 
 void q_enqueue(queue *q, const void *element)
 {
+    check_queue(q);
+    if (!element) {
+        std::runtime_error("The pointer to an element is NULL.");
+    }
     q_node *new_node = new q_node();
     new_node->next = NULL;
     new_node->value = copy_value(element);
@@ -50,6 +63,7 @@ void q_enqueue(queue *q, const void *element)
 
 void *q_dequeue(queue *q) 
 {
+    check_queue(q);
     q_node *temp = NULL;
     void *value = NULL;
     if (!q->empty) {
@@ -66,6 +80,7 @@ void *q_dequeue(queue *q)
 
 void *q_front(queue *q)
 {
+    check_queue(q);
     void *value = NULL;
     if (q->qfront != NULL) {
         value = q->qfront->value;
@@ -75,6 +90,7 @@ void *q_front(queue *q)
 
 void *q_back(queue *q)
 {
+    check_queue(q);
     void *value = NULL;
     if (q->qback != NULL) {
         value = q->qback->value;
