@@ -153,18 +153,19 @@ Elem Queue<Elem>::back() const
 #ifdef __cplusplus
 extern "C" {
 #endif 
-
+    typedef struct q_node q_node;
+    
     struct q_node {
         void *value;
         q_node *next;
     };
     
-    struct queue {
+    typedef struct {
         q_node *qfront;
         q_node *qback;
         unsigned int count;
         int empty;
-    };
+    } queue;
     
     queue *q_create_queue();
     
