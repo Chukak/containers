@@ -14,7 +14,7 @@ static void *copy_value(const void *pointer)
 static void check_queue(const void *q) 
 {
     if (!q) {
-        throw std::runtime_error("The pointer to `queue` is NULL.");
+        throw std::runtime_error("The pointer to `queue` is NULL. ");
     }
 }
 
@@ -45,7 +45,7 @@ void q_enqueue(queue *q, const void *element)
 {
     check_queue(q);
     if (!element) {
-        std::runtime_error("The pointer to an element is NULL.");
+        throw std::runtime_error("The pointer to an element is NULL.");
     }
     q_node *new_node = new q_node();
     new_node->next = NULL;
@@ -68,12 +68,15 @@ void *q_dequeue(queue *q)
     void *value = NULL;
     if (!q->empty) {
         temp = q->qfront;
-        value = q->qfront->value;
+        value = copy_value(q->qfront->value);
         q->qfront = q->qfront->next;
         delete temp;
         q->count--;
     }
-    q->empty = q->count == 0 ? 1 : 0;
+    if (!q->count) {
+        q->qback = NULL;
+        q->empty = 1;
+    }
     return value;
 }
 
@@ -83,7 +86,7 @@ void *q_front(queue *q)
     check_queue(q);
     void *value = NULL;
     if (q->qfront != NULL) {
-        value = q->qfront->value;
+        value = copy_value(q->qfront->value);
     }
     return value;
 }
@@ -93,7 +96,7 @@ void *q_back(queue *q)
     check_queue(q);
     void *value = NULL;
     if (q->qback != NULL) {
-        value = q->qback->value;
+        value = copy_value(q->qback->value);
     }
     return value;
 }
