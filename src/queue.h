@@ -4,8 +4,6 @@
 #ifndef NULL
 #ifdef __cplusplus
 #define NULL nullptr
-#else
-#define NULL (void *)0
 #endif
 #endif
 
@@ -152,7 +150,17 @@ Elem Queue<Elem>::back() const
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif /* __cplusplus */
+    
+#ifndef NULL
+#define NULL ((void *)0)
+#else
+#if NULL == nullptr
+    #undef NULL
+    #define NULL ((void *)0)
+#endif
+#endif
+    
     typedef struct q_node q_node;
     
     struct q_node {
