@@ -2,7 +2,7 @@
 #include "../src/queue.h"
 #include <stdexcept>
 
-TEST_CASE("Initialization of the queue in C.", "[queue_c]") {
+TEST_CASE("[queue] Initialization of the queue in C.", "[queue_c]") {
     SECTION("Initialization 1.") {
         queue *q = q_create_queue();
         
@@ -21,7 +21,7 @@ TEST_CASE("Initialization of the queue in C.", "[queue_c]") {
     }
 }
 
-TEST_CASE("Testing of insertion in the queue and removing from the queue.", "[queue_c]") {
+TEST_CASE("[queue] Testing of insertion in the queue and removing from the queue in C.", "[queue_c]") {
     SECTION("Testing of insertion.") {
         queue *q = q_create_queue();
         
@@ -64,7 +64,7 @@ TEST_CASE("Testing of insertion in the queue and removing from the queue.", "[qu
     }
 }
 
-TEST_CASE("Testing of front and back elements from the queue.", "[queue_c]") {
+TEST_CASE("[queue] Testing of front and back elements from the queue in C.", "[queue_c]") {
     SECTION("Testiong of front element.") {
         queue *q = q_create_queue();
         
@@ -129,7 +129,7 @@ TEST_CASE("Testing of front and back elements from the queue.", "[queue_c]") {
     }
 }
 
-TEST_CASE("Testing situations, where pointers is NULL.", "[queue_c]") {
+TEST_CASE("[queue] Testing situations, where pointers is NULL.", "[queue_c]") {
     SECTION("Testing of NULL pointers.") {
         queue *qq = q_create_queue();
         
