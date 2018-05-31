@@ -1,5 +1,6 @@
 #include "stack.h"
 #include <cstring>
+#include <stdexcept>
 #include <new>
 
 
@@ -8,6 +9,13 @@ static void *copy_value(const void *pointer)
     void *p = ::operator new(sizeof(void *));
     std::memcpy(p, pointer, sizeof(void *));
     return p;
+}
+
+static void check_stack(const void *s) 
+{
+    if (!s) {
+        throw std::runtime_error("The pointer to `stack` is NULL. ");
+    }
 }
 
 stack *s_create_stack()
@@ -21,6 +29,7 @@ stack *s_create_stack()
 
 void s_delete_stack(stack *s)
 {
+    check_stack(s);
     s_node *old = NULL;
     while (s->front) {
         old = s->front;
@@ -33,6 +42,10 @@ void s_delete_stack(stack *s)
 
 void s_push(stack *s, const void *element)
 {
+    check_stack(s);
+    if (!element) {
+        throw std::runtime_error("The pointer to an element is NULL.");
+    }
     s_node *new_node = new s_node();
     new_node->prev = NULL;
     new_node->value = copy_value(element);
@@ -48,11 +61,12 @@ void s_push(stack *s, const void *element)
 
 void *s_pop(stack *s) 
 {
+    check_stack(s);
     s_node *temp = NULL;
     void *value = NULL;
     if (!s->empty) {
         temp = s->front;
-        value = s->front->value;
+        value = copy_value(s->front->value);
         s->front = s->front->prev;
         delete temp;
         s->count--;
@@ -64,9 +78,10 @@ void *s_pop(stack *s)
 
 void *s_front(stack *s)
 {
+    check_stack(s);
     void *value = NULL;
     if (s->front != NULL) {
-        value = s->front->value;
+        value = copy_value(s->front->value);
     }
     return value;
 }
