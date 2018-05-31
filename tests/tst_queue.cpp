@@ -1,7 +1,7 @@
 #include "catch/catch.hpp"
 #include "../src/queue.h"
 
-TEST_CASE("Initialization.", "[queue]") {
+TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
     SECTION("Initialization testing №1.") {
         Queue<int> q; 
         
@@ -29,7 +29,7 @@ TEST_CASE("Initialization.", "[queue]") {
         Queue<int> q(orig);
         orig.~Queue();
         
-        REQUIRE(&orig != nullptr); 
+        REQUIRE(&q != nullptr); 
         CHECK_FALSE(q.empty());
         REQUIRE(q.count() == 3);
         REQUIRE(q.back() == 3);
@@ -39,7 +39,7 @@ TEST_CASE("Initialization.", "[queue]") {
     }
 }
 
-TEST_CASE("Testing of insertion in the queue.", "[queue]") {
+TEST_CASE("[Queue] Testing of insertion in the queue.", "[queue]") {
     SECTION("Testing of insertion №1.") {
         Queue<int> q;
         
@@ -70,7 +70,7 @@ TEST_CASE("Testing of insertion in the queue.", "[queue]") {
     }
 }
 
-TEST_CASE("Testing of removing from the queue.", "[queue]") {
+TEST_CASE("[Queue] Testing of removing from the queue.", "[queue]") {
     SECTION("Testing of removing №1.") {
         Queue<int> q;
         
@@ -115,7 +115,7 @@ TEST_CASE("Testing of removing from the queue.", "[queue]") {
     }
 }
 
-TEST_CASE("Testing of front and back elements from the queue.", "[queue]") {
+TEST_CASE("[Queue] Testing of front and back elements from the queue.", "[queue]") {
     SECTION("Testing of front element.") {
         Queue<int> q;
         
