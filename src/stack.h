@@ -4,8 +4,6 @@
 #ifndef NULL
 #ifdef __cplusplus
 #define NULL nullptr
-#else
-#define NULL (void *)0
 #endif
 #endif
 
@@ -135,6 +133,16 @@ Elem Stack<Elem>::front() const
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+    
+#ifndef NULL
+#define NULL ((void *)0)
+#else
+#if NULL == nullptr
+    #undef NULL
+    #define NULL ((void *)0)
+#endif
+#endif
+  
     typedef struct s_node s_node;
 
     struct s_node {
