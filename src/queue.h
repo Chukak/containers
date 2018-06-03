@@ -154,11 +154,6 @@ extern "C" {
     
 #ifndef NULL
 #define NULL ((void *)0)
-#else
-#if NULL == nullptr
-    #undef NULL
-    #define NULL ((void *)0)
-#endif
 #endif
     
     typedef struct q_node q_node;
@@ -175,7 +170,7 @@ extern "C" {
         int empty;
     } queue;
     
-    queue *q_create_queue();
+    queue *q_create_queue(void);
     
     void q_enqueue(queue *q, const void *element);
     void *q_dequeue(queue *q);
