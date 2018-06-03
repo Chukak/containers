@@ -18,12 +18,13 @@ setup(
     ext_modules=[
         Extension(
             "containers",
-            ["../src/queue.cpp", "pyqueue.c", "python.c", ],
+            ["../src/queue.cpp", "pyqueue.c", "../src/stack.cpp", "pystack.c", "python.c", ],
             include_dirs=["../src"],
             extra_compile_args=[
-                "-g", "-Werror", "-Wall", "-D_DEFAULT_SOURCE"
+                "-g",  "-Wall", "-D_DEFAULT_SOURCE"
             ],
         ),
     ],
     py_modules=["containers"],
 )
+#"-Werror",
