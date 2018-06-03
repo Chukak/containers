@@ -136,11 +136,6 @@ extern "C" {
     
 #ifndef NULL
 #define NULL ((void *)0)
-#else
-#if NULL == nullptr
-    #undef NULL
-    #define NULL ((void *)0)
-#endif
 #endif
   
     typedef struct s_node s_node;
