@@ -21,8 +21,8 @@ setup(
             ["../src/queue.cpp", "pyqueue.c", "python.c", ],
             include_dirs=["../src"],
             extra_compile_args=[
-                "-g", "-lstdc++",  "-Wall", "-D_DEFAULT_SOURCE"
-            ]
+                "-g", "-Werror", "-Wall", "-D_DEFAULT_SOURCE"
+            ],
         ),
     ],
     py_modules=["containers"],
