@@ -5,8 +5,8 @@
 extern "C" {
 #endif
     
-#include <python3.5/Python.h>
-#include <python3.5/structmember.h>
+#include <Python.h>
+#include <structmember.h>
 #include "../src/stack.h"
 #include <stdint.h>
 
