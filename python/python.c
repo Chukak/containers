@@ -1,5 +1,5 @@
-#include <python3.5/Python.h>
-#include <python3.5/structmember.h>
+#include <Python.h>
+#include <structmember.h>
 #include "pyqueue.h"
 #include "pystack.h"
 
