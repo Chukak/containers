@@ -3,7 +3,11 @@
 #include <stdexcept>
 #include <new>
 
-
+/*
+ * Creates a new pointer.
+ * Copies a value from the another pointer to a new pointer.
+ * Returns a new pointer.
+ */
 static void *copy_value(const void *pointer)
 {
     void *p = ::operator new(sizeof(void *));
@@ -11,6 +15,10 @@ static void *copy_value(const void *pointer)
     return p;
 }
 
+/*
+ * Checks a pointer to the stack.
+ * If a pointer to the stack is NULL, Raises `runtime_error`.
+ */
 static void check_stack(const void *s) 
 {
     if (!s) {
@@ -18,6 +26,9 @@ static void check_stack(const void *s)
     }
 }
 
+/*
+ * Creates a stack and returns a pointer to it.
+ */
 stack *s_create_stack()
 {
     stack *s = new stack();
@@ -27,6 +38,9 @@ stack *s_create_stack()
     return s;
 }
 
+/*
+ * Removes the stack and all the elements from memory.
+ */
 void s_delete_stack(stack *s)
 {
     check_stack(s);
@@ -40,15 +54,20 @@ void s_delete_stack(stack *s)
     delete s;
 }
 
+/*
+ * Added an element in the stack.
+ * Increases the size of the stack.
+ */
 void s_push(stack *s, const void *element)
 {
     check_stack(s);
+    // if a pointer is NULL, raises `runtime_error`.
     if (!element) {
         throw std::runtime_error("The pointer to an element is NULL.");
     }
-    s_node *new_node = new s_node();
+    s_node *new_node = new s_node(); // a new node.
     new_node->prev = NULL;
-    new_node->value = copy_value(element);
+    new_node->value = copy_value(element); // copies a value.
     if (s->empty) {
         s->front = new_node;
         s->empty = 0;
@@ -59,6 +78,10 @@ void s_push(stack *s, const void *element)
     s->count++;
 }
 
+/*
+ * Removes the last element from the stack and returns the deleted element.
+ * Reduces the size of the stack.
+ */
 void *s_pop(stack *s) 
 {
     check_stack(s);
@@ -66,7 +89,7 @@ void *s_pop(stack *s)
     void *value = NULL;
     if (!s->empty) {
         temp = s->front;
-        value = copy_value(s->front->value);
+        value = copy_value(s->front->value); // gets a value from the element.
         s->front = s->front->prev;
         delete temp;
         s->count--;
@@ -76,6 +99,9 @@ void *s_pop(stack *s)
 }
 
 
+/*
+ * Returns a front element from the stack.
+ */
 void *s_front(stack *s)
 {
     check_stack(s);
