@@ -149,4 +149,11 @@ c = q.back() # c = None
 * `queue.count` - the numbers of elements.
 * `queue.empty` - `0` if the queue is empty, otherwise `1`.
 
+## Testing the python module
+To test the `containers` module, call `pytests.py` to run all the tests:
+```bash
+cd tests && python pytests.py
+```
+
 <hr>
+
