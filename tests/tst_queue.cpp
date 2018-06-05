@@ -1,7 +1,13 @@
 #include "catch/catch.hpp"
 #include "../src/queue.h"
 
+/*
+ * Testing the initialization of the queue.
+ */
 TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
+    /*
+     * Testing the standart initialization.
+     */
     SECTION("Initialization testing №1.") {
         Queue<int> q; 
         
@@ -11,6 +17,9 @@ TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
         
         q.~Queue();
     }
+    /*
+     * Testing the initialization `Queue q = {1,2,3}`.
+     */
     SECTION("Initialization testing №2.") {
         Queue<int> q = {1, 2, 3, 4, 5, 6};
         
@@ -22,6 +31,9 @@ TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
         
         q.~Queue();
     }
+    /*
+     * Testing the initialization of the queue from another queue.
+     */
     SECTION("Initialization testing №3.") {
         Queue<int> orig = {1, 2, 3};
         REQUIRE(&orig != nullptr); 
@@ -39,6 +51,9 @@ TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
     }
 }
 
+/*
+ * Testing the insertion in the queue.
+ */
 TEST_CASE("[Queue] Testing of insertion in the queue.", "[queue]") {
     SECTION("Testing of insertion №1.") {
         Queue<int> q;
@@ -70,6 +85,9 @@ TEST_CASE("[Queue] Testing of insertion in the queue.", "[queue]") {
     }
 }
 
+/*
+ * Testing the removing from the queue.
+ */
 TEST_CASE("[Queue] Testing of removing from the queue.", "[queue]") {
     SECTION("Testing of removing №1.") {
         Queue<int> q;
@@ -115,6 +133,9 @@ TEST_CASE("[Queue] Testing of removing from the queue.", "[queue]") {
     }
 }
 
+/*
+ * Testing the front and back elements from the queue.
+ */
 TEST_CASE("[Queue] Testing of front and back elements from the queue.", "[queue]") {
     SECTION("Testing of front element.") {
         Queue<int> q;
