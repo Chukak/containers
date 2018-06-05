@@ -22,8 +22,8 @@ public:
      */
     Queue();
     /*
-     * A constructor, creates the `queue` class from the `queue` class.
-     * @param orig - a constant link to another `queue` class.
+     * A constructor, creates the `sueue` class from another `queue` class.
+     * @param orig - a constant link to another `Stack` class.
      */
     Queue(const Queue<Elem> &orig);
     /*
@@ -37,13 +37,13 @@ public:
     
     /*
      * An `enqueue` function.
-     * Puts an element into the queue.
+     * Puts an element in the queue.
      * @param element - a constant link to the value.
      */
     void enqueue(const Elem &element);
     /*
      * A `dequeue` funciton.
-     * Removes an element fron the queue. 
+     * Removes the first element from the queue. 
      */
     Elem dequeue();
     /*
@@ -101,8 +101,7 @@ Queue<Elem>::Queue()
 
 /*
  * A constructor.
- * Creates a new `Queue` class from the another `Qeueu` class.
- * 
+ * Creates a new `Queue` class from the another `Queue` class.
  */
 template<typename Elem>
 Queue<Elem>::Queue(const Queue<Elem> &orig) : 
@@ -112,7 +111,7 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
     qempty(false)
 {
     /*
-     * If an original class is empty, return from constructor.
+     * If an original class is empty, returns from constructor.
      */
     if (orig.empty()) {
         qempty = true;
@@ -165,7 +164,7 @@ Queue<Elem>::~Queue()
 
 /*
  * An `enqueue` function.
- * Puts an element into the queue at the end.
+ * Puts an element in the queue at the end.
  * Increases the size of the queue.
  */
 template<typename Elem>
@@ -185,7 +184,7 @@ void Queue<Elem>::enqueue(const Elem &element)
 
 /*
  * A `dequeue` function.
- * Removes a front element from the queue.
+ * Removes the first element from the queue.
  * Reduces the size of the queue.
  * If the queue is empty, the result has undefined behavior.
  */
@@ -286,7 +285,7 @@ extern "C" {
     void q_enqueue(queue *q, const void *element);
     /*
      * An `q_dequeue` function.
-     * Removes an element in the queue. 
+     * Removes the first element in the queue. 
      * Returns a pointer to the deleted element.
      * If the queue is empty, returns the `NULL` pointer.
      * Takes one arguments:
@@ -324,6 +323,7 @@ extern "C" {
     /*
      * An `q_delete_queue` function.
      * Removes the queue from memory.
+     * `q` - a pointer to the queue.
      */
     void q_delete_queue(queue *q);
 #ifdef __cplusplus
