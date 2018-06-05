@@ -8,7 +8,7 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
     /*
      * Testing the standart initialization.
      */
-    SECTION("Initialization testing №1.") {
+    SECTION("Testing the initialization №1.") {
         Stack<int> s; 
         
         REQUIRE(&s != nullptr); 
@@ -20,7 +20,7 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
     /*
      * Testing the initialization `Stack s = {1,2,3}`.
      */
-    SECTION("Initialization testing №2.") {
+    SECTION("Testing the initialization №2.") {
         Stack<int> s = {1, 2, 3, 4, 5, 6};
         
         REQUIRE(&s != nullptr); 
@@ -33,7 +33,7 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
     /*
      * Testing the initialization of the stack from another stack.
      */
-    SECTION("Initialization testing №3.") {
+    SECTION("Testing the initialization №3.") {
         Stack<int> orig = {1, 2, 3};
         REQUIRE(&orig != nullptr); 
         
@@ -52,8 +52,8 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
 /*
  * Testing the insertion in the stack.
  */
-TEST_CASE("[Stack] Testing of insertion in the stack.", "[stack]") {
-    SECTION("Testing of insertion №1.") {
+TEST_CASE("[Stack] Testing the insertion in the stack.", "[stack]") {
+    SECTION("Testing the insertion №1.") {
         Stack<int> s;
         
         for (int i = 2; i < 520; i = i * 2) {
@@ -66,7 +66,7 @@ TEST_CASE("[Stack] Testing of insertion in the stack.", "[stack]") {
         
         s.~Stack();
     }
-    SECTION("Testing of insertion №2.") {
+    SECTION("Testing the insertion №2.") {
         Stack<int> s = {2, 4, 8};
         
         for (int i = 16; i < 520; i = i * 2) {
@@ -84,8 +84,8 @@ TEST_CASE("[Stack] Testing of insertion in the stack.", "[stack]") {
 /*
  * Testing the removing from the stack.
  */
-TEST_CASE("[Stack] Testing of removing from the stack.", "[stack]") {
-    SECTION("Testing of removing №1.") {
+TEST_CASE("[Stack] Testing the removing from the stack.", "[stack]") {
+    SECTION("Testing the removing №1.") {
         Stack<int> s;
         
         for (int i = 2; i < 520; i = i * 2) {
@@ -104,7 +104,7 @@ TEST_CASE("[Stack] Testing of removing from the stack.", "[stack]") {
         
         s.~Stack();
     }
-    SECTION("Testing of removing №2.") {
+    SECTION("Testing the removing №2.") {
         Stack<int> s = {2, 4, 8};
         
         REQUIRE(s.pop() == 8);
@@ -132,8 +132,8 @@ TEST_CASE("[Stack] Testing of removing from the stack.", "[stack]") {
 /*
  * Testing the front element from the stack.
  */
-TEST_CASE("[Stack] Testing of front element from the stack.", "[stack]") {
-    SECTION("Testing of front element.") {
+TEST_CASE("[Stack] Testing the front element from the stack.", "[stack]") {
+    SECTION("Testing the front element.") {
         Stack<int> s;
         
         for (int i = 2; i < 520; i = i * 2) {
