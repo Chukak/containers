@@ -1,7 +1,13 @@
 #include "catch/catch.hpp"
 #include "../src/stack.h"
 
+/*
+ * Testing the initialization of the stack.
+ */
 TEST_CASE("[Stack] Initialization stack.", "[stack]") {
+    /*
+     * Testing the standart initialization.
+     */
     SECTION("Initialization testing №1.") {
         Stack<int> s; 
         
@@ -11,6 +17,9 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
         
         s.~Stack();
     }
+    /*
+     * Testing the initialization `Stack s = {1,2,3}`.
+     */
     SECTION("Initialization testing №2.") {
         Stack<int> s = {1, 2, 3, 4, 5, 6};
         
@@ -21,6 +30,9 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
         
         s.~Stack();
     }
+    /*
+     * Testing the initialization of the stack from another stack.
+     */
     SECTION("Initialization testing №3.") {
         Stack<int> orig = {1, 2, 3};
         REQUIRE(&orig != nullptr); 
@@ -37,6 +49,9 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
     }
 }
 
+/*
+ * Testing the insertion in the stack.
+ */
 TEST_CASE("[Stack] Testing of insertion in the stack.", "[stack]") {
     SECTION("Testing of insertion №1.") {
         Stack<int> s;
@@ -66,6 +81,9 @@ TEST_CASE("[Stack] Testing of insertion in the stack.", "[stack]") {
     }
 }
 
+/*
+ * Testing the removing from the stack.
+ */
 TEST_CASE("[Stack] Testing of removing from the stack.", "[stack]") {
     SECTION("Testing of removing №1.") {
         Stack<int> s;
@@ -111,6 +129,9 @@ TEST_CASE("[Stack] Testing of removing from the stack.", "[stack]") {
     }
 }
 
+/*
+ * Testing the front element from the stack.
+ */
 TEST_CASE("[Stack] Testing of front element from the stack.", "[stack]") {
     SECTION("Testing of front element.") {
         Stack<int> s;
