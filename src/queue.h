@@ -131,6 +131,16 @@ public:
         }
         
         /*
+         * The postfix operator `++`.
+         * Increases the pointer and returns it. 
+         */
+        iterator& operator++(int hunk) 
+        {
+            m_node = m_node->next;
+            return *this;
+        }
+        
+        /*
          * The operator `*`.
          * Returns a value from the pointer.
          */
