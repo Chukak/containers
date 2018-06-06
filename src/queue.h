@@ -17,6 +17,9 @@
  */
 template<typename Elem>
 class Queue {
+    template<typename T>
+    friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
+    
 public:
     /*
      * A constructor.
@@ -284,6 +287,22 @@ Elem Queue<Elem>::back() const
     }
     return value;
 }
+
+template<typename Elem>
+std::ostream& operator<<(std::ostream& stream, const Queue<Elem>& q)
+{
+    auto *t = q.qfront;
+    stream << "(";
+    while(t) {
+        stream << t->value << ", ";
+        t = t->next;
+    }
+    stream << "\b\b";
+    stream << "";
+    stream << ")";
+    return stream;
+}
+
 #endif /* __cplusplus */
 
 /*
