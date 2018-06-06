@@ -9,6 +9,7 @@
 
 #ifdef __cplusplus
 #include <initializer_list>
+#include <iterator>
 
 /*
  * The `Stack` class.
@@ -79,6 +80,107 @@ private:
     Node *sfront; // a pointer to the first element.
     unsigned int elements; // the numbers of elements.
     bool sempty;
+    
+public:
+    
+    /*
+     * The `iterator` class.
+     * Determines the iterator for the `Stack` class.
+     */
+    class iterator : public std::iterator<std::forward_iterator_tag, Elem> {
+        /*
+         * Sets the friend class.
+         */
+        friend class Stack<Elem>;
+        
+    private:
+        /*
+         * A constructor.
+         */
+        iterator(Node *node) : m_node(node) {}
+        
+    public:
+        // value type.
+        typedef Elem value_type;
+        // iterator category
+        typedef std::forward_iterator_tag iterator_category;
+        
+        /*
+         * A constructor.
+         */
+        iterator() : m_node(0) {}
+        
+        /*
+         * The prefix operator `++`.
+         * Increases the pointer and returns it. 
+         */
+        iterator& operator++() 
+        {
+            m_node = m_node->prev;
+            return *this;
+        }
+        
+        /*
+         * The postfix operator `++`.
+         * Increases the pointer and returns it. 
+         */
+        iterator& operator++(int hunk) 
+        {
+            m_node = m_node->prev;
+            return *this;
+        }
+        
+        /*
+         * The operator `*`.
+         * Returns a value from the pointer.
+         */
+        Elem& operator*() const 
+        {
+            return m_node->value;
+        }
+        
+        /*
+         * The operator `->`.
+         * Returns a pointer to the Node.
+         */
+        Node* operator->() const 
+        {
+            return m_node;
+        }
+        
+        /*
+         * The operator `!=`.
+         * Compares two iterators. Returns `true` if 
+         * iterators are not the same. Otherwise returns `false`.
+         */
+        bool operator!=(const iterator& rhs) const 
+        { 
+            return m_node != rhs.m_node;
+        }
+        
+        /*
+         * The operator `==`.
+         * Compares two iterators. Returns `true` if 
+         * iterators are the same. Otherwise returns `false`.
+         */
+        bool operator==(const iterator& rhs) const 
+        { 
+            return m_node == rhs.m_node;
+        }
+        
+    private:
+        Node *m_node; // a pointer to a Node.
+    };
+    
+    /*
+     * Returns the iterator to the beginning of the stack.
+     */
+    iterator begin() const { return iterator(sfront); }
+    
+    /*
+     * Returns the iterator to the end of the stack. 
+     */
+    iterator end() const { return iterator(nullptr); }
 };
 
 /*
