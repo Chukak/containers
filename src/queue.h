@@ -10,6 +10,7 @@
 #ifdef __cplusplus
 #include <initializer_list>
 #include <iterator>
+#include <ostream>
 
 /*
  * The `Queue` class.
@@ -345,7 +346,7 @@ Elem Queue<Elem>::back() const
 }
 
 /*
- * THe overloaded `<<` operator for the Queue class.
+ * The overloaded `<<` operator for the Queue class.
  * Prints all elements from the queue in the format: `(1, ...,100)`.
  * Returns ostream.
  */
