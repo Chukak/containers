@@ -17,6 +17,9 @@
  */
 template<typename Elem>
 class Queue {
+    /*
+     * Sets the friend function for the overloaded operator `<<`.
+     */
     template<typename T>
     friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
     
@@ -89,53 +92,96 @@ private:
     bool qempty;
     
 public:
+    
+    /*
+     * The `iterator` class.
+     * Determines the iterator for the `Queue` class.
+     */
     class iterator : public std::iterator<std::forward_iterator_tag, Elem> {
-        
+        /*
+         * Sets the friend class.
+         */
         friend class Queue<Elem>;
         
     private:
-        
+        /*
+         * A constructor.
+         */
         iterator(Node *node) : m_node(node) {}
         
     public:
+        // value type.
         typedef Elem value_type;
+        // iterator category
         typedef std::forward_iterator_tag iterator_category;
         
+        /*
+         * A constructor.
+         */
         iterator() : m_node(0) {}
         
+        /*
+         * The prefix operator `++`.
+         * Increases the pointer and returns it. 
+         */
         iterator& operator++() 
         {
             m_node = m_node->next;
             return *this;
         }
         
+        /*
+         * The operator `*`.
+         * Returns a value from the pointer.
+         */
         Elem& operator*() const 
         {
             return m_node->value;
         }
         
+        /*
+         * The operator `->`.
+         * Returns a pointer to the Node.
+         */
         Node* operator->() const 
         {
             return m_node;
         }
         
+        /*
+         * The operator `!=`.
+         * Compares two iterators. Returns `true` if 
+         * iterators are not the same. Otherwise returns `false`.
+         */
         bool operator!=(const iterator& rhs) const 
         { 
             return m_node != rhs.m_node;
         }
         
+        /*
+         * The operator `==`.
+         * Compares two iterators. Returns `true` if 
+         * iterators are the same. Otherwise returns `false`.
+         */
         bool operator==(const iterator& rhs) const 
         { 
             return m_node == rhs.m_node;
         }
         
     private:
-        Node *m_node; 
+        Node *m_node; // a pointer to a Node.
     };
     
-        
+    /*
+     * Returns the iterator to the beginning of the queue.
+     */
     iterator begin() const { return iterator(qfront); }
     
+    /*
+     * Returns the iterator to the end of the queue. 
+     * The iterator points to the element after the 
+     * last element from the queue.
+     */
     iterator end() const { return iterator(qback->next); }
 };
 
@@ -288,6 +334,11 @@ Elem Queue<Elem>::back() const
     return value;
 }
 
+/*
+ * THe overloaded `<<` operator for the Queue class.
+ * Prints all elements from the queue in the format: `(1, ...,100)`.
+ * Returns ostream.
+ */
 template<typename Elem>
 std::ostream& operator<<(std::ostream& stream, const Queue<Elem>& q)
 {
