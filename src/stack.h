@@ -10,6 +10,7 @@
 #ifdef __cplusplus
 #include <initializer_list>
 #include <iterator>
+#include <ostream>
 
 /*
  * The `Stack` class.
@@ -17,6 +18,12 @@
  */
 template<typename Elem>
 class Stack {
+    /*
+     * Sets the friend function for the overloaded operator `<<`.
+     */
+    template<typename T>
+    friend std::ostream& operator<<(std::ostream& stream, const Stack<T>& s);
+    
 public:
     /*
      * A constructor.
@@ -310,6 +317,27 @@ Elem Stack<Elem>::front() const
     }
     return value;
 }
+
+/*
+ * The overloaded `<<` operator for the Stack class.
+ * Prints all elements from the stack in the format: `(1, ...,100)`.
+ * Returns ostream.
+ */
+template<typename Elem>
+std::ostream& operator<<(std::ostream& stream, const Stack<Elem>& s)
+{
+    auto *t = s.sfront;
+    stream << "(";
+    while(t) {
+        stream << t->value << ", ";
+        t = t->prev;
+    }
+    stream << "\b\b";
+    stream << "";
+    stream << ")";
+    return stream;
+}
+
 #endif /* __cplusplus */
 
 
