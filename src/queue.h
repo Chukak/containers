@@ -9,6 +9,7 @@
 
 #ifdef __cplusplus
 #include <initializer_list>
+#include <iterator>
 
 /*
  * The `Queue` class.
@@ -84,6 +85,55 @@ private:
     unsigned int qnum_of_elements; // the numbers of elements.
     bool qempty;
     
+public:
+    class iterator : public std::iterator<std::forward_iterator_tag, Elem> {
+        
+        friend class Queue<Elem>;
+        
+    private:
+        
+        iterator(Node *node) : m_node(node) {}
+        
+    public:
+        typedef Elem value_type;
+        typedef std::forward_iterator_tag iterator_category;
+        
+        iterator() : m_node(0) {}
+        
+        iterator& operator++() 
+        {
+            m_node = m_node->next;
+            return *this;
+        }
+        
+        Elem& operator*() const 
+        {
+            return m_node->value;
+        }
+        
+        Node* operator->() const 
+        {
+            return m_node;
+        }
+        
+        bool operator!=(const iterator& rhs) const 
+        { 
+            return m_node != rhs.m_node;
+        }
+        
+        bool operator==(const iterator& rhs) const 
+        { 
+            return m_node == rhs.m_node;
+        }
+        
+    private:
+        Node *m_node; 
+    };
+    
+        
+    iterator begin() const { return iterator(qfront); }
+    
+    iterator end() const { return iterator(qback->next); }
 };
 
 /*
