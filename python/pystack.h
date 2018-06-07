@@ -8,12 +8,11 @@ extern "C" {
 #include <Python.h>
 #include <structmember.h>
 #include "../src/stack.h"
-#include <stdint.h>
 
 typedef struct {
     PyObject_HEAD
     stack *s;
-    uint32_t count;
+    unsigned int count;
     int empty;
 } PyStack;
 
