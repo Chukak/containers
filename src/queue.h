@@ -222,7 +222,10 @@ public:
      * The iterator points to the element after the 
      * last element from the queue.
      */
-    iterator end() const { return iterator(qback->next); }
+    iterator end() const 
+    { 
+        return qback ? iterator(qback->next) : iterator(qback); 
+    }
 };
 
 /*
