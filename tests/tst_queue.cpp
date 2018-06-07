@@ -184,3 +184,44 @@ TEST_CASE("[Queue] Testing the front and back elements from the queue.", "[queue
         q.~Queue();
     }
 }
+
+/*
+ * Testing the iterators of the queue.
+ */
+TEST_CASE("[Queue] Testing the iterators of the queue.", "[queue]") {
+    SECTION("Testing the iterators.") {
+        Queue<int> q = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        
+        Queue<int>::iterator iter = q.begin();
+        REQUIRE_FALSE(iter == nullptr);
+        REQUIRE(iter != nullptr);
+        
+        unsigned test_var = 0;
+        for (auto it = q.begin(); it != q.end(); ++it) {
+            test_var++;
+            REQUIRE(*it == test_var);
+        }
+        REQUIRE(test_var == 10);
+        
+        test_var = 0;
+        for (auto it = q.begin(); it != q.end(); it++) {
+            test_var++;
+            REQUIRE(it->value == test_var);
+        }
+        REQUIRE(test_var == 10);
+        
+        REQUIRE_FALSE(q.begin() == q.end());
+        REQUIRE(q.begin() != q.end());
+        
+        q.~Queue();
+    }
+    SECTION("Testing that the iterators and nullptr are the same.") {
+        Queue<int> q;
+        
+        REQUIRE(q.begin() == q.end());
+        REQUIRE(q.begin() == nullptr);
+        REQUIRE(q.end() == nullptr);
+        
+        q.~Queue();
+    }
+}
