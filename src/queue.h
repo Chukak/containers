@@ -78,7 +78,15 @@ private:
      * Used to represent elements in memory.
      */
     struct Node {
+        friend class Queue<Elem>;
+        
+        friend struct iterator;
+        
+        template<typename T>
+        friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
+        
         Elem value; // a value.
+    private:
         Node *next; // a pointer to the next `Node` structure.
 
         /*
@@ -93,6 +101,7 @@ private:
     bool qempty;
     
 public:
+    class iterator;
     
     /*
      * The `iterator` class.
@@ -170,6 +179,16 @@ public:
         }
         
         /*
+         * The operator `!=`.
+         * Returns `true` if the current iterator and `nullptr`
+         * are the same. Otherwise returns `false`.
+         */
+        bool operator!=(std::nullptr_t) const 
+        { 
+            return m_node != nullptr;
+        }
+        
+        /*
          * The operator `==`.
          * Compares two iterators. Returns `true` if 
          * iterators are the same. Otherwise returns `false`.
@@ -177,6 +196,16 @@ public:
         bool operator==(const iterator& rhs) const 
         { 
             return m_node == rhs.m_node;
+        }
+        
+        /*
+         * The operator `==`.
+         * Returns `true` if the current iterator and `nullptr`
+         * are the same. Otherwise returns `false`.
+         */
+        bool operator==(std::nullptr_t) const 
+        { 
+            return m_node == nullptr;
         }
         
     private:
