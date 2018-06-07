@@ -11,7 +11,8 @@
 #include <initializer_list>
 #include <iterator>
 #include <ostream>
-#include <bits/c++config.h>
+
+using uint = unsigned int;
 
 /*
  * The `Stack` class.
@@ -58,7 +59,7 @@ public:
     /*
      * Returns the number of elements.
      */
-    unsigned int count() { return elements; }
+    uint count() { return elements; }
     
     /*
      * Returns the first element from the stack.
@@ -94,7 +95,7 @@ private:
     };
     
     Node *sfront; // a pointer to the first element.
-    unsigned int elements; // the numbers of elements.
+    uint elements; // the numbers of elements.
     bool sempty;
     
 public:
@@ -399,7 +400,7 @@ extern "C" {
      */
     typedef struct {
         s_node *front; // a pointer to the first node.
-        unsigned int count; // a pointer to the last node.
+        uint count; // a pointer to the last node.
         int empty;
     } stack;
     
@@ -444,7 +445,7 @@ extern "C" {
      * Use this function, if necessary.
      * Or instead this function, use `stack->count`.
      */
-    unsigned int s_count(stack *s);
+    uint s_count(stack *s);
     
     /*
      * A `s_delete_stack` function.
