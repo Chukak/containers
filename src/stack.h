@@ -57,9 +57,9 @@ public:
      */
     Elem pop();
     /*
-     * Returns the number of elements.
+     * Returns the number of _count.
      */
-    uint count() { return elements; }
+    uint count() { return _count; }
     
     /*
      * Returns the first element from the stack.
@@ -69,12 +69,12 @@ public:
     /*
      * Returns `true` if the stack is empty, otherwise returns `false`. 
      */
-    bool empty() const { return sempty; }
+    bool is_empty() const { return empty; }
     
 private:
     /*
      * A linked list structure.
-     * Used to represent elements in memory.
+     * Used to represent _count in memory.
      */
     struct Node {
         friend class Stack<Elem>;
@@ -94,9 +94,9 @@ private:
         Node(const Elem &v, Node *n) : value(v), prev(n) {}
     };
     
-    Node *sfront; // a pointer to the first element.
-    uint elements; // the numbers of elements.
-    bool sempty;
+    Node *_front; // a pointer to the first element.
+    uint _count; // the numbers of _count.
+    bool empty;
     
 public:
     class iterator;
@@ -213,7 +213,7 @@ public:
     /*
      * Returns the iterator to the beginning of the stack.
      */
-    iterator begin() const { return iterator(sfront); }
+    iterator begin() const { return iterator(_front); }
     
     /*
      * Returns the iterator to the end of the stack. 
@@ -228,9 +228,9 @@ public:
 template<typename Elem>
 Stack<Elem>::Stack()
 {
-    sfront = NULL; // a pointer to the first element
-    elements = 0; // the numbers of elements
-    sempty = true;
+    _front = NULL; // a pointer to the first element
+    _count = 0; // the numbers of _count
+    empty = true;
 }
 
 /*
@@ -239,20 +239,20 @@ Stack<Elem>::Stack()
  */
 template<typename Elem>
 Stack<Elem>::Stack(const Stack<Elem> &orig) :
-    sfront(NULL),
-    elements(orig.elements),
-    sempty(false)
+    _front(NULL),
+    _count(orig._count),
+    empty(false)
 {
     /*
      * If an original class is empty, returns from constructor.
      */
     if (orig.empty()) {
-        sempty = true;
+        empty = true;
         return ;
     }
-    sfront = new Node(orig.sfront->value, NULL); // copy a pointer to the first element.
-    Node *t = sfront;
-    Node *temp = orig.sfront->prev; // gets a pointer to the previous element.
+    _front = new Node(orig._front->value, NULL); // copy a pointer to the first element.
+    Node *t = _front;
+    Node *temp = orig._front->prev; // gets a pointer to the previous element.
     while (temp) {
         t->prev = new Node(temp->value, NULL);
         temp = temp->prev;
@@ -265,12 +265,12 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
  */
 template<typename Elem>
 Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
-    sfront(NULL), 
-    elements(0),
-    sempty(true)
+    _front(NULL), 
+    _count(0),
+    empty(true)
 {
     /*
-     * Just copy all the elements.
+     * Just copy all the _count.
      */
     for (auto element : lst) {
         push(element);
@@ -279,15 +279,15 @@ Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
 
 /*
  * A destructor.
- * Removes all the elements from memory.
+ * Removes all the _count from memory.
  */
 template<typename Elem>
 Stack<Elem>::~Stack() 
 {
     Node *old = NULL;
-    while (sfront) {
-        old = sfront; // a pointer to a current element.
-        sfront = sfront->prev; // a pointer to the previous element.
+    while (_front) {
+        old = _front; // a pointer to a current element.
+        _front = _front->prev; // a pointer to the previous element.
         delete old;
     }
 }
@@ -301,14 +301,14 @@ template<typename Elem>
 void Stack<Elem>::push(const Elem& element)
 {
     Node *new_node = new Node(element, NULL); // a new pointer to an element.
-    if (sempty) {
-        sfront = new_node; // front == back.
-        sempty = false;
+    if (empty) {
+        _front = new_node; // front == back.
+        empty = false;
     } else {
-        new_node->prev = sfront; // sets the previous element.
-        sfront = new_node; // sets the first element.
+        new_node->prev = _front; // sets the previous element.
+        _front = new_node; // sets the first element.
     }
-    elements++;
+    _count++;
 }
 
 /*
@@ -322,15 +322,15 @@ Elem Stack<Elem>::pop()
 {
     Node *temp = NULL;
     Elem value;
-    if (!sempty) {
-        temp = sfront;
-        value = sfront->value;
-        sfront = sfront->prev; // sets a new front element.
+    if (!empty) {
+        temp = _front;
+        value = _front->value;
+        _front = _front->prev; // sets a new front element.
         delete temp;
-        elements--;
+        _count--;
     }
     // checks if the stack is empty.
-    sempty = elements == 0 ? true : false;
+    empty = _count == 0 ? true : false;
     return value;
 }
 
@@ -343,21 +343,21 @@ template<typename Elem>
 Elem Stack<Elem>::front() const
 {
     Elem value;
-    if (sfront != NULL) {
-        value = sfront->value;
+    if (_front != NULL) {
+        value = _front->value;
     }
     return value;
 }
 
 /*
  * The overloaded `<<` operator for the Stack class.
- * Prints all elements from the stack in the format: `(1, ...,100)`.
+ * Prints all _count from the stack in the format: `(1, ...,100)`.
  * Returns ostream.
  */
 template<typename Elem>
 std::ostream& operator<<(std::ostream& stream, const Stack<Elem>& s)
 {
-    auto *t = s.sfront;
+    auto *t = s._front;
     stream << "(";
     while(t) {
         stream << t->value << ", ";
