@@ -144,7 +144,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++(int hunk) 
+        iterator& operator++(int j) 
         {
             m_node = m_node->next;
             return *this;
