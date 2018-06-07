@@ -32,8 +32,8 @@ static void check_queue(const void *q)
 queue *q_create_queue()
 {
     queue *q = new queue();
-    q->qfront = NULL;
-    q->qback = NULL;
+    q->_front = NULL;
+    q->_back = NULL;
     q->empty = 1;
     q->count = 0;
     return q;
@@ -46,9 +46,9 @@ void q_delete_queue(queue *q)
 {
     check_queue(q);
     q_node *old = NULL; 
-    while (q->qfront) {
-        old = q->qfront;
-        q->qfront = q->qfront->next;
+    while (q->_front) {
+        old = q->_front;
+        q->_front = q->_front->next;
         ::operator delete(old->value);
         delete old;
     }
@@ -70,12 +70,12 @@ void q_enqueue(queue *q, const void *element)
     new_node->next = NULL;
     new_node->value = copy_value(element); // copies a value.
     if (q->empty) {
-        q->qfront = new_node;
-        q->qback = new_node;
+        q->_front = new_node;
+        q->_back = new_node;
         q->empty = 0;
     } else {
-        q->qback->next = new_node;
-        q->qback = new_node;
+        q->_back->next = new_node;
+        q->_back = new_node;
     }
     q->count++;
 }
@@ -90,14 +90,14 @@ void *q_dequeue(queue *q)
     q_node *temp = NULL;
     void *value = NULL;
     if (!q->empty) {
-        temp = q->qfront;
-        value = copy_value(q->qfront->value); // gets a value from the element.
-        q->qfront = q->qfront->next;
+        temp = q->_front;
+        value = copy_value(q->_front->value); // gets a value from the element.
+        q->_front = q->_front->next;
         delete temp;
         q->count--;
     }
     if (!q->count) {
-        q->qback = NULL;
+        q->_back = NULL;
         q->empty = 1;
     }
     return value;
@@ -110,8 +110,8 @@ void *q_front(queue *q)
 {
     check_queue(q);
     void *value = NULL;
-    if (q->qfront != NULL) {
-        value = copy_value(q->qfront->value);
+    if (q->_front != NULL) {
+        value = copy_value(q->_front->value);
     }
     return value;
 }
@@ -123,8 +123,8 @@ void *q_back(queue *q)
 {
     check_queue(q);
     void *value = NULL;
-    if (q->qback != NULL) {
-        value = copy_value(q->qback->value);
+    if (q->_back != NULL) {
+        value = copy_value(q->_back->value);
     }
     return value;
 }
