@@ -128,3 +128,11 @@ void *q_back(queue *q)
     }
     return value;
 }
+
+/*
+ * Returns the size of the queue.
+ */
+unsigned int q_count(queue *q) 
+{
+    return q->count;
+}
