@@ -3,7 +3,7 @@
 ## How to compile module
 This library can be compiled as a python module. You need to set the path to the files `Python.h` and `structmember.h`.
 By default used the following paths are used: `/usr/include/python*.*`, `/usr/local/include/python*.*`, `/usr/lib/python*.*`, 
-`/usr/local/lib/python*.*`, where `*.*` - python of version. For example: `/usr/include/python3.5`. 
+`/usr/local/lib/python*.*`, where `*.*` - version of python. For example: `/usr/include/python3.5`. 
 To use a special path to the files `Python.h` and `structmember.h` set the variable `PY_HEADER_PATH`.
 
 For example with default paths, in Linux:
