@@ -12,6 +12,8 @@
 #include <iterator>
 #include <ostream>
 
+using uint = unsigned int;
+
 /*
  * The `Queue` class.
  * The queue is the structure "First-In-First-Out". 
@@ -57,7 +59,7 @@ public:
     /*
      * Returns the number of elements.
      */
-    unsigned int count() const { return qnum_of_elements; };
+    uint count() const { return _count; };
     
     /*
      * Returns the first element from the queue.
@@ -71,7 +73,7 @@ public:
     /*
      * Returns `true` if the queue is empty, otherwise returns `false`. 
      */
-    bool empty() const { return qempty; }
+    bool is_empty() const { return empty; }
     
     /*
      */
@@ -99,10 +101,10 @@ private:
         Node(const Elem &v, Node *n) : value(v), next(n) {}
     };
     
-    Node *qfront; // a pointer to the first element.
-    Node *qback; // a pointer to the last element.
-    unsigned int qnum_of_elements; // the numbers of elements.
-    bool qempty;
+    Node *_front; // a pointer to the first element.
+    Node *_back; // a pointer to the last element.
+    uint _count; // the numbers of elements.
+    bool empty;
     
 public:
     class iterator;
@@ -219,7 +221,7 @@ public:
     /*
      * Returns the iterator to the beginning of the queue.
      */
-    iterator begin() const { return iterator(qfront); }
+    iterator begin() const { return iterator(_front); }
     
     /*
      * Returns the iterator to the end of the queue. 
@@ -228,7 +230,7 @@ public:
      */
     iterator end() const 
     { 
-        return qback ? iterator(qback->next) : iterator(qback); 
+        return _back ? iterator(_back->next) : iterator(_back); 
     }
 };
 
@@ -239,10 +241,10 @@ public:
 template<typename Elem>
 Queue<Elem>::Queue()
 {
-    qfront = NULL; // a pointer to the first element
-    qback = NULL; // a pointer to the last element
-    qnum_of_elements = 0; // the numbers of elements
-    qempty = true; 
+    _front = NULL; // a pointer to the first element
+    _back = NULL; // a pointer to the last element
+    _count = 0; // the numbers of elements
+    empty = true; 
 }
 
 /*
@@ -251,26 +253,26 @@ Queue<Elem>::Queue()
  */
 template<typename Elem>
 Queue<Elem>::Queue(const Queue<Elem> &orig) : 
-    qfront(NULL),
-    qback(NULL),
-    qnum_of_elements(orig.qnum_of_elements),
-    qempty(false)
+    _front(NULL),
+    _back(NULL),
+    _count(orig._count),
+    empty(false)
 {
     /*
      * If an original class is empty, returns from constructor.
      */
     if (orig.empty()) {
-        qempty = true;
+        empty = true;
         return ; 
     }
-    Node *t = orig.qfront; // copy a pointer to the first element.
-    qfront = new Node(t->value, NULL); // creates a new pointer.
-    qback = qfront;
+    Node *t = orig._front; // copy a pointer to the first element.
+    _front = new Node(t->value, NULL); // creates a new pointer.
+    _back = _front;
     t = t->next; // gets a pointer to the next element.
     while (t) {
         Node *new_node = new Node(t->value, NULL);
-        qback->next = new_node;
-        qback = new_node;
+        _back->next = new_node;
+        _back = new_node;
         t = t->next;
     } 
 }
@@ -280,10 +282,10 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
  */
 template<typename Elem>
 Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
-    qfront(NULL), 
-    qback(NULL),
-    qnum_of_elements(0),
-    qempty(true)
+    _front(NULL), 
+    _back(NULL),
+    _count(0),
+    empty(true)
 {
     /*
      * Just copy all the elements.
@@ -301,9 +303,9 @@ template<typename Elem>
 Queue<Elem>::~Queue() 
 {
     Node *old = NULL;
-    while (qfront) {
-        old = qfront; // a pointer to a current element.
-        qfront = qfront->next; // a pointer to the next element.
+    while (_front) {
+        old = _front; // a pointer to a current element.
+        _front = _front->next; // a pointer to the next element.
         delete old;
     }
 }
@@ -317,15 +319,15 @@ template<typename Elem>
 void Queue<Elem>::enqueue(const Elem &element) 
 {
     Node *new_node = new Node(element, NULL); // a new pointer to an element.
-    if (qempty) { 
-        qfront = new_node; // front == back.
-        qback = new_node;
-        qempty = false;
+    if (empty) { 
+        _front = new_node; // front == back.
+        _back = new_node;
+        empty = false;
     } else {
-        qback->next = new_node; // sets the next element.
-        qback = new_node; // sets the last element.
+        _back->next = new_node; // sets the next element.
+        _back = new_node; // sets the last element.
     }
-    qnum_of_elements++;
+    _count++;
 }
 
 /*
@@ -339,15 +341,15 @@ Elem Queue<Elem>::dequeue()
 {
     Node *temp = NULL;
     Elem value; 
-    if (!qempty) {
-        temp = qfront;
-        value = qfront->value;
-        qfront = qfront->next; // sets a new front element.
+    if (!empty) {
+        temp = _front;
+        value = _front->value;
+        _front = _front->next; // sets a new front element.
         delete temp;
-        qnum_of_elements--;
+        _count--;
     }
     // checks if the queue is empty.
-    qempty = qnum_of_elements == 0 ? true : false; 
+    empty = _count == 0 ? true : false; 
     return value;
 }
 
@@ -360,8 +362,8 @@ template<typename Elem>
 Elem Queue<Elem>::front() const
 {
     Elem value;
-    if (qfront != NULL) {
-        value = qfront->value;
+    if (_front != NULL) {
+        value = _front->value;
     }
     return value;
 }
@@ -375,8 +377,8 @@ template<typename Elem>
 Elem Queue<Elem>::back() const
 {
     Elem value;
-    if (qback != NULL) {
-        value = qback->value;
+    if (_back != NULL) {
+        value = _back->value;
     }
     return value;
 }
@@ -386,15 +388,15 @@ Elem Queue<Elem>::back() const
 template<typename Elem>
 void Queue<Elem>::clear() 
 {
-    while (qfront) {
-        Node *old = qfront; // a pointer to a current element.
-        qfront = qfront->next; // a pointer to the next element.
+    while (_front) {
+        Node *old = _front; // a pointer to a current element.
+        _front = _front->next; // a pointer to the next element.
         delete old;
     }
-    qfront = NULL;
-    qback = NULL;
-    qempty = 1;
-    qnum_of_elements = 0;
+    _front = NULL;
+    _back = NULL;
+    empty = 1;
+    _count = 0;
 }
 
 /*
@@ -405,7 +407,7 @@ void Queue<Elem>::clear()
 template<typename Elem>
 std::ostream& operator<<(std::ostream& stream, const Queue<Elem>& q)
 {
-    auto *t = q.qfront;
+    auto *t = q._front;
     stream << "(";
     while(t) {
         stream << t->value << ", ";
@@ -446,9 +448,9 @@ extern "C" {
      * 
      */
     typedef struct {
-        q_node *qfront; // a pointer to the first node.
-        q_node *qback; // a pointer to the last node.
-        unsigned int count; 
+        q_node *_front; // a pointer to the first node.
+        q_node *_back; // a pointer to the last node.
+        uint count; 
         int empty;
     } queue;
     
@@ -501,7 +503,7 @@ extern "C" {
      * Use this function, if necessary.
      * Or instead this function, use `queue->count`.
      */
-    unsigned int q_count(queue *q);
+    uint q_count(queue *q);
     
     /*
      * An `q_delete_queue` function.
