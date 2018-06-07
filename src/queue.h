@@ -72,6 +72,10 @@ public:
      * Returns `true` if the queue is empty, otherwise returns `false`. 
      */
     bool empty() const { return qempty; }
+    
+    /*
+     */
+    void clear();
 private:
     /*
      * A linked list structure.
@@ -375,6 +379,22 @@ Elem Queue<Elem>::back() const
         value = qback->value;
     }
     return value;
+}
+
+/*
+ */
+template<typename Elem>
+void Queue<Elem>::clear() 
+{
+    while (qfront) {
+        Node *old = qfront; // a pointer to a current element.
+        qfront = qfront->next; // a pointer to the next element.
+        delete old;
+    }
+    qfront = NULL;
+    qback = NULL;
+    qempty = 1;
+    qnum_of_elements = 0;
 }
 
 /*
