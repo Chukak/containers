@@ -111,3 +111,11 @@ void *s_front(stack *s)
     }
     return value;
 }
+
+/*
+ * Returns the size of the queue.
+ */
+unsigned int s_count(stack *s) 
+{
+    return s->count;
+}
