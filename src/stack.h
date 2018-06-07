@@ -176,6 +176,16 @@ public:
         }
         
         /*
+         * The operator `!=`.
+         * Returns `true` if the current iterator and `nullptr`
+         * are the same. Otherwise returns `false`.
+         */
+        bool operator!=(std::nullptr_t) const 
+        { 
+            return m_node != nullptr;
+        }
+        
+        /*
          * The operator `==`.
          * Compares two iterators. Returns `true` if 
          * iterators are the same. Otherwise returns `false`.
@@ -183,6 +193,16 @@ public:
         bool operator==(const iterator& rhs) const 
         { 
             return m_node == rhs.m_node;
+        }
+        
+        /*
+         * The operator `==`.
+         * Returns `true` if the current iterator and `nullptr`
+         * are the same. Otherwise returns `false`.
+         */
+        bool operator==(std::nullptr_t) const 
+        { 
+            return m_node == nullptr;
         }
         
     private:
