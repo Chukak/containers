@@ -5,15 +5,14 @@
 extern "C" {
 #endif
 
-#include <Python.h>
-#include <structmember.h>
+#include <python3.5/Python.h>
+#include <python3.5/structmember.h>
 #include "../src/queue.h"
-#include <stdint.h>
     
 typedef struct {
     PyObject_HEAD
     queue *q;
-    uint32_t count;
+    unsigned int count;
     int empty;
 } PyQueue;
 
