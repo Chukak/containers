@@ -159,3 +159,44 @@ TEST_CASE("[Stack] Testing the front element from the stack.", "[stack]") {
         s.~Stack();
     }
 }
+
+/*
+ * Testing the iterators of the stack.
+ */
+TEST_CASE("[Stack] Testing the iterators of the stack.", "[stack]") {
+    SECTION("Testing the iterators.") {
+        Stack<int> s = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        
+        Stack<int>::iterator iter = s.begin();
+        CHECK_FALSE(iter == nullptr);
+        CHECK(iter != nullptr);
+        
+        unsigned test_var = 10;
+        for (auto it = s.begin(); it != s.end(); ++it) {
+            REQUIRE(*it == test_var);
+            test_var--;
+        }
+        REQUIRE(test_var == 0);
+        
+        test_var = 10;
+        for (auto it = s.begin(); it != s.end(); it++) {
+            REQUIRE(it->value == test_var);
+            test_var--;
+        }
+        REQUIRE(test_var == 0);
+        
+        CHECK_FALSE(s.begin() == s.end());
+        CHECK(s.begin() != s.end());
+        
+        s.~Stack();
+    }
+    SECTION("Testing that the iterators and nullptr are the same.") {
+        Stack<int> s;
+        
+        REQUIRE(s.begin() == s.end());
+        REQUIRE(s.begin() == nullptr);
+        REQUIRE(s.end() == nullptr);
+        
+        s.~Stack();
+    }
+}
