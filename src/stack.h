@@ -11,6 +11,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <ostream>
+#include <bits/c++config.h>
 
 /*
  * The `Stack` class.
@@ -75,7 +76,15 @@ private:
      * Used to represent elements in memory.
      */
     struct Node {
+        friend class Stack<Elem>;
+        
+        friend struct iterator;
+        
+        template<typename T>
+        friend std::ostream& operator<<(std::ostream& stream, const Stack<T>& s);
+        
         Elem value; // a value.
+    private:
         Node *prev; // a pointer to the previous `Node` structure.
         
         /*
@@ -89,6 +98,7 @@ private:
     bool sempty;
     
 public:
+    class iterator;
     
     /*
      * The `iterator` class.
