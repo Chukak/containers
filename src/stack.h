@@ -246,7 +246,7 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
     /*
      * If an original class is empty, returns from constructor.
      */
-    if (orig.empty()) {
+    if (orig.empty) {
         empty = true;
         return ;
     }
