@@ -261,7 +261,7 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
     /*
      * If an original class is empty, returns from constructor.
      */
-    if (orig.empty()) {
+    if (orig.empty) {
         empty = true;
         return ; 
     }
