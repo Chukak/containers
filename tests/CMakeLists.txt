@@ -4,13 +4,14 @@ include(CheckCXXCompilerFlag)
 project(containers_tests)
 
 CHECK_CXX_COMPILER_FLAG(-std=c++14 COMPILER_SUPPORTS_CXX14)
-if(COMPILER_SUPPORTS_CXX14)
-    add_compile_options("-std=c++14")
-endif()
 
 add_compile_options("-g")
 add_compile_options("-Wall")
 add_compile_options("-Werror")
+
+if(COMPILER_SUPPORTS_CXX14)
+    add_compile_options("-std=c++14")
+endif()
 
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}catch)
 add_library(Catch INTERFACE)
@@ -23,6 +24,7 @@ set(
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_queue_c.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_stack.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_stack_c.cpp
+                 ${CMAKE_CURRENT_SOURCE_DIR}/tst_sorted_list.cpp
                  ${SOURCES_DIR}/queue.cpp
                  ${SOURCES_DIR}/stack.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
