@@ -11,6 +11,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <ostream>
+#include <stdexcept>
 
 using uint = unsigned int;
 
@@ -51,15 +52,15 @@ public:
     
     /*
      */
-    Num remove(uint pos);
+    Num remove(int pos);
     
     /*
      */
-    Num front();
+    Num front() const;
     
     /*
      */
-    Num back();
+    Num back() const ;
     
     /*
      */
@@ -83,13 +84,25 @@ public:
     
     /*
      */
-    Num at(uint pos);
+    Num at(int pos) const;
     
     /*
      */
-    Num operator[](uint pos);
+    Num operator[](int pos) const;
     
 private:
+    
+    /*
+     */
+    Num undefined_behavior() const { return Num(); };
+    
+    /*
+     */
+    bool is_out_of_range(int pos) const 
+    { 
+        return (pos < 0 || static_cast<uint>(pos) > _count) 
+                || !(_count);
+    }
     
     /*
      */
@@ -101,7 +114,7 @@ private:
         Node *next;
         Node *prev;
         
-        Node(const Num& element, Node *n, Node *p) {}
+        Node(const Num &e, Node *n, Node *p) : value(e), next(n), prev(p) {}
     };
     
     Node *_front;
@@ -109,7 +122,48 @@ private:
     uint _count;
     bool empty;
     bool reversed;
-
+    
+private:
+    
+    /*
+     */
+    enum index {
+        FIRST,
+        LAST,
+        MIDDLE
+    };
+    
+    /*
+     */
+    bool cmp_operator(Node *head, Num element, index ind = index::MIDDLE)
+    {
+        if (ind == index::LAST) {
+            return reversed ? _back->value > element : _back->value < element; 
+        } else if (ind == index::FIRST){
+            return reversed ? _front->value < element : _front->value > element;
+        } else {
+            return reversed ? greater(head, element) : less(head, element); 
+        }
+    }
+    
+    /*
+     */
+    bool less(Node *head, Num element) 
+    {
+        return (head->value <= element && 
+                head->next && 
+                head->next->value >= element);
+    }
+    
+    /*
+     */
+    bool greater(Node *head, Num element)
+    {
+        return (head->value >= element && 
+                head->next &&
+                head->next->value <= element);
+    }
+    
 public:    
     class iterator;
     
@@ -169,8 +223,9 @@ public:
             if (m_node == nullptr || 
                     m_node == NULL) {
                 m_node = _end;
+            } else {
+                m_node = m_node->prev; 
             }
-            m_node = m_node->prev;
             return *this;
         }
         
@@ -183,8 +238,9 @@ public:
             if (m_node == nullptr || 
                     m_node == NULL) {
                 m_node = _end;
+            } else {
+                m_node = m_node->prev;
             }
-            m_node = m_node->prev;
             return *this;
         }
         
@@ -254,7 +310,7 @@ public:
     /*
      * Returns the iterator to the beginning of the queue.
      */
-    iterator begin() const { return iterator(_front); }
+    iterator begin() const { return iterator(_front, _back); }
     
     /*
      * Returns the iterator to the end of the queue. 
@@ -263,11 +319,9 @@ public:
      */
     iterator end() const 
     { 
-        return _back ? iterator(_back->next) : iterator(_back); 
+        return _back ? iterator(_back->next, _back) : iterator(_back, _back); 
     }
 };
-
-#endif /* SORTED_LIST_H */
 
 /*
  */
@@ -295,7 +349,16 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
         empty = true;
         return ;
     }
-    /* ... */
+    Node *t = orig._front;
+    _front = new Node(t->value, NULL, NULL);
+    _back = _front;
+    t = t->next;
+    while (t) {
+        Node *new_node = new Node(t->value, NULL, _back);
+        _back->next = new_node;
+        _back = new_node;
+        t = t->next;
+    }
 }
 
 /*
@@ -309,7 +372,7 @@ sorted_list<Num>::sorted_list(std::initializer_list<Num> lst) :
     reversed(false)
 {
     for (auto element : lst) {
-        /* ... */
+        push(element);
     }
 }
 
@@ -318,87 +381,218 @@ sorted_list<Num>::sorted_list(std::initializer_list<Num> lst) :
 template<typename Num>
 sorted_list<Num>::~sorted_list()
 {
-    /* .. */
+    while (_front) {
+        Node *old = _front;
+        _front = _front->next;
+        delete old;
+    }
 }
 
 /*
  */
 template<typename Num>
-uint sorted_list::push(const Num& element)
+uint sorted_list<Num>::push(const Num& element)
 {
-    /* ... */
+    uint pos = 0;
+    if (!empty) {
+        if (cmp_operator(NULL, element, index::FIRST)) {
+            Node *new_node = new Node(element, _front, NULL);
+            _front->prev = new_node;
+            _front = new_node;
+        } else if (cmp_operator(NULL, element, index::LAST)) {
+            Node *new_node = new Node(element, NULL, _back);
+            _back->next = new_node;
+            _back = new_node;
+        } else {
+            Node *head = _front;
+            while (head && pos <= _count) {
+                if (cmp_operator(head, element)) {
+                    Node *new_node = new Node(element, head->next, head);
+                    head->next->prev = new_node;
+                    head->next = new_node;
+                    break;
+                }
+                head = head->next;
+                pos++;
+            } 
+        } 
+    } else {
+        Node *new_node = new Node(element, NULL, NULL);
+        _front = new_node; 
+        _back = new_node;
+        empty = false;
+    }
+    _count++;
+    return pos;
 }
 
 /*
  */
 template<typename Num>
-Num sorted_list::pop_back()
+Num sorted_list<Num>::pop_back()
 {
-    /* ... */
+    if (!empty) {
+        Num value;
+        Node *temp = _back;
+        if (_back == _front) {
+            if (_back) {
+                value = _back->value;
+            }
+            _back = NULL;
+            delete temp;
+            _front = NULL;
+        } else {
+            value = _back->value;
+            _back->prev->next = NULL;
+            _back = _back->prev; 
+            delete temp; 
+        }
+        _count--;
+        empty = _count == 0 ? true : false;
+        return value;
+    }
+    return undefined_behavior();
 }
 
 /*
  */
 template<typename Num>
-Num sorted_list::pop_front()
+Num sorted_list<Num>::pop_front()
 {
-    /* ... */
+    if (!empty) {
+        Num value;
+        Node *temp = _front;
+        if (_front == _back) {
+            if (_front) {
+                value = _back->value;
+            }
+            _front = NULL;
+            delete temp;
+            temp = _back;
+            _back = NULL;
+        } else {
+            value = _front->value;
+            _front->next->prev = NULL;
+            _front = _front->next; 
+            delete temp; 
+        }
+        _count--;
+        empty = _count == 0 ? true : false;
+        return value;
+    }
+    return undefined_behavior();
 }
 
 /*
  */
 template<typename Num>
-Num sorted_list::remove(uint pos)
+Num sorted_list<Num>::remove(int pos)
 {
-    /* ... */
+    
+    if (is_out_of_range(pos)) { 
+        throw std::out_of_range("Error: list index out of range.");
+    }
+    Node *head = _front;
+    while (head && pos--) {
+        head = head->next;
+    }
+    Node *old = head;
+    Num value = head->value;
+    if (head->prev) {
+        head->prev->next = head->next; 
+    } else {
+        _front = head->next;
+    }
+    if (head->next) {
+        head->next->prev = head->prev; 
+    } else {
+        _back = head->prev;
+    }
+    delete old;
+    _count--;
+    return value; 
 }
 
 /*
  */
 template<typename Num>
-Num sorted_list::front()
+Num sorted_list<Num>::front() const
 {
-    /* ... */
+    return _front ? _front->value : undefined_behavior();
 }
 
 /*
  */
 template<typename Num>
-Num sorted_list::back()
+Num sorted_list<Num>::back() const
 {
-    /* ... */
+    return _back ? _back->value : undefined_behavior();
 }
 
 /*
  */
 template<typename Num>
-void sorted_list::reverse()
+void sorted_list<Num>::reverse()
 {
-    /* ... */
+    Node *t = _back;
+    Node *old = _back;
+    _front = new Node(t->value, NULL, NULL);
+    delete old;
+    _back = _front;
+    t = t->prev;
+    while (t) {
+        Node *new_node = new Node(t->value, NULL, _back);
+        old = t;
+        _back->next = new_node;
+        _back = new_node;
+        t = t->prev;
+        delete old;
+    }
+    reversed = reversed ? false : true;
 }
 
 /*
  */
 template<typename Num>
-void sorted_list::clear()
+void sorted_list<Num>::clear()
 {
-    /* ... */
+    while (_front) {
+        Node *old = _front;
+        _front = _front->next;
+        delete old;
+    }
+    _front = NULL;
+    _back = NULL;
+    _count = 0;
+    empty = true;
+    reversed = false;
 }
 
 /*
  */
 template<typename Num>
-Num sorted_list::at(uint pos)
+Num sorted_list<Num>::at(int pos) const
 {
-    /* ... */
-}
+    if (is_out_of_range(pos)) {
+        throw std::out_of_range("Error: list index out of range.");
+    }
+    Node *head = _front;
+    while (head && pos--) {
+        head = head->next;
+    }
+    return head->value;
+ }
 
 /*
  */
 template<typename Num>
-Num sorted_list::operator[](uint pos)
+Num sorted_list<Num>::operator[](int pos) const
 {
-    /* ... */
+    Node *head = _front;
+    while (head && pos--) {
+        head = head->next;
+    }
+    return pos <= 0 ? head->value : undefined_behavior();
 }
 
 #endif /* __cplusplus */
