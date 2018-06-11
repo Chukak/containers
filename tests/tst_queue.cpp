@@ -12,7 +12,7 @@ TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
         Queue<int> q; 
         
         REQUIRE(&q != nullptr); 
-        CHECK(q.empty());
+        CHECK(q.is_empty());
         REQUIRE(q.count() == 0); 
         
         q.~Queue();
@@ -24,7 +24,7 @@ TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
         Queue<int> q = {1, 2, 3, 4, 5, 6};
         
         REQUIRE(&q != nullptr); 
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 6);
         REQUIRE(q.back() == 6);
         REQUIRE(q.front() == 1);
@@ -42,7 +42,7 @@ TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
         orig.~Queue();
         
         REQUIRE(&q != nullptr); 
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 3);
         REQUIRE(q.back() == 3);
         REQUIRE(q.front() == 1);
@@ -64,7 +64,7 @@ TEST_CASE("[Queue] Testing the insertion in the queue.", "[queue]") {
         
         REQUIRE(q.front() == 2);
         REQUIRE(q.back() == 512);
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 9);
         
         q.~Queue();
@@ -78,7 +78,7 @@ TEST_CASE("[Queue] Testing the insertion in the queue.", "[queue]") {
         
         REQUIRE(q.front() == 2);
         REQUIRE(q.back() == 512);
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 9);
         
         q.~Queue();
@@ -96,14 +96,14 @@ TEST_CASE("[Queue] Testing the removing from the queue.", "[queue]") {
             q.enqueue(i);
         }
         
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 9);
         
         for (int i = 2; i < 520; i = i * 2) {
             REQUIRE(q.dequeue() == i);
         }
         
-        CHECK(q.empty());
+        CHECK(q.is_empty());
         REQUIRE(q.count() == 0);
         
         q.~Queue();
@@ -119,14 +119,14 @@ TEST_CASE("[Queue] Testing the removing from the queue.", "[queue]") {
             q.enqueue(i);
         }
         
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 9);
         
         for (int i = 2; i < 520; i = i * 2) {
             REQUIRE(q.dequeue() == i);
         }
         
-        CHECK(q.empty());
+        CHECK(q.is_empty());
         REQUIRE(q.count() == 0);
         
         q.~Queue();
@@ -145,7 +145,7 @@ TEST_CASE("[Queue] Testing the front and back elements from the queue.", "[queue
         }
         
         REQUIRE(q.front() == 2);
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 9);
         
         for (int i = 2; i < 512; i = i * 2) {
@@ -157,7 +157,7 @@ TEST_CASE("[Queue] Testing the front and back elements from the queue.", "[queue
         REQUIRE(q.front() == 512);
         REQUIRE(q.dequeue() == 512);
         
-        CHECK(q.empty());
+        CHECK(q.is_empty());
         REQUIRE(q.count() == 0);
         
         q.~Queue();
@@ -170,7 +170,7 @@ TEST_CASE("[Queue] Testing the front and back elements from the queue.", "[queue
         }
         
         REQUIRE(q.back() == 512);
-        CHECK_FALSE(q.empty());
+        CHECK_FALSE(q.is_empty());
         REQUIRE(q.count() == 9);
         
         for (int i = 2; i < 520; i = i * 2) {
@@ -178,7 +178,7 @@ TEST_CASE("[Queue] Testing the front and back elements from the queue.", "[queue
             q.dequeue();
         }
         
-        CHECK(q.empty());
+        CHECK(q.is_empty());
         REQUIRE(q.count() == 0);
         
         q.~Queue();
