@@ -27,35 +27,41 @@ class Queue {
     friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
     
 public:
+    
     /*
      * A constructor.
      */
     Queue();
+    
     /*
-     * A constructor, creates the `sueue` class from another `queue` class.
-     * @param orig - a constant link to another `Stack` class.
+     * A constructor, creates the `queue` class from another `queue` class.
+     * @param orig - a constant link to another `queue` class.
      */
     Queue(const Queue<Elem> &orig);
+    
     /*
      * A constructor, for the style `Queue q = {1, 2, 3}`.
      */
     Queue(std::initializer_list<Elem> lst);
+    
     /*
      * A destructor.
      */
     virtual ~Queue();
     
     /*
-     * An `enqueue` function.
+     * The `enqueue` function.
      * Puts an element in the queue.
      * @param element - a constant link to the value.
      */
     void enqueue(const Elem &element);
+    
     /*
-     * A `dequeue` funciton.
-     * Removes the first element from the queue. 
+     * The `dequeue` funciton.
+     * Removes the first element from the queue and returns it. 
      */
     Elem dequeue();
+    
     /*
      * Returns the number of elements.
      */
@@ -76,9 +82,12 @@ public:
     bool is_empty() const { return empty; }
     
     /*
+     * The `clear` function.
+     * Clears the queue.
      */
     void clear();
 private:
+    
     /*
      * A linked list structure.
      * Used to represent elements in memory.
@@ -86,7 +95,7 @@ private:
     struct Node {
         friend class Queue<Elem>;
         
-        friend struct iterator;
+        friend class iterator;
         
         template<typename T>
         friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
@@ -249,7 +258,7 @@ Queue<Elem>::Queue()
 
 /*
  * A constructor.
- * Creates a new `Queue` class from the another `Queue` class.
+ * Creates a new `Queue` class from another `Queue` class.
  */
 template<typename Elem>
 Queue<Elem>::Queue(const Queue<Elem> &orig) : 
@@ -311,7 +320,7 @@ Queue<Elem>::~Queue()
 }
 
 /*
- * An `enqueue` function.
+ * The `enqueue` function.
  * Puts an element in the queue at the end.
  * Increases the size of the queue.
  */
@@ -331,7 +340,7 @@ void Queue<Elem>::enqueue(const Elem &element)
 }
 
 /*
- * A `dequeue` function.
+ * The `dequeue` function.
  * Removes the first element from the queue.
  * Reduces the size of the queue.
  * If the queue is empty, the result has undefined behavior.
@@ -354,8 +363,8 @@ Elem Queue<Elem>::dequeue()
 }
 
 /*
- * A `front` function.
- * Returns a front element from the queue.
+ * The `front` function.
+ * Returns the first element from the queue.
  * If the queue is empty, the result has undefined behavior.
  */
 template<typename Elem>
@@ -369,8 +378,8 @@ Elem Queue<Elem>::front() const
 }
 
 /*
- * A `back` function.
- * Returns a back element from the queue.
+ * The `back` function.
+ * Returns the last element from the queue.
  * If the queue is empty, the result has undefined behavior.
  */
 template<typename Elem>
@@ -384,6 +393,8 @@ Elem Queue<Elem>::back() const
 }
 
 /*
+ * The `clear` function.
+ * Clears the queue.
  */
 template<typename Elem>
 void Queue<Elem>::clear() 
@@ -443,7 +454,7 @@ extern "C" {
     };
     
     /*
-     * The structure of `queue`.
+     * The structure `queue`.
      * The queue is the structure "First-In-First-Out". 
      * 
      */
@@ -455,13 +466,13 @@ extern "C" {
     } queue;
     
     /*
-     * An `q_create_queue` function.
+     * The `q_create_queue` function.
      * Creates a queue and returns a pointer to it.
      */
     queue *q_create_queue(void);
     
     /*
-     * An `q_enqueue` function.
+     * The `q_enqueue` function.
      * Puts an element in the queue.
      * Takes two arguments:
      * `q` - a pointer to the queue.
@@ -469,7 +480,7 @@ extern "C" {
      */
     void q_enqueue(queue *q, const void *element);
     /*
-     * An `q_dequeue` function.
+     * The `q_dequeue` function.
      * Removes the first element in the queue. 
      * Returns a pointer to the deleted element.
      * If the queue is empty, returns the `NULL` pointer.
@@ -479,7 +490,7 @@ extern "C" {
     void *q_dequeue(queue *q);
     
     /*
-     * An `q_front` function.
+     * The `q_front` function.
      * Returns a pointer to the first element from the queue.
      * If the queue is empty, returns the `NULL` pointer.
      * Takes one arguments:
@@ -487,7 +498,7 @@ extern "C" {
      */
     void *q_front(queue *q);
     /*
-     * An `q_back` function.
+     * The `q_back` function.
      * Returns a pointer to the last element from the queue.
      * If the queue is empty, returns the `NULL` pointer.
      * Takes one arguments:
@@ -496,7 +507,7 @@ extern "C" {
     void *q_back(queue *q);
     
     /*
-     * An `q_count` function.
+     * The `q_count` function.
      * Returns the size of the queue.
      * Takes one arguments:
      * `q` - a pointer to the queue.
@@ -506,7 +517,7 @@ extern "C" {
     uint q_count(queue *q);
     
     /*
-     * An `q_delete_queue` function.
+     * The `q_delete_queue` function.
      * Removes the queue from memory.
      * `q` - a pointer to the queue.
      */
