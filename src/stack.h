@@ -27,35 +27,41 @@ class Stack {
     friend std::ostream& operator<<(std::ostream& stream, const Stack<T>& s);
     
 public:
+    
     /*
      * A constructor.
      */
     Stack();
+    
     /*
      * A constructor, creates the `Stack` class from another `Stack` class.
      * @param orig - a constant link to another `Stack` class.
      */
     Stack(const Stack<Elem> &orig);
+    
     /*
      * A constructor, for the style `Stack s = {1, 2, 3}`.
      */
     Stack(std::initializer_list<Elem> lst);
+    
     /*
      * A destructor.
      */
     virtual ~Stack();
     
     /*
-     * An `push` function.
+     * The `push` function.
      * Added an element in the stack.
      * @param element - a constant link to the value.
      */
     void push(const Elem &element);
+    
     /*
-     * A `pop` funciton.
+     * The `pop` funciton.
      * Removes the first element from the stack. 
      */
     Elem pop();
+    
     /*
      * Returns the number of _count.
      */
@@ -79,7 +85,7 @@ private:
     struct Node {
         friend class Stack<Elem>;
         
-        friend struct iterator;
+        friend class iterator;
         
         template<typename T>
         friend std::ostream& operator<<(std::ostream& stream, const Stack<T>& s);
@@ -235,7 +241,7 @@ Stack<Elem>::Stack()
 
 /*
  * A constructor.
- * Creates a new `Queue` class from the another `Stack` class.
+ * Creates a new `Stack` class from the another `Stack` class.
  */
 template<typename Elem>
 Stack<Elem>::Stack(const Stack<Elem> &orig) :
@@ -279,22 +285,22 @@ Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
 
 /*
  * A destructor.
- * Removes all the _count from memory.
+ * Removes all the elements from memory.
  */
 template<typename Elem>
 Stack<Elem>::~Stack() 
 {
     Node *old = NULL;
     while (_front) {
-        old = _front; // a pointer to a current element.
+        old = _front; // a pointer to the current element.
         _front = _front->prev; // a pointer to the previous element.
         delete old;
     }
 }
 
 /*
- * A `push` function.
- * Added an element in the stack at the begining.
+ * The `push` function.
+ * Added an element in the stack at the beginning.
  * Increases the size of the stack.
  */
 template<typename Elem>
@@ -312,7 +318,7 @@ void Stack<Elem>::push(const Elem& element)
 }
 
 /*
- * A `pop` function.
+ * The `pop` function.
  * Removes the first element from the stack.
  * Reduces the size of the stack.
  * If the stack is empty, the result has undefined behavior.
@@ -335,8 +341,8 @@ Elem Stack<Elem>::pop()
 }
 
 /*
- * A `front` function.
- * Returns a front element from the stack.
+ * The `front` function.
+ * Returns the first element from the stack.
  * If the stack is empty, the result has undefined behavior.
  */
 template<typename Elem>
@@ -394,8 +400,8 @@ extern "C" {
     };
     
     /*
-     * The structure of `stack`.
-     * The queue is the structure "Last-In-First-Out". 
+     * The structure `stack`.
+     * The stack is the structure "Last-In-First-Out". 
      * 
      */
     typedef struct {
@@ -405,13 +411,13 @@ extern "C" {
     } stack;
     
     /*
-     * A `s_create_stack` function.
+     * The `s_create_stack` function.
      * Creates a stack and returns a pointer to it.
      */
     stack *s_create_stack();
     
     /*
-     * A `s_push` function.
+     * The `s_push` function.
      * Added an element in the stack.
      * Takes two arguments:
      * `s` - a pointer to the stack.
@@ -419,7 +425,7 @@ extern "C" {
      */
     void s_push(stack *s, const void *element);
     /*
-     * A `s_pop` function.
+     * The `s_pop` function.
      * Removes the first element in the stack. 
      * Returns a pointer to the deleted element.
      * If the stack is empty, returns the `NULL` pointer.
@@ -429,7 +435,7 @@ extern "C" {
     void *s_pop(stack *s);
     
     /*
-     * A `s_front` function.
+     * The `s_front` function.
      * Returns a pointer to the first element from the stack.
      * If the stack is empty, returns the `NULL` pointer.
      * Takes one arguments:
@@ -438,7 +444,7 @@ extern "C" {
     void *s_front(stack *s);
     
     /*
-     * A `s_count` function.
+     * The `s_count` function.
      * Returns the size of the stack.
      * Takes one arguments:
      * `s` - a pointer to the stack.
@@ -448,7 +454,7 @@ extern "C" {
     uint s_count(stack *s);
     
     /*
-     * A `s_delete_stack` function.
+     * The `s_delete_stack` function.
      * Removes the stack from memory.
      * `s` - a pointer to the stack.
      */
