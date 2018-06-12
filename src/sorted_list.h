@@ -29,6 +29,12 @@ using uint = unsigned int;
  */
 template<typename Num>
 class sorted_list {
+    /*
+     * Sets the friend function for the overloaded operator `<<`.
+     */
+    template<typename T>
+    friend std::ostream& operator<<(std::ostream& stream, 
+            const sorted_list<T>& list);
     
 public:
     
@@ -164,6 +170,12 @@ private:
      */
     struct Node {
         friend class sorted_list<Num>;
+        
+        friend class iterator;
+        
+        template<typename T>
+        friend std::ostream& operator<<(std::ostream& stream, 
+        const sorted_list<T>& list);
         
         Num value; // a value.
     private:
@@ -772,6 +784,26 @@ Num sorted_list<Num>::operator[](int pos) const
         head = head->next;
     }
     return pos <= 0 ? head->value : undefined_behavior();
+}
+
+/*
+ * The overloaded `<<` operator for the sorted list.
+ * Prints all elements from the sorted lsit in the format: `[1, ...,100]`.
+ * Returns ostream.
+ */
+template<typename Num>
+std::ostream& operator<<(std::ostream& stream, const sorted_list<Num>& list)
+{
+    auto *t = list._front;
+    stream << "[";
+    while(t) {
+        stream << t->value << ", ";
+        t = t->next;
+    }
+    stream << "\b\b";
+    stream << "";
+    stream << "]";
+    return stream;
 }
 
 #endif /* __cplusplus */
