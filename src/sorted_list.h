@@ -693,23 +693,25 @@ Num sorted_list<Num>::back() const
 template<typename Num>
 void sorted_list<Num>::reverse()
 {
-    Node *t = _back;
-    Node *old = _back;
-    // Creates the first element from the last element.
-    _front = new Node(t->value, NULL, NULL);
-    // Removes the last element.
-    delete old;
-    _back = _front;
-    // Sets the previous element.
-    t = t->prev;
-    while (t) {
-        Node *new_node = new Node(t->value, NULL, _back);
-        old = t;
-        _back->next = new_node;
-        // Sets the last element.
-        _back = new_node;
-        t = t->prev;
+    if (!empty) {
+        Node *t = _back;
+        Node *old = _back;
+        // Creates the first element from the last element.
+        _front = new Node(t->value, NULL, NULL);
+        // Removes the last element.
         delete old;
+        _back = _front;
+        // Sets the previous element.
+        t = t->prev;
+        while (t) {
+            Node *new_node = new Node(t->value, NULL, _back);
+            old = t;
+            _back->next = new_node;
+            // Sets the last element.
+            _back = new_node;
+            t = t->prev;
+            delete old;
+        }
     }
     reversed = reversed ? false : true;
 }
