@@ -1,55 +1,90 @@
-# Compilers and flags
+# Compilers 
 CCC = g++  
 CXX = g++
-BASICOPTS = -g -Wall -Werror -std=c++14 
+# Flags
+BASICOPTS = -g -Wall -Werror -std=c++14 -fPIC 
 CCFLAGS = $(BASICOPTS)
 CXXFLAGS = $(BASICOPTS)
+# Linking flags
+LDFLAGS = -shared 
 CCADMIN = 
 
+.PHONY: all clean
 
 # Target directory
-TARGETDIR_containers=GNU-amd64-Linux
-SRCDIR=src
+TARGETDIR=containers
+# Directory for object files `.o`
+OBJS=$(TARGETDIR)/ofiles
+# queue/queue.so
+QUEUEDIR=$(TARGETDIR)/queue
+# stack/stack.so
+STACKDIR=$(TARGETDIR)/stack
+# sorted_list/sorted-list.so
+SLISTDIR=$(TARGETDIR)/sorted_list
+# Sources files
+SOURCES=src
 
 
-all: $(TARGETDIR_containers)/containers
+all: compile copy end 
 
-## Target: containers
-CCFLAGS_containers = 
-OBJS_containers =  \
-	$(TARGETDIR_containers)/main.o \
-	$(TARGETDIR_containers)/queue.o \
-	$(TARGETDIR_containers)/stack.o \
-	$(TARGETDIR_containers)/sorted_list.o
+# Compile all the sources files
+compile: $(QUEUEDIR)/queue.so $(STACKDIR)/stack.so $(SLISTDIR)/sorted_list.so
 
+# queue
+$(QUEUEDIR)/queue.so: $(QUEUEDIR) $(OBJS)/queue.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)/queue.o $(LDFLAGS)
+
+$(OBJS)/queue.o: $(OBJS) $(SOURCES)/queue.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $(SOURCES)/queue.cpp
+
+# stack
+$(STACKDIR)/stack.so: $(STACKDIR) $(OBJS)/stack.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)/stack.o $(LDFLAGS)
+
+$(OBJS)/stack.o: $(OBJS) $(SOURCES)/stack.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $(SOURCES)/stack.cpp
+
+# sorted list
+$(SLISTDIR)/sorted_list.so: $(SLISTDIR) $(OBJS)/sorted_list.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)/sorted_list.o $(LDFLAGS)
+
+$(OBJS)/sorted_list.o: $(OBJS) $(SOURCES)/sorted_list.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $(SOURCES)/sorted_list.cpp
 	
-
-$(TARGETDIR_containers)/containers: $(TARGETDIR_containers) $(OBJS_containers) 
-	$(CXX) $(CXXFLAGS) $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ $(OBJS_containers) $(LDLIBS_containers)
-
-# Source files .o
-$(TARGETDIR_containers)/main.o: $(TARGETDIR_containers) main.cpp
-	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ main.cpp
-	
-$(TARGETDIR_containers)/queue.o: $(TARGETDIR_containers) $(SRCDIR)/queue.cpp
-	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ $(SRCDIR)/queue.cpp
-	
-$(TARGETDIR_containers)/stack.o: $(TARGETDIR_containers) $(SRCDIR)/stack.cpp
-	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ $(SRCDIR)/stack.cpp
-
-$(TARGETDIR_containers)/sorted_list.o: $(TARGETDIR_containers) $(SRCDIR)/sorted_list.cpp
-	$(CXX) $(CXXFLAGS) -c $(CCFLAGS_containers) $(CPPFLAGS_containers) -o $@ $(SRCDIR)/sorted_list.cpp
 
 clean:
-	rm -f \
-		$(TARGETDIR_containers)/containers 
+	rm -f $(TARGETDIR)/containers 
 	$(CCADMIN)
-	rm -f -r $(TARGETDIR_containers)
+	rm -f -r $(TARGETDIR)
 
+# Copy all the header files 
+copy:
+	cp src/queue.h $(QUEUEDIR)/
+	cp src/stack.h $(STACKDIR)/
+	cp src/sorted_list.h $(SLISTDIR)/
 
-# Create target dorectory, if necessary
-$(TARGETDIR_containers):
-	mkdir -p $(TARGETDIR_containers)
+# Remove all the objects files
+end:
+	rm $(OBJS)/queue.o
+	rm $(OBJS)/stack.o
+	rm $(OBJS)/sorted_list.o
+	rm -r -f $(OBJS)
+	
+# Create directories, if necessary
+$(TARGETDIR):
+	mkdir -p $(TARGETDIR)
+
+$(OBJS):
+	mkdir -p $(OBJS)
+
+$(QUEUEDIR):
+	mkdir -p $(QUEUEDIR)
+
+$(STACKDIR):
+	mkdir -p $(STACKDIR)
+
+$(SLISTDIR):
+	mkdir -p $(SLISTDIR)
 
 .KEEP_STATE:
 .KEEP_STATE_FILE:.make.state.GNU-amd64-Linux
