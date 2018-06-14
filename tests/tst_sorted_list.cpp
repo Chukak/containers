@@ -357,6 +357,36 @@ TEST_CASE("[sorted_list] Testing the iterators of the sorted list.", "[sorted li
         
         list.~sorted_list();
     }
+    SECTION("Testing the iterators №2.") {
+        sorted_list<int> list = {10, -8, 6, 0, 8, -10, -2, 2, 4, -4, -6};
+        
+        sorted_list<int>::iterator iter = list.end();
+        REQUIRE(iter == nullptr);
+        REQUIRE_FALSE(iter != nullptr);
+        
+        unsigned test_var = 12;
+        auto it = list.end();
+        while (--it != list.begin()) {
+            test_var -= 2;
+            REQUIRE(*it == test_var);
+        }
+        REQUIRE(test_var == -8);
+        REQUIRE(*list.begin() == -10);
+        
+        test_var = 12;
+        it = list.end();
+        while (--it != list.begin()) {
+            test_var -= 2;
+            REQUIRE(it->value == test_var);
+        }
+        REQUIRE(test_var == -8);
+        REQUIRE(*list.begin() == -10);
+        
+        REQUIRE_FALSE(list.begin() == list.end());
+        REQUIRE(list.begin() != list.end());
+        
+        list.~sorted_list();
+    }
     SECTION("Testing that the iterators and nullptr are the same.") {
         sorted_list<int> list;
         
