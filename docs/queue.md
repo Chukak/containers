@@ -101,6 +101,23 @@ Queue<int> q = {1, 2, 3};
 q.clear();
 q.is_empty(); // true
 ```
+
+## Iterators
+The `Queue` class has iterators of queue. The iterators have the type `forward_iterator`. 
+You can only increment the iterator.
+### Use iterators
+To get the iterator on the first element of the queue, use the `begin()` method. 
+Returns the iterator to the first element of queue. You can increase the iterator.
+To get the iterator to the end of the queue, use the `end()` method. 
+Don\`t increase the `end()` iterator!
+To get the type of iterators, use `Queue<...>::iterator` or use `auto`.
+For example:
+```cpp
+Queue<int> q = {1, 2, 3, 4, 5};
+for (auto it = q.begin(), it != q.end(); it++) { ... }
+```
+You can use iterators in STL algorithms, but it is not guaranteed that the iterators will work in all algorithms
+
 <br>
 
 # Queue (C)
