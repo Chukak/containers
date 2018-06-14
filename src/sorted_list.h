@@ -263,7 +263,7 @@ public:
      * The `iterator` class.
      * Determines the iterator for the sorted list.
      */
-    class iterator : public std::iterator<std::forward_iterator_tag, Num> {
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, Num> {
         /*
          * Sets the friend class.
          */
@@ -279,7 +279,7 @@ public:
         // value type.
         typedef Num value_type;
         // iterator category
-        typedef std::forward_iterator_tag iterator_category;
+        typedef std::bidirectional_iterator_tag iterator_category;
         
         /*
          * A constructor.
