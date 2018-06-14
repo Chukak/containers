@@ -104,7 +104,7 @@ q.is_empty(); // true
 
 ## Iterators
 The `Queue` class has iterators of queue. The iterators have the type `forward_iterator`. 
-You can only increment the iterator.
+You can only increases the iterator.
 ### Use iterators
 To get the iterator on the first element in the queue, use the `begin()` method. 
 Returns the iterator to the first element in queue. You can increase the iterator.
@@ -210,7 +210,7 @@ queue *q = q_create_queue();
 q_delete_queue(q);
 ```
 
-## Extra methods
+## Extra functions
 ### The number of elements
 To get the number of elements in the queue, use the `q_count` function, pass the pointer to the queue as the first parameter. 
 Returns the number of elements. 
