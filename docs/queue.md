@@ -104,7 +104,7 @@ q.is_empty(); // true
 
 ## Iterators
 The `Queue` class has iterators of queue. The iterators have the type `forward_iterator`. 
-You can only increases the iterator.
+You can only increase the iterator.
 ### Use iterators
 To get the iterator on the first element in the queue, use the `begin()` method. 
 Returns the iterator to the first element in the queue. You can increase the iterator.
