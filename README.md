@@ -2,7 +2,7 @@
 ## Documentation 
 * [Queue](https://github.com/Chukak/containers/blob/master/docs/queue.md)
 * [Stack](https://github.com/Chukak/containers/blob/master/docs/stack.md)
-* [Sorted list]()
+* [Sorted list](https://github.com/Chukak/containers/blob/master/docs/sorted_list.md)
 
 ## How to compile
 In Linux, you need g++ version 5 or newer, Make version 4 or newer. Clone this repository.
