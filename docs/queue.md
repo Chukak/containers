@@ -8,8 +8,8 @@ The `Queue` class is implemented in the `queue.h` header file, which is located 
 #include "containers/queue/queue.h"
 ```
 
-## Create an queue
-The `Queue` class is implemented using C++ templates. To create an queue, pass the data type, 
+## Create a queue
+The `Queue` class is implemented using C++ templates. To create a queue, pass the data type, 
 which will be in the queue in the constructor.
 
 Standard initialization:
@@ -23,7 +23,7 @@ Initialization with braces:
 Queue<int> q = {1, 2, 3, 4, 5};
 ```
 
-Initialization an queue from another queue:
+Initialization a queue from another queue:
 ```cpp
 Queue<int> orig = {1, 2, 3};
 Queue<int> q(orig);
@@ -107,7 +107,7 @@ The `Queue` class has iterators of queue. The iterators have the type `forward_i
 You can only increases the iterator.
 ### Use iterators
 To get the iterator on the first element in the queue, use the `begin()` method. 
-Returns the iterator to the first element in queue. You can increase the iterator.
+Returns the iterator to the first element in the queue. You can increase the iterator.
 To get the iterator to the end of the queue, use the `end()` method. 
 Don\`t increase the `end()` iterator!
 To get the type of iterators, use `Queue<...>::iterator` or use `auto`.
@@ -121,7 +121,7 @@ You can use iterators in STL algorithms, but it is not guaranteed that the itera
 <br>
 
 # Queue (C)
-Also, the `queue.h` header file has a implementation of queue as a C-code.
+Also, the `queue.h` header file has a implementation of a queue as a C-code.
 To store the queue use the type `queue`. Note: all the C functions in the `queue.h` header have the prefix `q_`.
 
 ## `queue`
@@ -132,8 +132,8 @@ The `queue` structure has some members:
 * `queue->_front` - a pointer to the first element. It is not recommended to use. Use the `q_front()` function.
 * `queue->_back` - a pointer to the last element. It is not recommended to use. Use the `q_back()` function.
 
-## Create an queue
-To create an queue, call the `q_create_queue` function without any arguments. Returns a pointer to the queue.
+## Create a queue
+To create a queue, call the `q_create_queue` function without any arguments. Returns a pointer to the queue.
 ```c
 queue *q = q_create_queue();
 ```
