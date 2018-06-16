@@ -12,6 +12,7 @@
 #include <iterator>
 #include <ostream>
 #include <stdexcept>
+#include <functional>
 
 using uint = unsigned int;
 
@@ -41,7 +42,7 @@ public:
     /*
      * A constructor.
      */
-    sorted_list();
+    sorted_list(const std::function<bool(Num, Num, Num)>& func = nullptr); // std::function<bool(Num)>&
     
     /*
      * A constructor, creates the `sorted_list` class from another 
@@ -165,6 +166,18 @@ private:
     }
     
     /*
+     * Calls the custom function for comparison elements.
+     * Increments a position.
+     * @param element - constant link to a value.
+     * @param pos - a pointer to the position.
+     * The custom function must get 3 arguments and must return true or false. 
+     * Also, the custom function must have the operator `<=` or `>=` 
+     * to compare a new element with the next element. 
+     * Without this operator, the list can not work correctly.
+     */
+    void push_with_custom_func(const Num& element, uint *pos);
+    
+    /*
      * A linked list structure.
      * Used to represent elements in memory.
      */
@@ -193,6 +206,7 @@ private:
     uint _count; // the numbers of elements
     bool empty;
     bool reversed;
+    std::function<bool(Num, Num, Num)> cmp_func;
     
 private:
     
@@ -420,13 +434,14 @@ public:
  * Creates a new `sorted_list` class.
  */
 template<typename Num>
-sorted_list<Num>::sorted_list()
+sorted_list<Num>::sorted_list(const std::function<bool(Num, Num, Num)>& func) :
+            _front(NULL),
+        _back(NULL),
+        _count(0),
+        empty(true),
+        reversed(false),
+        cmp_func(func)
 {
-    _front = NULL; // a pointer to the first element.
-    _back = NULL; // a pointer to the last element.
-    _count = 0;
-    empty = true;
-    reversed = false;
 }
 
 /*
@@ -503,7 +518,12 @@ template<typename Num>
 uint sorted_list<Num>::push(const Num& element)
 {
     uint pos = 0;
+    
     if (!empty) {
+        if (cmp_func != nullptr) {
+            push_with_custom_func(element, &pos);
+            return pos;
+        }
         /* 
          * Compare the first element from the list with a new element.
          * if a new element `<` (`>` if the list is reverse) 
@@ -522,6 +542,7 @@ uint sorted_list<Num>::push(const Num& element)
             Node *new_node = new Node(element, NULL, _back);
             _back->next = new_node; // sets the old lst element.
             _back = new_node; // changes the last element.
+            pos = _count - 1;
         } else {
             /* 
              * Compare all the elements from the list with a new element.
@@ -558,6 +579,59 @@ uint sorted_list<Num>::push(const Num& element)
     }
     _count++;
     return pos;
+}
+
+/*
+ * Calls the user function for comparison elements.
+ * Increments a position. 
+ * A custom function must have 3 arguments.
+ */
+template<typename Num>
+void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
+{
+    /* 
+     * Compare the first element from the list with a new element.
+     * Call the custom function with 3 parameters: 
+     * `func(a new element, the first element, the first element)`.
+     * If a new element more than the first element, 
+     * a new element inserts in the position `0`.
+     */ 
+    if (cmp_func(element, _front->value, _front->value)) {
+        Node *new_node = new Node(element, _front, NULL);
+        _front->prev = new_node;
+        _front = new_node;
+    /* 
+     * Compare the last element from the list with a new element.
+     * Call the custom function with 3 parameters: 
+     * `func(the last element, a new element, a new element)`.
+     */
+    } else if(cmp_func(_back->value, element, element)) {
+        Node *new_node = new Node(element, NULL, _back);
+        _back->next = new_node;
+        _back = new_node;
+        *pos = _count - 1;
+    } else {
+        /* 
+         * Compare all the elements from the list with a new element.
+         * A new element must be more/(less/equal) than the prevoius element, and
+         * less/(more/equal) than the next element. For example: 2 < 3 <= 4, 
+         * or in the reversed list: 4 > 3 >= 2.
+         * Call the custom function with 3 parameters: 
+         * `func(the previous element, a new element, a next element)`.
+         */
+        Node *head = _front;
+        while (head && head->next &&
+                *pos <= _count) {
+            if (cmp_func(head->value, element, head->next->value)) {
+                Node *new_node = new Node(element, head->next, head);
+                head->next->prev = new_node;
+                head->next = new_node;
+                break;
+            }
+            head = head->next;
+            pos++;
+        }
+    }
 }
 
 /*
