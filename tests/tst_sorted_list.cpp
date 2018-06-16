@@ -1,6 +1,5 @@
 #include "catch/catch.hpp"
 #include "../src/sorted_list.h"
-#include <iostream>
 
 /*
  * Testing the initialization of the sorted list.
@@ -485,4 +484,42 @@ TEST_CASE("[sorted_list] Testing the cleaning of the sorted list.", "[sorted lis
     }
 }
 
+/*
+ * Testing the custom function to compare elements in the list.
+ */
+TEST_CASE("[sorted_list] Testing the custom function to compare elements in the list.", "[sorted list]") {
+    SECTION("Testing the custom function.") {
+        auto f = [](int a, int b, int c) {
+            return a < b && b <= c;
+        };
+        sorted_list<int> list(f);
+        
+        list.push(10);
+        list.push(-5);
+        list.push(0);
+        list.push(5);
+        list.push(-10);
+        
+        REQUIRE(list.count() == 5);
+        
+        REQUIRE(-10 == list.pop_front());
+        REQUIRE(-5 == list.pop_front());
+        REQUIRE(0 == list.pop_front());
+        REQUIRE(5 == list.pop_front());
+        REQUIRE(10 == list.pop_front());
+        
+        list.~sorted_list();
+        
+        auto f2 = [](int a, int b, int c) {
+            return a > b && b >= c;
+        };
+        sorted_list<int> list2({6, 8, -12}, f2);
+        
+        REQUIRE(8 == list2.pop_front());
+        REQUIRE(6 == list2.pop_front());
+        REQUIRE(-12 == list2.pop_front());
+        
+        list2.~sorted_list();
+    }
+}
 
