@@ -41,8 +41,9 @@ public:
     
     /*
      * A constructor.
+     * @param func - a custom function to compare elements.
      */
-    sorted_list(const std::function<bool(Num, Num, Num)>& func = nullptr); // std::function<bool(Num)>&
+    sorted_list(const std::function<bool(Num, Num, Num)>& func = nullptr); 
     
     /*
      * A constructor, creates the `sorted_list` class from another 
@@ -53,8 +54,10 @@ public:
     
     /*
      * A constructor, for the style `sorted_list list = {3, 2, 1}`.
+     * @param func - a custom function to compare elements.
      */
-    sorted_list(std::initializer_list<Num> lst);
+    sorted_list(std::initializer_list<Num> lst, 
+            const std::function<bool(Num, Num, Num)>& func = nullptr);
     
     /*
      * A destructor.
@@ -479,12 +482,14 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
  * A constructor for the style `sorted_list list = {3, 5, 1}`.
  */
 template<typename Num>
-sorted_list<Num>::sorted_list(std::initializer_list<Num> lst) :
+sorted_list<Num>::sorted_list(std::initializer_list<Num> lst, 
+        const std::function<bool(Num, Num, Num)>& func) :
     _front(NULL),
     _back(NULL),
     _count(0),
     empty(true),
-    reversed(false)
+    reversed(false),
+    cmp_func(func)
 {
     /*
      * Just copy all the elements.
