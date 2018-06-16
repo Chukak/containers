@@ -9,6 +9,9 @@ To declare a sorted list use the `sorted_list` class.
 <strong>Note</strong>: to add a custom classes, object, etc in the list, you must override the operators `>`, `<`, `>=`, `<=` 
 for these classes, objects, etc. 
 
+<strong>Note</strong>: You can pass a custom function to compare elements in the list. 
+It can be used instead of overrided operators.
+
 <strong>Note</strong>: By default the operators `<`, `<=` are used for the comparison. If the list is reversed, the operators `>`, `>=` 
 are used for the comparison.
 
@@ -39,6 +42,15 @@ Initialization a sorted list fron another sorted list:
 sorted_list<int> orig = {3, 1, 2};
 sorted_list<int> list(orig);
 ```
+
+If you want to compare elements using a custom function, pass a custom function in constructor:
+```cpp
+auto f = [](int a, int b, int c) {
+  return a < b && b <= c;
+};
+sorted_list<int> list(f);
+```
+Note: Use it only with standart initialization, an empty list.
 
 ## Add elements
 To add elements in the sorted list, use the `push` method. The `push` method adds an element to a special position.
@@ -195,6 +207,50 @@ sorted_list<int> list = {3, 4, 1, 2, 5};
 list.clear();
 list.is_empty(); // true
 ```
+
+## Custom comparison functions
+You can use a custom function to compare elements and to store the order in the list. You must follow the following rules:
+* the function must have 3 parameters! Like the standatd comparison function, it must compare the previous element
+with the new element and the next element with the new element. 
+For example, we want to add `3` in the list `[1, 2, 4, 5]`. We must compare `3` with two other elements, 
+in our list it will be `2` and `4`. In this case, the function must be get 3 arguments `2`, `3` and `4`, 
+and must return `true` or `false` in this statement: `2 < 3 <= 4`. For example:
+```cpp
+auto = [](int a, int b, int c) {
+  return a < b && b <= c;
+}; 
+```
+
+* the function must have the operator `<=` or `>=`, when to comparing the second parameter with the third parameter.
+It need for comparing the same elements in the list. For example, we want to add `3` in the list `[1, 2, 3]`. 
+The result is `[1, 2, 3, 3]`.
+
+* the function must return `true` or `false`
+
+If an element must be added before the first element or after the last element. 
+For example, we want to add `1` in the list `[2, 3, 4]`. The function gets 3 arguments `1`, `2`, `2`, compares them
+and adds `1` before `2`. The result is `[1, 2, 3, 4]`.
+
+This behavior used, that we do not declare 3 different functions for 3 different situations:
+* when the added element must be added before the first element in the list
+* when the added element must be added after the last element in the list
+* when the added element must be added to the middle of the list
+
+Instead, used only one function with 3 arguments. For example:
+```cpp 
+bool custom_function(type a, type b, type c) {
+  ...
+}
+auto f = custom_function;
+```
+Or:
+```cpp
+auto f = [](type a, type b, type c) {
+  ...
+};
+```
+
+
 
 ## Iterators
 The `sorted_list` class has iterators of list. The iterators have the type `bidirectional_iterator`. 
