@@ -634,9 +634,10 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
                 break;
             }
             head = head->next;
-            pos++;
+            (*pos)++;
         }
     }
+    _count++;
 }
 
 /*
