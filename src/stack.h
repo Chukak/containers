@@ -60,22 +60,22 @@ public:
      * The `pop` funciton.
      * Removes the first element from the stack. 
      */
-    Elem pop();
+    Elem pop() noexcept;
     
     /*
      * Returns the number of _count.
      */
-    uint count() { return _count; }
+    uint count() const noexcept { return _count; }
     
     /*
      * Returns the first element from the stack.
      */
-    Elem front() const;
+    Elem front() const noexcept;
     
     /*
      * Returns `true` if the stack is empty, otherwise returns `false`. 
      */
-    bool is_empty() const { return empty; }
+    bool is_empty() const noexcept { return empty; }
     
 private:
     /*
@@ -138,7 +138,7 @@ public:
          * The prefix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++() 
+        iterator& operator++() noexcept
         {
             m_node = m_node->prev;
             return *this;
@@ -148,7 +148,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++(int hunk) 
+        iterator& operator++(int j) noexcept
         {
             m_node = m_node->prev;
             return *this;
@@ -158,7 +158,7 @@ public:
          * The operator `*`.
          * Returns a value from the pointer.
          */
-        Elem& operator*() const 
+        Elem& operator*() const noexcept
         {
             return m_node->value;
         }
@@ -167,7 +167,7 @@ public:
          * The operator `->`.
          * Returns a pointer to the Node.
          */
-        Node* operator->() const 
+        Node* operator->() const noexcept
         {
             return m_node;
         }
@@ -177,7 +177,7 @@ public:
          * Compares two iterators. Returns `true` if 
          * iterators are not the same. Otherwise returns `false`.
          */
-        bool operator!=(const iterator& rhs) const 
+        bool operator!=(const iterator& rhs) const noexcept
         { 
             return m_node != rhs.m_node;
         }
@@ -187,7 +187,7 @@ public:
          * Returns `true` if the current iterator and `nullptr`
          * are the same. Otherwise returns `false`.
          */
-        bool operator!=(std::nullptr_t) const 
+        bool operator!=(std::nullptr_t) const noexcept
         { 
             return m_node != nullptr;
         }
@@ -197,7 +197,7 @@ public:
          * Compares two iterators. Returns `true` if 
          * iterators are the same. Otherwise returns `false`.
          */
-        bool operator==(const iterator& rhs) const 
+        bool operator==(const iterator& rhs) const noexcept
         { 
             return m_node == rhs.m_node;
         }
@@ -207,7 +207,7 @@ public:
          * Returns `true` if the current iterator and `nullptr`
          * are the same. Otherwise returns `false`.
          */
-        bool operator==(std::nullptr_t) const 
+        bool operator==(std::nullptr_t) const noexcept
         { 
             return m_node == nullptr;
         }
@@ -219,12 +219,12 @@ public:
     /*
      * Returns the iterator to the beginning of the stack.
      */
-    iterator begin() const { return iterator(_front); }
+    iterator begin() const noexcept { return iterator(_front); }
     
     /*
      * Returns the iterator to the end of the stack. 
      */
-    iterator end() const { return iterator(nullptr); }
+    iterator end() const noexcept { return iterator(nullptr); }
 };
 
 /*
@@ -324,7 +324,7 @@ void Stack<Elem>::push(const Elem& element)
  * If the stack is empty, the result has undefined behavior.
  */
 template<typename Elem>
-Elem Stack<Elem>::pop()
+Elem Stack<Elem>::pop() noexcept
 {
     Node *temp = NULL;
     Elem value;
@@ -346,7 +346,7 @@ Elem Stack<Elem>::pop()
  * If the stack is empty, the result has undefined behavior.
  */
 template<typename Elem>
-Elem Stack<Elem>::front() const
+Elem Stack<Elem>::front() const noexcept
 {
     Elem value;
     if (_front != NULL) {
