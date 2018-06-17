@@ -60,32 +60,32 @@ public:
      * The `dequeue` funciton.
      * Removes the first element from the queue and returns it. 
      */
-    Elem dequeue();
+    Elem dequeue() noexcept;
     
     /*
      * Returns the number of elements.
      */
-    uint count() const { return _count; };
+    uint count() const noexcept { return _count; };
     
     /*
      * Returns the first element from the queue.
      */
-    Elem front() const;
+    Elem front() const noexcept;
     /*
      * Returns the last element from the queue.
      */
-    Elem back() const;
+    Elem back() const noexcept;
     
     /*
      * Returns `true` if the queue is empty, otherwise returns `false`. 
      */
-    bool is_empty() const { return empty; }
+    bool is_empty() const noexcept { return empty; }
     
     /*
      * The `clear` function.
      * Clears the queue.
      */
-    void clear();
+    void clear() noexcept;
 private:
     
     /*
@@ -149,7 +149,7 @@ public:
          * The prefix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++() 
+        iterator& operator++() noexcept
         {
             m_node = m_node->next;
             return *this;
@@ -159,7 +159,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++(int j) 
+        iterator& operator++(int j) noexcept
         {
             m_node = m_node->next;
             return *this;
@@ -169,7 +169,7 @@ public:
          * The operator `*`.
          * Returns a value from the pointer.
          */
-        Elem& operator*() const 
+        Elem& operator*() const noexcept
         {
             return m_node->value;
         }
@@ -178,7 +178,7 @@ public:
          * The operator `->`.
          * Returns a pointer to the Node.
          */
-        Node* operator->() const 
+        Node* operator->() const noexcept
         {
             return m_node;
         }
@@ -188,7 +188,7 @@ public:
          * Compares two iterators. Returns `true` if 
          * iterators are not the same. Otherwise returns `false`.
          */
-        bool operator!=(const iterator& rhs) const 
+        bool operator!=(const iterator& rhs) const noexcept
         { 
             return m_node != rhs.m_node;
         }
@@ -198,7 +198,7 @@ public:
          * Returns `true` if the current iterator and `nullptr`
          * are the same. Otherwise returns `false`.
          */
-        bool operator!=(std::nullptr_t) const 
+        bool operator!=(std::nullptr_t) const noexcept
         { 
             return m_node != nullptr;
         }
@@ -208,7 +208,7 @@ public:
          * Compares two iterators. Returns `true` if 
          * iterators are the same. Otherwise returns `false`.
          */
-        bool operator==(const iterator& rhs) const 
+        bool operator==(const iterator& rhs) const noexcept
         { 
             return m_node == rhs.m_node;
         }
@@ -218,7 +218,7 @@ public:
          * Returns `true` if the current iterator and `nullptr`
          * are the same. Otherwise returns `false`.
          */
-        bool operator==(std::nullptr_t) const 
+        bool operator==(std::nullptr_t) const noexcept
         { 
             return m_node == nullptr;
         }
@@ -230,14 +230,14 @@ public:
     /*
      * Returns the iterator to the beginning of the queue.
      */
-    iterator begin() const { return iterator(_front); }
+    iterator begin() const noexcept { return iterator(_front); }
     
     /*
      * Returns the iterator to the end of the queue. 
      * The iterator points to the element after the 
      * last element from the queue.
      */
-    iterator end() const 
+    iterator end() const noexcept
     { 
         return _back ? iterator(_back->next) : iterator(_back); 
     }
@@ -346,7 +346,7 @@ void Queue<Elem>::enqueue(const Elem &element)
  * If the queue is empty, the result has undefined behavior.
  */
 template<typename Elem>
-Elem Queue<Elem>::dequeue() 
+Elem Queue<Elem>::dequeue() noexcept
 {
     Node *temp = NULL;
     Elem value; 
@@ -368,7 +368,7 @@ Elem Queue<Elem>::dequeue()
  * If the queue is empty, the result has undefined behavior.
  */
 template<typename Elem>
-Elem Queue<Elem>::front() const
+Elem Queue<Elem>::front() const noexcept
 {
     Elem value;
     if (_front != NULL) {
@@ -383,7 +383,7 @@ Elem Queue<Elem>::front() const
  * If the queue is empty, the result has undefined behavior.
  */
 template<typename Elem>
-Elem Queue<Elem>::back() const
+Elem Queue<Elem>::back() const noexcept
 {
     Elem value;
     if (_back != NULL) {
@@ -397,7 +397,7 @@ Elem Queue<Elem>::back() const
  * Clears the queue.
  */
 template<typename Elem>
-void Queue<Elem>::clear() 
+void Queue<Elem>::clear() noexcept
 {
     while (_front) {
         Node *old = _front; // a pointer to a current element.
