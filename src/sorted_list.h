@@ -30,6 +30,9 @@ using uint = unsigned int;
  */
 template<typename Num>
 class sorted_list {
+    
+    using custom_func = std::function<bool(Num, Num, Num)>;
+    
     /*
      * Sets the friend function for the overloaded operator `<<`.
      */
@@ -43,7 +46,7 @@ public:
      * A constructor.
      * @param func - a custom function to compare elements.
      */
-    sorted_list(const std::function<bool(Num, Num, Num)>& func = nullptr); 
+    sorted_list(const custom_func& func = nullptr); 
     
     /*
      * A constructor, creates the `sorted_list` class from another 
@@ -57,7 +60,7 @@ public:
      * @param func - a custom function to compare elements.
      */
     sorted_list(std::initializer_list<Num> lst, 
-            const std::function<bool(Num, Num, Num)>& func = nullptr);
+            const custom_func& func = nullptr);
     
     /*
      * A destructor.
@@ -77,13 +80,13 @@ public:
      * The `pop_back` function.
      * Removes the last element from the list and returns it.
      */
-    Num pop_back();
+    Num pop_back() noexcept;
     
     /*
      * The `pop_front` function.
      * Removes the first element from the list and returns it.
      */
-    Num pop_front();
+    Num pop_front() noexcept;
     
     /*
      * The `remove` function.
@@ -98,41 +101,41 @@ public:
      * Returns the first element from the list.
      * If the list is empty, the result has undefined behavior.
      */
-    Num front() const;
+    Num front() const noexcept;
     
     /*
      * Returns the back element from the list.
      * If the list is empty, the result has undefined behavior.
      */
-    Num back() const ;
+    Num back() const noexcept;
     
     /*
      * Returns `true` if the list is reverse, otherwise returns `false`.
      */
-    bool is_reversed() const { return reversed; }
+    bool is_reversed() const noexcept { return reversed; }
     
     /*
      * Returns `true` if the list is empty, otherwise returns `false`.
      */
-    bool is_empty() const { return empty; }
+    bool is_empty() const noexcept { return empty; }
     
     /*
      * The `reverse` function.
      * Changes the order of the list on reverse.
      * For example: `{1, 2, 3}` --> `{3, 2, 1}`.
      */
-    void reverse();
+    void reverse() noexcept;
     
     /*
      * Returns the number of elements.
      */
-    uint count() const { return _count; }
+    uint count() const noexcept { return _count; }
     
     /*
      * The `clear` function.
      * Clears the list.
      */
-    void clear();
+    void clear() noexcept;
     
     /*
      * The `at` function.
@@ -150,19 +153,19 @@ public:
      * is invalid, the result has undefined behavior.
      * @param pos - a position.
      */
-    Num operator[](int pos) const;
+    Num operator[](int pos) const noexcept;
     
 private:
     
     /*
      * Returns a result which has undefined behavior.
      */
-    Num undefined_behavior() const { return Num(); };
+    Num undefined_behavior() const noexcept { return Num(); };
     
     /*
      * Returns `true` if out of range, otherwise `false`.
      */
-    bool is_out_of_range(int pos) const 
+    bool is_out_of_range(int pos) const
     { 
         return (pos < 0 || static_cast<uint>(pos) > _count) 
                 || !(_count);
@@ -209,7 +212,7 @@ private:
     uint _count; // the numbers of elements
     bool empty;
     bool reversed;
-    std::function<bool(Num, Num, Num)> cmp_func;
+    custom_func cmp_func;
     
 private:
     
@@ -217,7 +220,7 @@ private:
      * Enumeration for selecting elements.
      * Used in the comparison function `cmp_operator`.
      */
-    enum index {
+    enum class index {
         FIRST, // the first element. 
         LAST, // any element between the first and last.
         MIDDLE // the last element.
@@ -231,7 +234,8 @@ private:
      * @param element - an element
      * @param ind - a selected element, first, last, or middle.
      */
-    bool cmp_operator(Node *head, Num element, index ind = index::MIDDLE)
+    bool cmp_operator(Node *head, Num element, 
+            index ind = index::MIDDLE) const noexcept
     {
         if (ind == index::LAST) {
             // compares the last element.
@@ -253,7 +257,7 @@ private:
      * @param head - a node.
      * @param element - an element.
      */
-    bool less(Node *head, Num element) 
+    bool less(Node *head, Num element) const
     {
         return (head->value <= element && 
                 head->next && 
@@ -266,7 +270,7 @@ private:
      * @param head - a node.
      * @param element - an element.
      */
-    bool greater(Node *head, Num element)
+    bool greater(Node *head, Num element) const
     {
         return (head->value >= element && 
                 head->next &&
@@ -307,7 +311,7 @@ public:
          * The prefix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++() 
+        iterator& operator++() noexcept
         {
             m_node = m_node->next;
             return *this;
@@ -317,7 +321,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++(int j) 
+        iterator& operator++(int j) noexcept
         {
             m_node = m_node->next;
             return *this;
@@ -327,7 +331,7 @@ public:
          * The prefix operator `--`.
          * Reduces the pointer and returns it. 
          */
-        iterator& operator--() 
+        iterator& operator--() noexcept
         {
             if (m_node == nullptr || 
                     m_node == NULL) {
@@ -342,7 +346,7 @@ public:
          * The postfix operator `--`.
          * Reduces the pointer and returns it. 
          */
-        iterator& operator--(int j) 
+        iterator& operator--(int j) noexcept
         {
             if (m_node == nullptr || 
                     m_node == NULL) {
@@ -357,7 +361,7 @@ public:
          * The operator `*`.
          * Returns a value from the pointer.
          */
-        Num& operator*() const 
+        Num& operator*() const noexcept
         {
             return m_node->value;
         }
@@ -366,7 +370,7 @@ public:
          * The operator `->`.
          * Returns a pointer to the Node.
          */
-        Node* operator->() const 
+        Node* operator->() const noexcept
         {
             return m_node;
         }
@@ -376,7 +380,7 @@ public:
          * Compares two iterators. Returns `true` if 
          * iterators are not the same. Otherwise returns `false`.
          */
-        bool operator!=(const iterator& rhs) const 
+        bool operator!=(const iterator& rhs) const noexcept
         { 
             return m_node != rhs.m_node;
         }
@@ -386,7 +390,7 @@ public:
          * Returns `true` if the current iterator and `nullptr`
          * are the same. Otherwise returns `false`.
          */
-        bool operator!=(std::nullptr_t) const 
+        bool operator!=(std::nullptr_t) const noexcept
         { 
             return m_node != nullptr;
         }
@@ -396,7 +400,7 @@ public:
          * Compares two iterators. Returns `true` if 
          * iterators are the same. Otherwise returns `false`.
          */
-        bool operator==(const iterator& rhs) const 
+        bool operator==(const iterator& rhs) const noexcept
         { 
             return m_node == rhs.m_node;
         }
@@ -406,7 +410,7 @@ public:
          * Returns `true` if the current iterator and `nullptr`
          * are the same. Otherwise returns `false`.
          */
-        bool operator==(std::nullptr_t) const 
+        bool operator==(std::nullptr_t) const noexcept
         { 
             return m_node == nullptr;
         }
@@ -419,14 +423,14 @@ public:
     /*
      * Returns the iterator to the beginning of the queue.
      */
-    iterator begin() const { return iterator(_front, _back); }
+    iterator begin() const noexcept { return iterator(_front, _back); }
     
     /*
      * Returns the iterator to the end of the queue. 
      * The iterator points to the element after the 
      * last element from the queue.
      */
-    iterator end() const 
+    iterator end() const noexcept
     { 
         return _back ? iterator(_back->next, _back) : iterator(_back, _back); 
     }
@@ -437,7 +441,7 @@ public:
  * Creates a new `sorted_list` class.
  */
 template<typename Num>
-sorted_list<Num>::sorted_list(const std::function<bool(Num, Num, Num)>& func) :
+sorted_list<Num>::sorted_list(const custom_func& func) :
             _front(NULL),
         _back(NULL),
         _count(0),
@@ -483,7 +487,7 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
  */
 template<typename Num>
 sorted_list<Num>::sorted_list(std::initializer_list<Num> lst, 
-        const std::function<bool(Num, Num, Num)>& func) :
+        const custom_func& func) :
     _front(NULL),
     _back(NULL),
     _count(0),
@@ -646,7 +650,7 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
  * If the list is empty, the result has undefined behavior.
  */
 template<typename Num>
-Num sorted_list<Num>::pop_back()
+Num sorted_list<Num>::pop_back() noexcept
 {
     if (!empty) {
         Num value;
@@ -684,7 +688,7 @@ Num sorted_list<Num>::pop_back()
  * If the list is empty, the result has undefined behavior.
  */
 template<typename Num>
-Num sorted_list<Num>::pop_front()
+Num sorted_list<Num>::pop_front() noexcept
 {
     if (!empty) {
         Num value;
@@ -763,7 +767,7 @@ Num sorted_list<Num>::remove(int pos)
  * If the list is empty, the result has undefined behavior.
  */
 template<typename Num>
-Num sorted_list<Num>::front() const
+Num sorted_list<Num>::front() const noexcept
 {
     return _front ? _front->value : undefined_behavior();
 }
@@ -773,7 +777,7 @@ Num sorted_list<Num>::front() const
  * If the list is empty, the result has undefined behavior.
  */
 template<typename Num>
-Num sorted_list<Num>::back() const
+Num sorted_list<Num>::back() const noexcept
 {
     return _back ? _back->value : undefined_behavior();
 }
@@ -783,7 +787,7 @@ Num sorted_list<Num>::back() const
  * Changes the order of the list on reverse.
  */
 template<typename Num>
-void sorted_list<Num>::reverse()
+void sorted_list<Num>::reverse() noexcept
 {
     if (!empty) {
         Node *t = _back;
@@ -813,7 +817,7 @@ void sorted_list<Num>::reverse()
  * Clears the list.
  */
 template<typename Num>
-void sorted_list<Num>::clear()
+void sorted_list<Num>::clear() noexcept
 {
     while (_front) {
         Node *old = _front;
@@ -856,7 +860,7 @@ Num sorted_list<Num>::at(int pos) const
  * is invalid, the result has undefined behavior.
  */
 template<typename Num>
-Num sorted_list<Num>::operator[](int pos) const
+Num sorted_list<Num>::operator[](int pos) const noexcept
 {
     
     Node *head = _front;
