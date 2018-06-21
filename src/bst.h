@@ -37,6 +37,9 @@ class bst {
     
     friend class iterator;
     
+    /*
+     * Sets the friend function for the overloaded operator `<<`.
+     */
     template<typename T>
     friend std::ostream& operator<<(std::ostream& stream, const bst<E>& tree);
     
@@ -610,6 +613,9 @@ void bst<E>::clear() noexcept
 
 
 /*
+ * The overloaded `<<` operator for the binary search tree.
+ * Prints all elements from the binary search tree in the format: `[1, ...,100]`.
+ * Returns ostream.
  */
 template<typename T>
 std::ostream& operator<<(std::ostream& stream, const bst<T>& tree) 
