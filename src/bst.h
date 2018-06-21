@@ -11,6 +11,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <stdexcept>
+#include <ostream>
 
 namespace bst_exception {
     class BSTIsEmpty : public std::runtime_error {
@@ -35,6 +36,9 @@ template<typename E>
 class bst {
     
     friend class iterator;
+    
+    template<typename T>
+    friend std::ostream& operator<<(std::ostream& stream, const bst<E>& tree);
     
 public:
     
@@ -604,6 +608,21 @@ void bst<E>::clear() noexcept
     empty = true;
 }
 
+
+/*
+ */
+template<typename T>
+std::ostream& operator<<(std::ostream& stream, const bst<T>& tree) 
+{
+    stream << "[";
+    for (auto it = tree.begin(); it != tree.end(); it++) {
+        stream << it->data << ", ";
+    }
+    stream << "\b\b";
+    stream << "";
+    stream << "]";
+    return stream;
+}
 
 #endif /* __cplusplus */
 
