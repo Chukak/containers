@@ -356,6 +356,7 @@ template<typename E>
 bst<E>::~bst()
 {
     destroy(root_);
+    root_ = NULL;
 }
 
 /*
@@ -365,10 +366,10 @@ template<typename E>
 void bst<E>::destroy(Node *n) noexcept
 {
     if (n) {
+        
         destroy(n->left); // destroys all left elements.
         destroy(n->right); // destroys all right elements.
         delete n;
-        n = NULL;
     }
 }
 
@@ -598,7 +599,6 @@ void bst<E>::clear() noexcept
         return ;
     }
     destroy(root_);
-    delete root_;
     root_ = NULL;
     count_ = 0;
     empty = true;
