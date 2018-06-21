@@ -1,6 +1,5 @@
 #include "catch/catch.hpp"
 #include "../src/bst.h"
-#include <iostream>
 
 /*
  * Testing the initialization of the binary search tree.
