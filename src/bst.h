@@ -24,6 +24,13 @@ namespace bst_exception {
 
 using uint = unsigned int;
 
+/*
+ * The `bst` class.
+ * This class implements the binary search tree.
+ * The `bst` class requires operators for elements:
+ * 1) `<` - less.
+ * 2) `>` - greater.
+ */
 template<typename E>
 class bst {
     
@@ -32,73 +39,106 @@ class bst {
 public:
     
     /*
+     * A cinstructor.
      */
     bst();
     
     /*
+     * A constructor, creates the `bst` class from another `bst` class.
+     * @param orig - a constant link to another `bst` class.
      */
     bst(const bst<E>& orig);
     
     /*
+     * A constructor, for the style `bst tree = {3, 2, 1}`.
      */
     bst(std::initializer_list<E> lst);
     
     /*
+     * A destructor.
      */
     virtual ~bst();
     
     /*
+     * The `insert` function.
+     * Inserts an element to the tree. If an element less than root,
+     * the function inserts it, in the left side of the tree.
+     * If an element more than root,
+     * the function inserts it, in the right side of the tree.
+     * @param element - a constant link to the value.
      */
     void insert(const E& element) noexcept;
     
     /*
+     * The `remove` function.
+     * Search for an element in the tree. If an element was found,
+     * removes it from the tree.
+     * If the tree is empty, raises the `BSTIsEmpty` error.
+     * @parem - a constant link to the value.
      */
     void remove(const E& element);
     
     /*
+     * Returns the minimum element from the tree.
+     * If the tree is empty, raises the `BSTIsEmpty` error.
      */
     E min() const;
     
     /*
+     * Returns the maximum element from the tree.
+     * If the tree is empty, raises the `BSTIsEmpty` error.
      */
     E max() const;
     
     /*
+     * Returns the root of the tree.
+     * If the tree is empty, raises the `BSTIsEmpty` error.
      */
     E root() const;
     
     /*
+     * Returns the number of alements.
      */
     uint count() const noexcept { return count_; }
     
     /*
+     * Returns `true` if the tree is empty, otherwise returns `false`.
      */
     bool is_empty() const noexcept { return empty; }
     
     /*
+     * The `find` function.
+     * Search for an element in the tree. If an element was found,
+     * returns `true`, otherwise `false`.
+     * If the tree is empty, returns `false`.
      */
     bool find(const E& element) const noexcept;
     
     /*
+     * The `clear` function.
+     * Clears the tree.
      */
     void clear() noexcept;
     
 private:
     
     /*
+     * The structure `Node`.
+     * Used to representing elements in memory.
      */
     struct Node {
         friend class bst<E>;
         
         friend class iterator;
         
-        E data;
+        E data; // a value.
     private:
-        Node *right;
-        Node *left;
-        Node *parent;
+        Node *right; // a pointer to the right element.
+        Node *left; // a pointer to the left element.
+        Node *parent; // a pointer to the parent of this element.
         
         /*
+         * A constructor.
          */
         Node(const E& e, Node *r, Node *l, Node *p) : 
             data(e), 
@@ -108,13 +148,14 @@ private:
         {}
     };
     
-    Node *root_;
-    uint count_;
+    Node *root_; // a pointer to the root of the tree.
+    uint count_; // the numbers of elements.
     bool empty;
     
 private:
     
     /*
+     * Destroys all elements in the tree.
      */
     void destroy(Node *n) noexcept;
         
@@ -140,20 +181,24 @@ public:
         }
         
         /*
+         * Sets the next element as the current element.
          */
         void increment() noexcept
         {
+            // checks the right child.
             if (current->right) {
                 current = current->right;
+                // find the minimum element in the right child.
                 while (current->left) {
                     current = current->left;
                 }
             } else {
-                Node *parent = current->parent;
+                Node *parent = current->parent; // parent.
                 while (parent && current == parent->right) {
                     current = parent;
                     parent = parent->parent;
                 }
+                // if all elements is visited.
                 if (!parent) {
                     current = parent;
                     return ;
@@ -259,6 +304,7 @@ public:
     };
     
     /*
+     * Returns the iterator to the minimum element in the tree.
      */
     iterator begin() const noexcept 
     { 
@@ -270,6 +316,8 @@ public:
     }
     
     /*
+     * Returns the iterator to the parent of the root of the tree.
+     * It is usually `NULL`.
      */
     iterator end() const noexcept 
     { 
@@ -279,6 +327,8 @@ public:
 };
 
 /*
+ * A constructor.
+ * Creates a new binary search tree.
  */
 template<typename E>
 bst<E>::bst() :
@@ -303,6 +353,7 @@ bst<E>::bst(const bst<E>& orig) :
 }
 
 /*
+ * A constructor for the style `bst tree = {3, 5, 1}`.
  */
 template<typename E>
 bst<E>::bst(std::initializer_list<E> lst) :
@@ -319,6 +370,7 @@ bst<E>::bst(std::initializer_list<E> lst) :
 }
 
 /*
+ * A destructor.
  */
 template<typename E>
 bst<E>::~bst()
@@ -327,19 +379,25 @@ bst<E>::~bst()
 }
 
 /*
+ * Destroys all elements in the tree.
  */
 template<typename E>
 void bst<E>::destroy(Node *n) noexcept
 {
     if (n) {
-        destroy(n->left);
-        destroy(n->right);
+        destroy(n->left); // destroys all left elements.
+        destroy(n->right); // destroys all right elements.
         delete n;
         n = NULL;
     }
 }
 
 /*
+ * The `insert` function.
+ * Inserts an element to the tree. If an element less than root,
+ * the function inserts it, in the left side of the tree.
+ * If an element more than root,
+ * the function inserts it, in the right side of the tree.
  */
 template<typename E>
 void bst<E>::insert(const E& element) noexcept
@@ -350,17 +408,20 @@ void bst<E>::insert(const E& element) noexcept
     } else {
         Node *parent = NULL;
         Node *temp = root_;
-        bool is_left = false;
+        bool is_left = false; 
         while (temp) {
             if (element < temp->data) {
+                // the left side of the tree.
                 parent = temp;
                 temp = temp->left;
                 is_left = true;
             } else if (element > temp->data) {
+                // the right side of the tree.
                 parent = temp;
                 temp = temp->right;
                 is_left = false;
             } else {
+                // is element is in the tree.
                 return ;
             }
         }
@@ -377,6 +438,10 @@ void bst<E>::insert(const E& element) noexcept
 }
 
 /*
+ * The `remove` function.
+ * Search for an element in the tree. If an element was found,
+ * removes it from the tree.
+ * If the tree is empty, raises the `BSTIsEmpty` error.
  */
 template<typename E>
 void bst<E>::remove(const E& element)
@@ -387,6 +452,7 @@ void bst<E>::remove(const E& element)
     Node *temp = root_; 
     Node *parent = NULL;
     bool is_left = false;
+    // search for an element in the tree.
     while(temp) {
         if (temp->data == element) {
             break;
@@ -400,17 +466,20 @@ void bst<E>::remove(const E& element)
             is_left = false;
         }
     }
-    
+    // if an element was not found.
     if (!temp) {
         return ;
     }
+    // the function, sets the child.
     auto set_child = [parent, is_left](Node *child) {
         switch (is_left) {
             case true: parent->left = child; break;
             case false: parent->right = child; break;
         }
     };
-    
+    // case 1
+    // If the right child and the left child is NULL.
+    // Just removes it.
     if (!(temp->left) && !(temp->right)) {
         if (!parent) {
             if (temp == root_) {
@@ -420,6 +489,9 @@ void bst<E>::remove(const E& element)
             set_child(NULL);
         }
         delete temp;
+    // case 2
+    // If the right child or the left child is NULL.
+    // Removes this Node, and replaces it with a child.
     } else if (!(temp->left) || !(temp->right)) {
         Node *child = NULL;
         child = temp->left ? temp->left : temp->right;
@@ -431,6 +503,10 @@ void bst<E>::remove(const E& element)
             set_child(child);
         }
         delete temp;
+    // case 3
+    // If the right child and the left child is not NULL.
+    // Removes this Node, and replaces it with the left child.
+    // And replaces the left child with the right child.
     } else {
         Node *parent_rep_node = temp;
         Node *rep_node = temp->left;
@@ -458,6 +534,8 @@ void bst<E>::remove(const E& element)
 }
 
 /*
+ * Returns the minimum element from the tree.
+ * If the tree is empty, raises the `BSTIsEmpty` error.
  */
 template<typename E>
 E bst<E>::min() const 
@@ -476,6 +554,8 @@ E bst<E>::min() const
 }
 
 /*
+ * Returns the maximum element from the tree.
+ * If the tree is empty, raises the `BSTIsEmpty` error.
  */
 template<typename E>
 E bst<E>::max() const 
@@ -494,6 +574,8 @@ E bst<E>::max() const
 }
 
 /*
+ * Returns the root of the tree.
+ * If the tree is empty, raises the `BSTIsEmpty` error.
  */
 template<typename E>
 E bst<E>::root() const 
@@ -505,6 +587,10 @@ E bst<E>::root() const
 }
 
 /*
+ * The `find` function.
+ * Search for an element in the tree. If an element was found,
+ * returns `true`, otherwise `false`.
+ * If the tree is empty, returns `false`.
  */
 template<typename E>
 bool bst<E>::find(const E& element) const noexcept
@@ -523,6 +609,7 @@ bool bst<E>::find(const E& element) const noexcept
 }
 
 /*
+ * Clears the tree.
  */
 template<typename E>
 void bst<E>::clear() noexcept
@@ -541,4 +628,3 @@ void bst<E>::clear() noexcept
 #endif /* __cplusplus */
 
 #endif /* BST_H */
-
