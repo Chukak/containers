@@ -15,9 +15,12 @@
 namespace bst_exception {
     class BSTIsEmpty : public std::runtime_error {
     public:
-        BSTIsEmpty(const char* message) : std::runtime_error(message) {}
+        BSTIsEmpty(const char* message = "The binary search tree is empty.") : 
+            std::runtime_error(message) 
+        {}
     };
 };
+
 
 using uint = unsigned int;
 
@@ -46,7 +49,7 @@ public:
     
     /*
      */
-    void insert(const E& element);
+    void insert(const E& element) noexcept;
     
     /*
      */
@@ -93,10 +96,16 @@ private:
     private:
         Node *right;
         Node *left;
+        Node *parent;
         
         /*
          */
-        Node(const E& e, Node *r, Node *l) : data(e), right(r), left(l) {}
+        Node(const E& e, Node *r, Node *l, Node *p) : 
+            data(e), 
+            right(r), 
+            left(l), 
+            parent(p) 
+        {}
     };
     
     Node *root_;
@@ -107,7 +116,7 @@ private:
     
     /*
      */
-    void destroy(Node *n);
+    void destroy(Node *n) noexcept;
         
 public:    
     class iterator;
@@ -126,8 +135,35 @@ public:
         /*
          * A constructor.
          */
-        iterator(Node *node, Node *end) : m_node(node) {}
+        iterator(Node *node) : current(node)
+        {
+        }
         
+        /*
+         */
+        void increment() noexcept
+        {
+            if (current->right) {
+                current = current->right;
+                while (current->left) {
+                    current = current->left;
+                }
+            } else {
+                Node *parent = current->parent;
+                while (parent && current == parent->right) {
+                    current = parent;
+                    parent = parent->parent;
+                }
+                if (!parent) {
+                    current = parent;
+                    return ;
+                }
+                if (current->right != parent) {
+                    current = parent;
+                }
+            }
+        }
+            
     public:
         // value type.
         typedef E value_type;
@@ -137,7 +173,7 @@ public:
         /*
          * A constructor.
          */
-        iterator() : m_node(nullptr) {}
+        iterator() : current(nullptr) {}
         
         /*
          * The prefix operator `++`.
@@ -145,7 +181,8 @@ public:
          */
         iterator& operator++() noexcept
         {
-        
+            increment();
+            return *this;
         }
         
         /*
@@ -154,7 +191,8 @@ public:
          */
         iterator& operator++(int j) noexcept
         {
-        
+            increment();
+            return *this;
         }
         
         /*
@@ -163,7 +201,7 @@ public:
          */
         E& operator*() const noexcept
         {
-        
+            return current->data;
         }
         
         /*
@@ -172,7 +210,7 @@ public:
          */
         Node* operator->() const noexcept
         {
-        
+            return current;
         }
         
         /*
@@ -182,7 +220,7 @@ public:
          */
         bool operator!=(const iterator& rhs) const noexcept
         { 
-            return m_node == rhs.m_node;
+            return current != rhs.current;
         }
         
         /*
@@ -192,7 +230,7 @@ public:
          */
         bool operator!=(std::nullptr_t) const noexcept
         { 
-            return m_node != nullptr;
+            return current != nullptr;
         }
         
         /*
@@ -202,7 +240,7 @@ public:
          */
         bool operator==(const iterator& rhs) const noexcept
         { 
-            return m_node == rhs.m_node;
+            return current == rhs.current;
         }
         
         /*
@@ -212,23 +250,32 @@ public:
          */
         bool operator==(std::nullptr_t) const noexcept
         { 
-            return m_node == nullptr;
+            return current == nullptr;
         }
         
     private:
-        Node *m_node; // a pointer to a Node.
+        Node *current; // a pointer to a Node.
+        
     };
     
     /*
      */
-    iterator begin() const noexcept { }
+    iterator begin() const noexcept 
+    { 
+        Node *temp = root_;
+        while (temp && temp->left) {
+            temp = temp->left;
+        }
+        return iterator(temp); 
+    }
     
     /*
      */
-    iterator end() const noexcept
+    iterator end() const noexcept 
     { 
-         
+        return root_ ? iterator(root_->parent) : iterator(root_); 
     }
+    
 };
 
 /*
@@ -282,7 +329,7 @@ bst<E>::~bst()
 /*
  */
 template<typename E>
-void bst<E>::destroy(Node *n)
+void bst<E>::destroy(Node *n) noexcept
 {
     if (n) {
         destroy(n->left);
@@ -295,10 +342,10 @@ void bst<E>::destroy(Node *n)
 /*
  */
 template<typename E>
-void bst<E>::insert(const E& element)
+void bst<E>::insert(const E& element) noexcept
 {
     if (empty) {
-        root_ = new Node(element, NULL, NULL);
+        root_ = new Node(element, NULL, NULL, NULL);
         empty = false;
     } else {
         Node *parent = NULL;
@@ -319,9 +366,11 @@ void bst<E>::insert(const E& element)
         }
         switch (is_left) {
             case true:
-                parent->left = new Node(element, NULL, NULL); break;
+                parent->left = new Node(element, NULL, NULL, parent); 
+                break;
             case false:
-                parent->right = new Node(element, NULL, NULL); break;
+                parent->right = new Node(element, NULL, NULL, parent);
+                break;
         }
     }
     ++count_;
@@ -332,6 +381,9 @@ void bst<E>::insert(const E& element)
 template<typename E>
 void bst<E>::remove(const E& element)
 {
+    if (empty) {
+        throw bst_exception::BSTIsEmpty();
+    }
     Node *temp = root_; 
     Node *parent = NULL;
     bool is_left = false;
@@ -402,6 +454,7 @@ void bst<E>::remove(const E& element)
          delete rep_node;
     }
     count_--;
+    empty = count_ == 0 ? true : false;
 }
 
 /*
@@ -410,7 +463,7 @@ template<typename E>
 E bst<E>::min() const 
 {
     if (empty) {
-        throw bst_exception::BSTIsEmpty("The binary search tree is empty.");
+        throw bst_exception::BSTIsEmpty();
     }
     if (!root_->left) {
         return root_->data;
@@ -428,7 +481,7 @@ template<typename E>
 E bst<E>::max() const 
 {
     if (empty) {
-        throw bst_exception::BSTIsEmpty("The binary search tree is empty.");
+        throw bst_exception::BSTIsEmpty();
     }
     if (!root_->right) {
         return root_->data;
@@ -446,7 +499,7 @@ template<typename E>
 E bst<E>::root() const 
 {
     if (empty) {
-        throw bst_exception::BSTIsEmpty("The binary search tree is empty.");
+        throw bst_exception::BSTIsEmpty();
     }
     return root_->data;
 }
