@@ -872,7 +872,7 @@ Num sorted_list<Num>::operator[](int pos) const noexcept
 
 /*
  * The overloaded `<<` operator for the sorted list.
- * Prints all elements from the sorted lsit in the format: `[1, ...,100]`.
+ * Prints all elements from the sorted list in the format: `[1, ...,100]`.
  * Returns ostream.
  */
 template<typename Num>
