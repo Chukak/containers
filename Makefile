@@ -21,6 +21,8 @@ QUEUEDIR=$(TARGETDIR)/queue
 STACKDIR=$(TARGETDIR)/stack
 # sorted_list/sorted-list.so
 SLISTDIR=$(TARGETDIR)/sorted_list
+# bst/bst.so
+BSTDIR=$(TARGETDIR)/bst
 # Sources files
 SOURCES=src
 
@@ -28,7 +30,7 @@ SOURCES=src
 all: compile copy end 
 
 # Compile all the sources files
-compile: $(QUEUEDIR)/queue.so $(STACKDIR)/stack.so $(SLISTDIR)/sorted_list.so
+compile: $(QUEUEDIR)/queue.so $(STACKDIR)/stack.so $(SLISTDIR)/sorted_list.so $(BSTDIR)/bst.so
 
 # queue
 $(QUEUEDIR)/queue.so: $(QUEUEDIR) $(OBJS)/queue.o
@@ -50,6 +52,13 @@ $(SLISTDIR)/sorted_list.so: $(SLISTDIR) $(OBJS)/sorted_list.o
 
 $(OBJS)/sorted_list.o: $(OBJS) $(SOURCES)/sorted_list.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $(SOURCES)/sorted_list.cpp
+
+# binary search tree
+$(BSTDIR)/bst.so: $(BSTDIR) $(OBJS)/bst.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)/bst.o $(LDFLAGS)
+
+$(OBJS)/bst.o: $(OBJS) $(SOURCES)/bst.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $(SOURCES)/bst.cpp
 	
 
 clean:
@@ -62,12 +71,14 @@ copy:
 	cp src/queue.h $(QUEUEDIR)/
 	cp src/stack.h $(STACKDIR)/
 	cp src/sorted_list.h $(SLISTDIR)/
+	cp src/bst.h $(BSTDIR)/
 
 # Remove all the objects files
 end:
 	rm $(OBJS)/queue.o
 	rm $(OBJS)/stack.o
 	rm $(OBJS)/sorted_list.o
+	rm $(OBJS)/bst.o
 	rm -r -f $(OBJS)
 	
 # Create directories, if necessary
@@ -85,6 +96,9 @@ $(STACKDIR):
 
 $(SLISTDIR):
 	mkdir -p $(SLISTDIR)
+
+$(BSTDIR):
+	mkdir -p $(BSTDIR)
 
 .KEEP_STATE:
 .KEEP_STATE_FILE:.make.state.GNU-amd64-Linux
