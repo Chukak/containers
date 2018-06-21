@@ -39,15 +39,9 @@ class bst {
 public:
     
     /*
-     * A cinstructor.
+     * A constructor.
      */
     bst();
-    
-    /*
-     * A constructor, creates the `bst` class from another `bst` class.
-     * @param orig - a constant link to another `bst` class.
-     */
-    bst(const bst<E>& orig);
     
     /*
      * A constructor, for the style `bst tree = {3, 2, 1}`.
@@ -336,20 +330,6 @@ bst<E>::bst() :
     count_(0),
     empty(true)
 {
-}
-
-/*
- */
-template<typename E>
-bst<E>::bst(const bst<E>& orig) :
-    root_(orig.root_),
-    count_(orig.count_),
-    empty(false)
-{
-    if (orig.empty) {
-        empty = true;
-        return ;
-    }
 }
 
 /*
