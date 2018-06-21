@@ -25,6 +25,7 @@ set(
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_stack.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_stack_c.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_sorted_list.cpp
+                 ${CMAKE_CURRENT_SOURCE_DIR}/tst_bst.cpp
                  ${SOURCES_DIR}/queue.cpp
                  ${SOURCES_DIR}/stack.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
