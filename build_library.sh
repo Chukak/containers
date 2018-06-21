@@ -5,9 +5,9 @@ CXX=""
 MAKE=""
 PLACE=""
 COMMONDIR="containers"
-CONTAINERS=(queue stack sorted_list)
+CONTAINERS=(queue stack sorted_list bst)
 declare -A SOURCES
-SOURCES=([queue]=queue [stack]=stack [sorted_list]=sorted_list)
+SOURCES=([queue]=queue [stack]=stack [sorted_list]=sorted_list [bst]=bst)
 CC_FLAGS="-lstd++ -g -Wall -Werror -std=c++14"
 CXX_FLAGS="-g -Wall -Werror -std=c++14"
 FLAGS=""
