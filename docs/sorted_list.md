@@ -263,7 +263,7 @@ But, don\`t reduce this iterator!
 
 To get the iterator to the end of the list, use the `end()` method. 
 Returns the iterator to the end of the list. You can reduce the iterator.
-But, don\`t increase this iterator! Be carefulm when you reduce this iterator.
+But, don\`t increase this iterator! Be careful when you reduce this iterator.
 
 To get the type of iterators, use `sorted_list<...>::iterator` or use `auto`.
 ```cpp
