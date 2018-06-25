@@ -13,6 +13,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <functional>
+#include <memory>
 
 using uint = unsigned int;
 
@@ -198,17 +199,34 @@ private:
         
         Num value; // a value.
     private:
-        Node *next; // a pointer to the next node.
-        Node *prev; // a pointer to the prev node.
+        std::shared_ptr<Node> next; // a pointer to the next node.
+        std::shared_ptr<Node> prev; // a pointer to the prev node.
         
         /*
          * A constructor.
          */
-        Node(const Num &e, Node *n, Node *p) : value(e), next(n), prev(p) {}
+        Node(const Num &e, std::shared_ptr<Node> n, 
+            std::shared_ptr<Node> p) : 
+            value(e), 
+            next(n), 
+            prev(p) 
+        {}
     };
     
-    Node *_front; // a pointer to the first element.
-    Node *_back; // a pointer to the last element.
+    using sptr = std::shared_ptr<Node>;
+    
+    /*
+     * Pseudonym for code: `std::make_shared<Node>(Node(...)).
+     */
+    template<typename... Args>
+    auto make_sptr(Args&&... args) 
+    -> decltype(std::make_shared<Node>(std::forward<Args>(args)...))
+    {
+        return std::make_shared<Node>(std::forward<Args>(args)...);
+    }
+    
+    sptr _front; // a pointer to the first element.
+    sptr _back; // a pointer to the last element.
     uint _count; // the numbers of elements
     bool empty;
     bool reversed;
@@ -234,7 +252,7 @@ private:
      * @param element - an element
      * @param ind - a selected element, first, last, or middle.
      */
-    bool cmp_operator(Node *head, Num element, 
+    bool cmp_operator(sptr head, Num element, 
             index ind = index::MIDDLE) const noexcept
     {
         if (ind == index::LAST) {
@@ -257,7 +275,7 @@ private:
      * @param head - a node.
      * @param element - an element.
      */
-    bool less(Node *head, Num element) const
+    bool less(sptr head, Num element) const
     {
         return (head->value <= element && 
                 head->next && 
@@ -270,7 +288,7 @@ private:
      * @param head - a node.
      * @param element - an element.
      */
-    bool greater(Node *head, Num element) const
+    bool greater(sptr head, Num element) const
     {
         return (head->value >= element && 
                 head->next &&
@@ -294,7 +312,7 @@ public:
         /*
          * A constructor.
          */
-        iterator(Node *node, Node *end) : m_node(node), _end(end) {}
+        iterator(sptr node, sptr end) : m_node(node), _end(end) {}
         
     public:
         // value type.
@@ -372,7 +390,7 @@ public:
          */
         Node* operator->() const noexcept
         {
-            return m_node;
+            return m_node.get();
         }
         
         /*
@@ -416,8 +434,8 @@ public:
         }
         
     private:
-        Node *m_node; // a pointer to a Node.
-        Node *_end;
+        sptr m_node; // a pointer to a Node.
+        sptr _end;
     };
     
     /*
@@ -442,12 +460,12 @@ public:
  */
 template<typename Num>
 sorted_list<Num>::sorted_list(const custom_func& func) :
-            _front(NULL),
-        _back(NULL),
-        _count(0),
-        empty(true),
-        reversed(false),
-        cmp_func(func)
+    _front(sptr(NULL)),
+    _back(sptr(NULL)),
+    _count(0),
+    empty(true),
+    reversed(false),
+    cmp_func(func)
 {
 }
 
@@ -457,8 +475,8 @@ sorted_list<Num>::sorted_list(const custom_func& func) :
  */
 template<typename Num>
 sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
-    _front(NULL),
-    _back(NULL),
+    _front(sptr(NULL)),
+    _back(sptr(NULL)),
     _count(orig._count),
     empty(false),
     reversed(false)
@@ -470,12 +488,12 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
         empty = true;
         return ;
     }
-    Node *t = orig._front; // copy a pointer to the first element.
-    _front = new Node(t->value, NULL, NULL); // creates a new pointer.
+    sptr t = orig._front; // copy a pointer to the first element.
+    _front = make_sptr(Node(t->value, NULL, NULL)); // creates a new pointer.
     _back = _front;
     t = t->next; // gets a pointer to the next element.
     while (t) {
-        Node *new_node = new Node(t->value, NULL, _back);
+        sptr new_node = make_sptr(Node(t->value, NULL, _back));
         _back->next = new_node;
         _back = new_node;
         t = t->next;
@@ -488,8 +506,8 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
 template<typename Num>
 sorted_list<Num>::sorted_list(std::initializer_list<Num> lst, 
         const custom_func& func) :
-    _front(NULL),
-    _back(NULL),
+    _front(sptr(NULL)),
+    _back(sptr(NULL)),
     _count(0),
     empty(true),
     reversed(false),
@@ -511,9 +529,9 @@ template<typename Num>
 sorted_list<Num>::~sorted_list()
 {
     while (_front) {
-        Node *old = _front; // a pointer to the current element.
+        sptr old = _front; // a pointer to the current element.
         _front = _front->next; // a pointer to the next element.
-        delete old;
+        old.reset();
     }
 }
 
@@ -527,7 +545,6 @@ template<typename Num>
 uint sorted_list<Num>::push(const Num& element)
 {
     uint pos = 0;
-    
     if (!empty) {
         if (cmp_func != nullptr) {
             push_with_custom_func(element, &pos);
@@ -538,8 +555,8 @@ uint sorted_list<Num>::push(const Num& element)
          * if a new element `<` (`>` if the list is reverse) 
          * than the first element, a new element inserts in the position `0`.
          */ 
-        if (cmp_operator(NULL, element, index::FIRST)) {
-            Node *new_node = new Node(element, _front, NULL);
+        if (cmp_operator(sptr(NULL), element, index::FIRST)) {
+            sptr new_node = make_sptr(Node(element, _front, NULL));
             _front->prev = new_node; // sets the old first element.
             _front = new_node; // changes the first element.
         /* 
@@ -547,8 +564,8 @@ uint sorted_list<Num>::push(const Num& element)
          * if a new element `>` (`<` if the list is reverse) 
          * than the last element, a new element inserts in the last position.
          */
-        } else if (cmp_operator(NULL, element, index::LAST)) {
-            Node *new_node = new Node(element, NULL, _back);
+        } else if (cmp_operator(sptr(NULL), element, index::LAST)) {
+            sptr new_node = make_sptr(Node(element, NULL, _back));
             _back->next = new_node; // sets the old lst element.
             _back = new_node; // changes the last element.
             pos = _count - 1;
@@ -558,7 +575,7 @@ uint sorted_list<Num>::push(const Num& element)
              * if a new element `<` (`>` if the list is reverse) 
              * than any element, a new element inserts in this position.
              */
-            Node *head = _front;
+            sptr head = _front;
             while (head && pos <= _count) {
                 if (cmp_operator(head, element)) {
                     /*
@@ -567,7 +584,7 @@ uint sorted_list<Num>::push(const Num& element)
                      * 2) head->next - a pointer to the next node.
                      * 3) head - a pointer to the previous node.
                      */
-                    Node *new_node = new Node(element, head->next, head);
+                    sptr new_node = make_sptr(Node(element, head->next, head));
                     /* 
                      * Changes the pointer to the previous node
                      * from the next element.
@@ -581,7 +598,7 @@ uint sorted_list<Num>::push(const Num& element)
             } 
         }
     } else {
-        Node *new_node = new Node(element, NULL, NULL);
+        sptr new_node = make_sptr(Node(element, NULL, NULL));
         _front = new_node; 
         _back = new_node;
         empty = false;
@@ -606,7 +623,7 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
      * a new element inserts in the position `0`.
      */ 
     if (cmp_func(element, _front->value, _front->value)) {
-        Node *new_node = new Node(element, _front, NULL);
+        sptr new_node = make_sptr(Node(element, _front, NULL));
         _front->prev = new_node;
         _front = new_node;
     /* 
@@ -615,7 +632,7 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
      * `func(the last element, a new element, a new element)`.
      */
     } else if(cmp_func(_back->value, element, element)) {
-        Node *new_node = new Node(element, NULL, _back);
+        sptr new_node = make_sptr(Node(element, NULL, _back));
         _back->next = new_node;
         _back = new_node;
         *pos = _count - 1;
@@ -628,11 +645,11 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
          * Call the custom function with 3 parameters: 
          * `func(the previous element, a new element, a next element)`.
          */
-        Node *head = _front;
+        sptr head = _front;
         while (head && head->next &&
                 *pos <= _count) {
             if (cmp_func(head->value, element, head->next->value)) {
-                Node *new_node = new Node(element, head->next, head);
+                sptr new_node = make_sptr(Node(element, head->next, head));
                 head->next->prev = new_node;
                 head->next = new_node;
                 break;
@@ -654,25 +671,25 @@ Num sorted_list<Num>::pop_back() noexcept
 {
     if (!empty) {
         Num value;
-        Node *temp = _back;
+        sptr old = _back;
         if (_back == _front) {
             // Gets a value from the last element.
             if (_back) {
                 value = _back->value;
             }
             // Removes the element from memory.
-            _back = NULL;
-            delete temp;
-            _front = NULL;
+            _back = sptr(NULL);
+            _front = sptr(NULL);
+            old.reset();
         } else {
             value = _back->value;
             /* 
              * Changes the pointer to the next node
              * from the previous element.
              */ 
-            _back->prev->next = NULL;
+            _back->prev->next = sptr(NULL);
             _back = _back->prev; 
-            delete temp; 
+            old.reset(); 
         }
         _count--;
         empty = _count == 0 ? true : false;
@@ -692,26 +709,25 @@ Num sorted_list<Num>::pop_front() noexcept
 {
     if (!empty) {
         Num value;
-        Node *temp = _front;
+        sptr old = _front;
         if (_front == _back) {
             // Gets a value from the last element.
             if (_front) {
                 value = _back->value;
             }
             // Removes the element from memory.
-            _front = NULL;
-            delete temp;
-            temp = _back;
-            _back = NULL;
+            _front = sptr(NULL);
+            _back = sptr(NULL);
+            old.reset();
         } else {
             value = _front->value;
             /* 
              * Changes the pointer to the previous node
              * from the next element.
              */
-            _front->next->prev = NULL;
+            _front->next->prev = sptr(NULL);
             _front = _front->next; 
-            delete temp; 
+            old.reset(); 
         }
         _count--;
         empty = _count == 0 ? true : false;
@@ -735,12 +751,12 @@ Num sorted_list<Num>::remove(int pos)
     if (is_out_of_range(pos)) { 
         throw std::out_of_range("Error: list index out of range.");
     }
-    Node *head = _front;
+    sptr head = _front;
     // Gets element from the position.
     while (head && pos--) {
         head = head->next;
     }
-    Node *old = head;
+    sptr old = head;
     // Gets a value from the element.
     Num value = head->value;
     // Changes the pointer to the next element from the previous element.
@@ -757,7 +773,7 @@ Num sorted_list<Num>::remove(int pos)
     } else {
         _back = head->prev;
     }
-    delete old;
+    old.reset();
     _count--;
     return value; 
 }
@@ -790,23 +806,23 @@ template<typename Num>
 void sorted_list<Num>::reverse() noexcept
 {
     if (!empty) {
-        Node *t = _back;
-        Node *old = _back;
+        sptr t = _back;
+        sptr old = _back;
         // Creates the first element from the last element.
-        _front = new Node(t->value, NULL, NULL);
+        _front = make_sptr(Node(t->value, NULL, NULL));
         // Removes the last element.
-        delete old;
+        old.reset();
         _back = _front;
         // Sets the previous element.
         t = t->prev;
         while (t) {
-            Node *new_node = new Node(t->value, NULL, _back);
+            sptr new_node = make_sptr(Node(t->value, NULL, _back));
             old = t;
             _back->next = new_node;
             // Sets the last element.
             _back = new_node;
             t = t->prev;
-            delete old;
+            old.reset();
         }
     }
     reversed = reversed ? false : true;
@@ -820,12 +836,12 @@ template<typename Num>
 void sorted_list<Num>::clear() noexcept
 {
     while (_front) {
-        Node *old = _front;
+        sptr old = _front;
         _front = _front->next;
-        delete old;
+        old.reset();
     }
-    _front = NULL;
-    _back = NULL;
+    _front = sptr(NULL);
+    _back = sptr(NULL);
     _count = 0;
     empty = true;
     reversed = false;
@@ -845,7 +861,7 @@ Num sorted_list<Num>::at(int pos) const
     if (is_out_of_range(pos)) {
         throw std::out_of_range("Error: list index out of range.");
     }
-    Node *head = _front;
+    sptr head = _front;
     // Gets element from the position.
     while (head && pos--) {
         head = head->next;
@@ -863,7 +879,7 @@ template<typename Num>
 Num sorted_list<Num>::operator[](int pos) const noexcept
 {
     
-    Node *head = _front;
+    sptr head = _front;
     while (head && pos--) {
         head = head->next;
     }
