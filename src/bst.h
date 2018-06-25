@@ -158,7 +158,8 @@ private:
      */
     template<typename... Args>
     auto make_sptr(Args&&... args) 
-    -> decltype(std::make_shared<Node>(std::forward<Args>(args)...)) {
+    -> decltype(std::make_shared<Node>(std::forward<Args>(args)...)) 
+    {
         return std::make_shared<Node>(std::forward<Args>(args)...);
     }
     
