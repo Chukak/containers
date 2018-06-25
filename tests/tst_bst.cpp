@@ -111,7 +111,7 @@ TEST_CASE("[bst] Testing the removing from the binary search tree.", "[binary se
         
         CHECK(tree.is_empty());
         REQUIRE(tree.count() == 0);
-        
+       
         tree.~bst();
     }
 } 
@@ -120,7 +120,7 @@ TEST_CASE("[bst] Testing the removing from the binary search tree.", "[binary se
  * Testing the min and max elements from the binary search tree.
  */ 
 TEST_CASE("[bst] Testing the min and max elements from the binary search tree.", "[binary search tree]") {
-    SECTION("Testing the front element.") {
+    SECTION("Testing the min and max elements.") {
         bst<int> tree;
         
         tree.insert(-15);
