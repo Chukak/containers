@@ -11,6 +11,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <ostream>
+#include <memory>
 
 using uint = unsigned int;
 
@@ -92,15 +93,28 @@ private:
         
         Elem value; // a value.
     private:
-        Node *prev; // a pointer to the previous `Node` structure.
+        std::shared_ptr<Node> prev; // a pointer to the previous `Node` structure.
         
         /*
          * A constructor.
          */
-        Node(const Elem &v, Node *n) : value(v), prev(n) {}
+        Node(const Elem &v, std::shared_ptr<Node> n) : value(v), prev(n) {}
     };
     
-    Node *_front; // a pointer to the first element.
+    using sptr = std::shared_ptr<Node>;
+    
+    /*
+     * Pseudonym for code: `std::make_shared<Node>(Node(...)).
+     */
+    template<typename... Args>
+    auto make_sptr(Args&&... args) 
+    -> decltype(std::make_shared<Node>(std::forward<Args>(args)...))
+    {
+        return std::make_shared<Node>(std::forward<Args>(args)...);
+    }
+    
+    
+    sptr _front; // a pointer to the first element.
     uint _count; // the numbers of _count.
     bool empty;
     
@@ -121,7 +135,7 @@ public:
         /*
          * A constructor.
          */
-        iterator(Node *node) : m_node(node) {}
+        iterator(sptr node) : m_node(node) {}
         
     public:
         // value type.
@@ -169,7 +183,7 @@ public:
          */
         Node* operator->() const noexcept
         {
-            return m_node;
+            return m_node.get();
         }
         
         /*
@@ -213,7 +227,7 @@ public:
         }
         
     private:
-        Node *m_node; // a pointer to a Node.
+        sptr m_node; // a pointer to a Node.
     };
     
     /*
@@ -232,11 +246,11 @@ public:
  * Creates a new `Stack` class. 
  */
 template<typename Elem>
-Stack<Elem>::Stack()
+Stack<Elem>::Stack() :
+    _front(sptr(NULL)),
+    _count(0),
+    empty(true)
 {
-    _front = NULL; // a pointer to the first element
-    _count = 0; // the numbers of _count
-    empty = true;
 }
 
 /*
@@ -245,7 +259,7 @@ Stack<Elem>::Stack()
  */
 template<typename Elem>
 Stack<Elem>::Stack(const Stack<Elem> &orig) :
-    _front(NULL),
+    _front(sptr(NULL)),
     _count(orig._count),
     empty(false)
 {
@@ -256,11 +270,11 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
         empty = true;
         return ;
     }
-    _front = new Node(orig._front->value, NULL); // copy a pointer to the first element.
-    Node *t = _front;
-    Node *temp = orig._front->prev; // gets a pointer to the previous element.
+    _front = make_sptr(Node(orig._front->value, NULL)); // copy a pointer to the first element.
+    sptr t = _front;
+    sptr temp = orig._front->prev; // gets a pointer to the previous element.
     while (temp) {
-        t->prev = new Node(temp->value, NULL);
+        t->prev = make_sptr(Node(temp->value, NULL));
         temp = temp->prev;
         t = t->prev;
     }
@@ -271,7 +285,7 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
  */
 template<typename Elem>
 Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
-    _front(NULL), 
+    _front(sptr(NULL)), 
     _count(0),
     empty(true)
 {
@@ -290,11 +304,11 @@ Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
 template<typename Elem>
 Stack<Elem>::~Stack() 
 {
-    Node *old = NULL;
+    sptr old = NULL;
     while (_front) {
         old = _front; // a pointer to the current element.
         _front = _front->prev; // a pointer to the previous element.
-        delete old;
+        old.reset();
     }
 }
 
@@ -306,7 +320,7 @@ Stack<Elem>::~Stack()
 template<typename Elem>
 void Stack<Elem>::push(const Elem& element)
 {
-    Node *new_node = new Node(element, NULL); // a new pointer to an element.
+    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer to an element.
     if (empty) {
         _front = new_node; // front == back.
         empty = false;
@@ -326,13 +340,13 @@ void Stack<Elem>::push(const Elem& element)
 template<typename Elem>
 Elem Stack<Elem>::pop() noexcept
 {
-    Node *temp = NULL;
+    sptr old = sptr(NULL);
     Elem value;
     if (!empty) {
-        temp = _front;
+        old= _front;
         value = _front->value;
         _front = _front->prev; // sets a new front element.
-        delete temp;
+        old.reset();
         _count--;
     }
     // checks if the stack is empty.
