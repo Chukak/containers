@@ -11,6 +11,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <ostream>
+#include <memory>
 
 using uint = unsigned int;
 
@@ -102,16 +103,28 @@ private:
         
         Elem value; // a value.
     private:
-        Node *next; // a pointer to the next `Node` structure.
+        std::shared_ptr<Node> next; // a pointer to the next `Node` structure.
 
         /*
          * A constructor.
          */
-        Node(const Elem &v, Node *n) : value(v), next(n) {}
+        Node(const Elem &v, std::shared_ptr<Node> n) : value(v), next(n) {}
     };
     
-    Node *_front; // a pointer to the first element.
-    Node *_back; // a pointer to the last element.
+    using sptr = std::shared_ptr<Node>;
+    
+    /*
+     * Pseudonym for code: `std::make_shared<Node>(Node(...)).
+     */
+    template<typename... Args>
+    auto make_sptr(Args&&... args) 
+    -> decltype(std::make_shared<Node>(std::forward<Args>(args)...))
+    {
+        return std::make_shared<Node>(std::forward<Args>(args)...);
+    }
+    
+    sptr _front; // a pointer to the first element.
+    sptr _back; // a pointer to the last element.
     uint _count; // the numbers of elements.
     bool empty;
     
@@ -132,7 +145,7 @@ public:
         /*
          * A constructor.
          */
-        iterator(Node *node) : m_node(node) {}
+        iterator(sptr node) : m_node(node) {}
         
     public:
         // value type.
@@ -180,7 +193,7 @@ public:
          */
         Node* operator->() const noexcept
         {
-            return m_node;
+            return m_node.get();
         }
         
         /*
@@ -224,7 +237,7 @@ public:
         }
         
     private:
-        Node *m_node; // a pointer to a Node.
+        sptr m_node; // a pointer to a Node.
     };
     
     /*
@@ -248,12 +261,12 @@ public:
  * Creates a new `Queue` class. 
  */
 template<typename Elem>
-Queue<Elem>::Queue()
+Queue<Elem>::Queue() :
+    _front(sptr(NULL)),
+    _back(sptr(NULL)),
+    _count(0),
+    empty(true)
 {
-    _front = NULL; // a pointer to the first element
-    _back = NULL; // a pointer to the last element
-    _count = 0; // the numbers of elements
-    empty = true; 
 }
 
 /*
@@ -262,8 +275,8 @@ Queue<Elem>::Queue()
  */
 template<typename Elem>
 Queue<Elem>::Queue(const Queue<Elem> &orig) : 
-    _front(NULL),
-    _back(NULL),
+    _front(sptr(NULL)),
+    _back(sptr(NULL)),
     _count(orig._count),
     empty(false)
 {
@@ -274,12 +287,12 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
         empty = true;
         return ; 
     }
-    Node *t = orig._front; // copy a pointer to the first element.
-    _front = new Node(t->value, NULL); // creates a new pointer.
+    sptr t = orig._front; // copy a pointer to the first element.
+    _front = make_sptr(Node(t->value, NULL)); //new Node(t->value, NULL); // creates a new pointer.
     _back = _front;
     t = t->next; // gets a pointer to the next element.
     while (t) {
-        Node *new_node = new Node(t->value, NULL);
+        sptr new_node = make_sptr(Node(t->value, NULL));
         _back->next = new_node;
         _back = new_node;
         t = t->next;
@@ -291,8 +304,8 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
  */
 template<typename Elem>
 Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
-    _front(NULL), 
-    _back(NULL),
+    _front(sptr(NULL)), 
+    _back(sptr(NULL)),
     _count(0),
     empty(true)
 {
@@ -311,11 +324,11 @@ Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
 template<typename Elem>
 Queue<Elem>::~Queue() 
 {
-    Node *old = NULL;
+    sptr old = sptr(NULL);
     while (_front) {
         old = _front; // a pointer to a current element.
         _front = _front->next; // a pointer to the next element.
-        delete old;
+        old.reset();
     }
 }
 
@@ -327,7 +340,7 @@ Queue<Elem>::~Queue()
 template<typename Elem>
 void Queue<Elem>::enqueue(const Elem &element) 
 {
-    Node *new_node = new Node(element, NULL); // a new pointer to an element.
+    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer to an element.
     if (empty) { 
         _front = new_node; // front == back.
         _back = new_node;
@@ -348,13 +361,13 @@ void Queue<Elem>::enqueue(const Elem &element)
 template<typename Elem>
 Elem Queue<Elem>::dequeue() noexcept
 {
-    Node *temp = NULL;
+    sptr old = NULL;
     Elem value; 
     if (!empty) {
-        temp = _front;
+        old = _front;
         value = _front->value;
         _front = _front->next; // sets a new front element.
-        delete temp;
+        old.reset();
         _count--;
     }
     // checks if the queue is empty.
@@ -371,7 +384,7 @@ template<typename Elem>
 Elem Queue<Elem>::front() const noexcept
 {
     Elem value;
-    if (_front != NULL) {
+    if (_front) {
         value = _front->value;
     }
     return value;
@@ -386,7 +399,7 @@ template<typename Elem>
 Elem Queue<Elem>::back() const noexcept
 {
     Elem value;
-    if (_back != NULL) {
+    if (_back) {
         value = _back->value;
     }
     return value;
@@ -400,13 +413,13 @@ template<typename Elem>
 void Queue<Elem>::clear() noexcept
 {
     while (_front) {
-        Node *old = _front; // a pointer to a current element.
+        sptr old = _front; // a pointer to a current element.
         _front = _front->next; // a pointer to the next element.
-        delete old;
+        old.reset();
     }
-    _front = NULL;
-    _back = NULL;
-    empty = 1;
+    _front = sptr(NULL);
+    _back = sptr(NULL);
+    empty = true;
     _count = 0;
 }
 
