@@ -27,3 +27,6 @@ To get more information:
 ## Tests
 For testing check this [page](https://github.com/Chukak/containers/blob/master/tests/README.md).
 
+## Performance
+To show the performance of containers check this [page](https://github.com/Chukak/containers/tree/master/tests/performance).
+
