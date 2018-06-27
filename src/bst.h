@@ -472,11 +472,22 @@ void bst<E>::remove(const E& element)
     if (!temp) {
         return ;
     }
+    auto set_parent = [](sptr child, sptr parent) {
+        if (child) {
+            child->parent = parent;
+        }
+    };
     // the function, sets the child.
-    auto set_child = [parent, is_left](sptr child) {
+    auto set_child = [&parent, &is_left, &set_parent](sptr child) {
         switch (is_left) {
-            case true: parent->left = child; break;
-            case false: parent->right = child; break;
+            case true: 
+                parent->left = child;
+                set_parent(child, parent->left);
+                break;
+            case false: 
+                parent->right = child; 
+                set_parent(child, parent->right);
+                break;
         }
     };
     // case 1
@@ -522,10 +533,12 @@ void bst<E>::remove(const E& element)
             case true:
                 if (!rep_node->right) {
                     temp->left = rep_node->left;
+                    set_parent(rep_node->left, temp->left);
                 }
                 break;
             case false:
                 parent_rep_node->right = rep_node->left;
+                set_parent(rep_node->left, parent_rep_node->right);
                 break;
         }
         rep_node.reset();
