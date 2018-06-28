@@ -11,6 +11,11 @@ public:
     
 private:
     
+    enum class ACTION {
+        INSERTION,
+        DELETION
+    };
+    
     void insertions(const uint& num)
     {
         Stack<int> stack;
@@ -55,8 +60,6 @@ public:
                 insertions(number); break;
             case ACTION::DELETION:
                 deletions(number); break;
-            default:
-                break;
         }
     }
     
