@@ -227,10 +227,12 @@ private:
     
     sptr _front; // a pointer to the first element.
     sptr _back; // a pointer to the last element.
-    uint _count; // the numbers of elements
+    uint _count; // the numbers of elements.
     bool empty;
     bool reversed;
     custom_func cmp_func;
+    sptr last_node; // save the last inserted node.
+    uint last_pos; // save the last position.
     
 private:
     
@@ -252,20 +254,20 @@ private:
      * @param element - an element
      * @param ind - a selected element, first, last, or middle.
      */
-    bool cmp_operator(sptr head, Num element, 
+    bool cmp_operator(const sptr& head, const Num& element, 
             index ind = index::MIDDLE) const noexcept
     {
         if (ind == index::LAST) {
             // compares the last element.
-            return reversed ? _back->value > element : _back->value < element; 
+            return (reversed ? _back->value >= element : _back->value <= element); 
         } else if (ind == index::FIRST){
             // compares the first element.
-            return reversed ? _front->value < element : _front->value > element;
+            return (reversed ? _front->value <= element : _front->value >= element);
         } else {
             // compares the middle element.
             // Calls the function `greater` if the list is reverse,
             // otherwise calls the function `less`.
-            return reversed ? greater(head, element) : less(head, element); 
+            return (reversed ? greater(head, element) : less(head, element)); 
         }
     }
     
@@ -275,7 +277,7 @@ private:
      * @param head - a node.
      * @param element - an element.
      */
-    bool less(sptr head, Num element) const
+    bool less(const sptr& head, const Num& element) const
     {
         return (head->value <= element && 
                 head->next && 
@@ -288,11 +290,57 @@ private:
      * @param head - a node.
      * @param element - an element.
      */
-    bool greater(sptr head, Num element) const
+    bool greater(const sptr& head, const Num& element) const
     {
         return (head->value >= element && 
                 head->next &&
                 head->next->value <= element);
+    }
+    
+    /*
+     * Creates a new node, with a new value and inserts this node in
+     * the special position to keep the sorted order.
+     */
+    void create_new_node(const sptr& head, const Num& element,
+            index i = index::MIDDLE) 
+    {
+        switch (i) { 
+            // Before the first element.
+            case index::FIRST: {
+                sptr new_node = make_sptr(Node(element, _front, NULL));
+                _front->prev = new_node; // sets the old first element.
+                _front = new_node;
+                break; 
+            }
+            // After the las element.
+            case index::LAST: {
+                sptr new_node = make_sptr(Node(element, NULL, _back));
+                _back->next = new_node; // sets the old last element.
+                _back = new_node; // changes the last element.
+                break; 
+            }
+            case index::MIDDLE: {
+                /*
+                 * Creates a new node with arguments:
+                 * 1) element - an element.
+                 * 2) head->next - a pointer to the next node.
+                 * 3) head - a pointer to the previous node.
+                 */
+                sptr new_node = make_sptr(Node(element, head->next, head));
+                head->next->prev = new_node; 
+                head->next = new_node; 
+                break;
+            }
+        }
+    }
+    
+    /*
+     * Sets the last node which was inserted.
+     */
+    void set_last_node(const sptr& last, uint pos)
+    {
+        last_node = last;
+        last_pos = pos;
     }
     
 public:    
@@ -465,7 +513,9 @@ sorted_list<Num>::sorted_list(const custom_func& func) :
     _count(0),
     empty(true),
     reversed(false),
-    cmp_func(func)
+    cmp_func(func),
+    last_node(sptr(NULL)),
+    last_pos(0)
 {
 }
 
@@ -479,7 +529,10 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
     _back(sptr(NULL)),
     _count(orig._count),
     empty(false),
-    reversed(false)
+    reversed(false),
+    cmp_func(orig.cmp_func),
+    last_node(sptr(NULL)),
+    last_pos(0)
 {
     /*
      * If an original class is empty, returns from constructor.
@@ -511,7 +564,9 @@ sorted_list<Num>::sorted_list(std::initializer_list<Num> lst,
     _count(0),
     empty(true),
     reversed(false),
-    cmp_func(func)
+    cmp_func(func),
+    last_node(sptr(NULL)),
+    last_pos(0)
 {
     /*
      * Just copy all the elements.
@@ -556,44 +611,33 @@ uint sorted_list<Num>::push(const Num& element)
          * than the first element, a new element inserts in the position `0`.
          */ 
         if (cmp_operator(sptr(NULL), element, index::FIRST)) {
-            sptr new_node = make_sptr(Node(element, _front, NULL));
-            _front->prev = new_node; // sets the old first element.
-            _front = new_node; // changes the first element.
+            create_new_node(sptr(NULL), element, index::FIRST);
+            set_last_node(_front, pos);
         /* 
          * Compare the last element from the list with a new element.
          * if a new element `>` (`<` if the list is reverse) 
          * than the last element, a new element inserts in the last position.
          */
         } else if (cmp_operator(sptr(NULL), element, index::LAST)) {
-            sptr new_node = make_sptr(Node(element, NULL, _back));
-            _back->next = new_node; // sets the old lst element.
-            _back = new_node; // changes the last element.
+            create_new_node(sptr(NULL), element, index::LAST);
             pos = _count - 1;
+            set_last_node(_back, pos);
         } else {
             /* 
              * Compare all the elements from the list with a new element.
              * if a new element `<` (`>` if the list is reverse) 
              * than any element, a new element inserts in this position.
              */
-            sptr head = _front;
-            while (head && pos <= _count) {
+            sptr head = last_node;
+            pos = last_pos;
+            
+            while (head) {
                 if (cmp_operator(head, element)) {
-                    /*
-                     * Creates a new node with arguments:
-                     * 1) element - an element.
-                     * 2) head->next - a pointer to the next node.
-                     * 3) head - a pointer to the previous node.
-                     */
-                    sptr new_node = make_sptr(Node(element, head->next, head));
-                    /* 
-                     * Changes the pointer to the previous node
-                     * from the next element.
-                     */
-                    head->next->prev = new_node; 
-                    head->next = new_node;
+                    create_new_node(head, element);
+                    set_last_node(head->next, pos);
                     break;
                 }
-                head = head->next;
+                head = (last_node->value <= element) ? head->next : head->prev;
                 pos++;
             } 
         }
@@ -623,18 +667,16 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
      * a new element inserts in the position `0`.
      */ 
     if (cmp_func(element, _front->value, _front->value)) {
-        sptr new_node = make_sptr(Node(element, _front, NULL));
-        _front->prev = new_node;
-        _front = new_node;
+        create_new_node(sptr(NULL), element, index::FIRST);
+        set_last_node(_front, *pos);
     /* 
      * Compare the last element from the list with a new element.
      * Call the custom function with 3 parameters: 
      * `func(the last element, a new element, a new element)`.
      */
     } else if(cmp_func(_back->value, element, element)) {
-        sptr new_node = make_sptr(Node(element, NULL, _back));
-        _back->next = new_node;
-        _back = new_node;
+        create_new_node(sptr(NULL), element, index::LAST);
+        set_last_node(_back, *pos);
         *pos = _count - 1;
     } else {
         /* 
@@ -645,16 +687,19 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
          * Call the custom function with 3 parameters: 
          * `func(the previous element, a new element, a next element)`.
          */
-        sptr head = _front;
-        while (head && head->next &&
-                *pos <= _count) {
+        sptr head = last_node;
+        *pos = last_pos;
+        bool right = cmp_func(last_node->value, element, _back->value);
+        sptr next = right ? last_node->next : last_node->prev;
+        
+        while (head && next) {
             if (cmp_func(head->value, element, head->next->value)) {
-                sptr new_node = make_sptr(Node(element, head->next, head));
-                head->next->prev = new_node;
-                head->next = new_node;
+                create_new_node(head, element);
+                set_last_node(head->next, *pos);
                 break;
             }
-            head = head->next;
+            head = right ? head->next : head->prev;
+            next = right ? next->next : next->prev;
             (*pos)++;
         }
     }
@@ -894,7 +939,7 @@ Num sorted_list<Num>::operator[](int pos) const noexcept
 template<typename Num>
 std::ostream& operator<<(std::ostream& stream, const sorted_list<Num>& list)
 {
-    auto *t = list._front;
+    auto t = list._front;
     stream << "[";
     while(t) {
         stream << t->value << ", ";
