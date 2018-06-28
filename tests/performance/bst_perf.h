@@ -13,6 +13,13 @@ public:
     
 private:
     
+    enum class ACTION {
+        INSERTION,
+        DELETION,
+        CLEARING,
+        SEARCH
+    };
+    
     void insertions(const uint& num)
     {
         bst<int> tree;
