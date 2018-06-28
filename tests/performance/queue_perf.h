@@ -11,6 +11,12 @@ public:
     
 private:
     
+    enum class ACTION {
+        INSERTION,
+        DELETION,
+        CLEARING
+    };
+    
     void insertions(const uint& num)
     {
         Queue<int> queue;
@@ -74,8 +80,6 @@ public:
                 deletions(number); break;
             case ACTION::CLEARING:
                 clearing(number); break;
-            default:
-                break;
         }
     }
     
