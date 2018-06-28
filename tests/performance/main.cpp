@@ -48,16 +48,16 @@ int main(int argc, char **args)
     cout << lines << "\n";
     
     cout << "3. Sorted list:" << "\n";
-    cout << lines << "\n";
+    cout << lines << "\n"; 
     
     SListPerformance list;
     
-    unsigned int num_slist = 10'000;
+    unsigned int num_slist = 20'000;
     cout << "Insertion performance " << num_slist << " values: ";
     list.run(SListPerformance::INSERTION, num_slist);
     cout << list.milliseconds() << " milliseconds." << "\n";
 
-    cout << "Deletion performance " << (num_slist / 2) 
+    cout << "Deletion performance " << num_slist
             << " values in the sorted list with " 
             << num_slist << " values: ";
     list.run(SListPerformance::DELETION, num_slist);
@@ -65,7 +65,11 @@ int main(int argc, char **args)
     
     cout << "Clearing performance " << num_slist << " values: ";
     list.run(SListPerformance::CLEARING, num_slist);
-    cout << list.milliseconds() << " milliseconds." << "\n";
+    cout << list.milliseconds() << " milliseconds." << "\n"; 
+    
+    cout << "Reverse performance " << num_slist << " values: ";
+    list.run(SListPerformance::REVERSE, num_slist);
+    cout << list.milliseconds() << " milliseconds." << "\n"; 
     
     cout << lines << "\n";
     
@@ -95,7 +99,7 @@ int main(int argc, char **args)
     tree.run(BSTPerformance::CLEARING, num_tree);
     cout << tree.milliseconds() << " milliseconds." << "\n";
     
-    cout << lines << "\n";
+    cout << lines << "\n"; 
     
     return 0;
 }
