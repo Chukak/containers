@@ -12,6 +12,13 @@ public:
     
 private:
     
+    enum class ACTION {
+        INSERTION,
+        DELETION,
+        CLEARING,
+        REVERSE
+    };
+    
     void insertions(const uint& num)
     {
         sorted_list<int> list;
@@ -21,7 +28,7 @@ private:
         std::vector<int> random_elements;
         
         for (uint i = 0; i < num; i++) {
-            random_elements.push_back((rand() % num + 1) - (50000));
+            random_elements.push_back((rand() % num + 1));// - (50000));
         }
         
         start_timer();
@@ -37,7 +44,7 @@ private:
     
     void deletions(const uint& num)
     {
-        sorted_list<int> list;
+        sorted_list<uint> list;
         
         for (uint i = 0; i < num; i++) {
             list.push(i);
@@ -74,6 +81,27 @@ private:
         list.clear();
         finish_timer();
         
+        assert(list.count() == 0);
+        
+        list.~sorted_list();
+    }
+    
+    void reverse(const uint& num)
+    {
+        sorted_list<uint> list;
+        
+        for (uint i = 0; i < num; i++) {
+            list.push(i);
+        }
+        
+        assert(list.count() == num);
+        
+        start_timer();
+        list.reverse();
+        finish_timer();
+        
+        assert(list.front() == (num - 1));
+        
         list.~sorted_list();
     }
     
@@ -89,8 +117,8 @@ public:
                 deletions(number); break;
             case ACTION::CLEARING:
                 clearing(number); break;
-            default:
-                break;
+            case ACTION::REVERSE:
+                reverse(number); break;
         }
     }
     
@@ -99,6 +127,8 @@ public:
     static const ACTION DELETION = ACTION::DELETION;
     
     static const ACTION CLEARING = ACTION::CLEARING;
+    
+    static const ACTION REVERSE = ACTION::REVERSE;
 };
 
 #endif /* SORTED_LIST_PERF_H */
