@@ -57,13 +57,6 @@ protected:
     {
         end = now();
     }
-    
-    enum class ACTION {
-        INSERTION,
-        DELETION,
-        SEARCH,
-        CLEARING
-    };
 };
 
 #endif /* PERFORMANCE_H */
