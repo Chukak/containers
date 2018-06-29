@@ -14,7 +14,6 @@ To include the header file:
 The `Stack` class is implemented using C++ templates. 
 To create a stack, pass the data type, which will be in the stack in the constructor.
 
-
 Standard initialization:
 ```cpp
 Stack<int> s;
@@ -42,7 +41,7 @@ s.push(2);
 ```
 
 ## Remove elements
-To remove elements from the stack, use the `pop` method. The `pop` method removes the first element from the stack.
+To remove elements from the stack, use the `pop` method. The `pop` method removes the first element of the stack.
 Returns the deleted element.
 ```cpp
 Stack<int> s = {1, 2, 3};
@@ -57,7 +56,7 @@ s.pop(); // ???
 ```
 
 ## Get the first element
-To get the first element from the stack, use the `front` method. The `front` method returns the first element from the stack
+To get the first element of the stack, use the `front` method. The `front` method returns the first element of the stack
 at the moment.
 ```cpp
 Stack<int> s = {1, 2, 3};
@@ -67,6 +66,7 @@ s.front(); // returns 3
 If the stack is empty, the result of the `front` method has an undefined behavior. Be careful when using this method.
 
 ## Extra methods
+
 ### The number of elements
 To get the number of elements in the stack, use the `count` method. Returns the number of elements.
 ```cpp
@@ -87,14 +87,15 @@ s.is_empty(); // false
 ```
 
 ## Iterators
-The `Stack` class has iterators of stack. The iterators have the type `forward_iterator`. 
+The `Stack` class has iterators of stack. The iterators are `forward_iterator`. 
 You can only increase the iterator.
 
 ### Use iterators
-To get the iterator on the first element in the stack, use the `begin()` method. 
-Returns the iterator to the first element in stack. You can increase the iterator.
+To get the iterator on the first element of the stack, use the `begin()` method. 
+Returns the iterator to the first element of stack. You can only increase the iterator.
 To get the iterator to the end of the stack, use the `end()` method. 
-Don\`t increase the `end()` iterator! 
+Don\`t increase and reduce the `end()` iterator! 
+
 To get the type of iterators, use `Stack<...>::iterator` or use `auto`. 
 For example:
 ```cpp
@@ -105,9 +106,9 @@ You can use iterators in STL algorithms, but it is not guaranteed that the itera
 
 <br>
 
-# Stack (C)
-Also, the `stack.h` header file has a implementation of stack as a C-code. 
-To store the stack use the type `stack`. 
+# Stack (C-code)
+Also, the `stack.h` header file has an implementation of the stack as a C-code. 
+
 Note: all the C functions in the `stack.h` header have the prefix `s_`.
 
 ## `stack`
@@ -119,7 +120,7 @@ The `stack` structure has some members:
 * `stack->front` -  a pointer to the first element. It is not recommended to use. Use the `s_front()` function.
 
 ## Create a stack
-To create a stack, call the `s_create_stack` function without any arguments. Returns a pointer to the stack.
+To create a stack, use the `s_create_stack` function without any arguments. Returns a pointer to the stack.
 ```c
 stack *s = s_create_stack();
 ```
@@ -137,8 +138,8 @@ s_push(s, &a);
 ```
 
 ## Remove elements
-To remove elements from the stack, used the `s_pop` function, pass the pointer to the stack as the first argument. 
-The `s_pop` function removes the first element from the stack. 
+To remove elements from the stack, use the `s_pop` function, pass the pointer to the stack as the first argument. 
+The `s_pop` function removes the first element of the stack. 
 Returns the pointer to the deleted element.
 ```c
 stack *s = s_create_stack();
@@ -160,7 +161,7 @@ if (r2 == NULL) // true
 ```
 
 ## Get the first element
-To get the first element from the stack, use the `s_front` function, pass the pointer to the stack as the first argument. 
+To get the first element of the stack, use the `s_front` function, pass the pointer to the stack as the first argument. 
 Returns the pointer to the first element.
 ```c
 stack *s = s_create_stack();
@@ -171,11 +172,12 @@ s_push(s, &a);
 int *r = (int *)s_front(s);
 if (*r == 1) // true
 ```
+If the stack is empty, the result of the `s_front` function has the `NULL` pointer.
 
 ## Delete the stack
 To delete the stack, use `s_delete_stack` function, pass the pointer to the stack as the first argument. 
 The function returns nothing. 
-Don\`t forget to delete the stack, when you don`t use it.
+Don\`t forget to delete the stack, when you don\`t use it.
 ```c
 stack *s = s_create_stack();
 ...
@@ -183,6 +185,7 @@ s_delete_stack(s);
 ```
 
 ## Extra functions
+
 ### The number of elements
 To get the number of elements in the stack, use the `s_count` function, pass the pointer to the stack as the first parameter. 
 Returns the number of elements. 
