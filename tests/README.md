@@ -28,7 +28,7 @@ make -f Makefile
 ./tests
 ```
 ### Test files
-The test for each class has two test files. 
+The test for some classes has two test files. 
 The `tst_name.cpp` file has tests for C++ code, for example: `tst_queue.cpp`.
 The `tst_name_c.cpp` file has tests for C code, for example: `tst_queue_c.cpp`.
 The `main.cpp` file is a main test file, has `CATCH_CONFIG_MAIN` macro.
