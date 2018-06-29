@@ -24,7 +24,7 @@ To include the header file:
 
 ## Create a sorted list
 The sorted list is implemented using C++ templates. To create a sorted list, pass the data type, 
-which will be in the sorted list, in constructor.
+which will be in the sorted list, in the constructor.
 
 
 Standard initialization:
