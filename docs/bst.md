@@ -22,7 +22,7 @@ which is located in the category `bst`. To include the header file:
 ## Create a binary search tree class
 
 The binary search tree is implemented using C++ templates. 
-To create a binary search tree, pass the data type, which will be in the tree, in constructor.
+To create a binary search tree, pass the data type, which will be in the tree, in the constructor.
 
 Standard initialization:
  ```cpp
