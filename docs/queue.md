@@ -31,7 +31,7 @@ Queue<int> q(orig);
 
 ## Add elements
 To add elements in the queue, use the `enqueue` method. The `enqueue` method adds elements using the principle 
-FIFO(First-In-First-Out). The function returns nothing.
+FIFO(First-In-First-Out).
 ```cpp
 Queue<int> q;
 ...
@@ -41,7 +41,7 @@ q.enqueue(2)
 
 ## Remove elements
 To remove elements from the queue, use the `dequeue` method. The `dequeue` method removes the first element 
-from the queue. Returns the deleted element.
+of the queue. Returns the deleted element.
 ```cpp
 Queue<int> q = {1, 2, 3};
 ...
@@ -56,7 +56,7 @@ int a = q.dequeue(); // ???
 ```
 
 ## Get the first element
-The `Queue` class has the `front` method, which returns the first element in the queue at the moment.
+The `Queue` class has the `front` method, which returns the first element of the queue at the moment.
 ```cpp
 Queue<int> q = {1, 2, 3};
 ...
@@ -65,7 +65,7 @@ q.front(); // returns 1
 If the queue is empty, the result of the `front` method has an undefined behavior. Be careful when using this method.
 
 ## Get the last element
-Also, the `Queue` class has the `back` method which returns the first element in the queue at the moment.
+Also, the `Queue` class has the `back` method which returns the last element of the queue at the moment.
 ```cpp
 Queue<int> q = {1, 2, 3};
 ...
@@ -74,6 +74,7 @@ q.back(); // returns 3
 If the queue is empty, the result of the `back` method has an undefined behavior. Be careful when using this method.
 
 ## Extra methods
+
 ### The number of elements
 To get the number of elements in the queue, use the `count` method. Returns the number of elements.
 ```cpp
@@ -103,11 +104,14 @@ q.is_empty(); // true
 ```
 
 ## Iterators
-The `Queue` class has iterators of queue. The iterators have the type `forward_iterator`. 
+The `Queue` class has iterators of the queue. The iterators are `forward_iterator`. 
 You can only increase the iterator.
+
 ### Use iterators
-To get the iterator on the first element in the queue, use the `begin()` method. 
-Returns the iterator to the first element in the queue. You can increase the iterator.
+To get the iterator on the first element of the queue, use the `begin()` method. 
+Returns the iterator to the first element of the queue. You can increase the iterator.
+But, don\`t reduce this iterator!
+
 To get the iterator to the end of the queue, use the `end()` method. 
 Don\`t increase the `end()` iterator!
 To get the type of iterators, use `Queue<...>::iterator` or use `auto`.
@@ -116,16 +120,17 @@ For example:
 Queue<int> q = {1, 2, 3, 4, 5};
 for (auto it = q.begin(), it != q.end(); it++) { ... }
 ```
-You can use iterators in STL algorithms, but it is not guaranteed that the iterators will work in all algorithms
+You can use iterators in STL algorithms, but it is not guaranteed that the iterators will work in all the algorithms.
 
 <br>
 
-# Queue (C)
-Also, the `queue.h` header file has a implementation of a queue as a C-code.
-To store the queue use the type `queue`. Note: all the C functions in the `queue.h` header have the prefix `q_`.
+# Queue (C-code)
+Also, the `queue.h` header file has a implementation of the queue as a C-code.
+
+Note: all the C functions in the `queue.h` header have the prefix `q_`.
 
 ## `queue`
-The type `queue` is the structure. Initialized it as a pointer, using `q_create_queue()` function. 
+The type `queue` is the structure. Initialized it as a pointer, using the `q_create_queue()` function. 
 The `queue` structure has some members:
 * `queue->count` - the number of elements.
 * `queue->empty` - `1` if the queue is empty, otherwise `0`.
@@ -152,7 +157,7 @@ q_enqueue(q, &a);
 
 ## Remove elements
 To remove elements from the queue, used the `q_dequeue` function, pass the pointer to the queue as the first argument. 
-The `q_dequeue` function removes the first element from the queue. 
+The `q_dequeue` function removes the first element of the queue. 
 Returns the pointer to the deleted element.
 ```c
 queue *q = q_create_queue();
@@ -174,7 +179,7 @@ if (r2 == NULL) // true
 ```
 
 ## Get the first element
-To get the first element from the queue, use the `q_front` function, pass the pointer to the queue as the first argument.
+To get the first element of the queue, use the `q_front` function, pass the pointer to the queue as the first argument.
 Returns the pointer to the first element.
 ```c
 queue *q = q_create_queue();
@@ -188,7 +193,7 @@ if (*r == 1) // true
 If the queue is empty, the result of the `q_front` function has the `NULL` pointer.
 
 ## Get the last element
-To get the last element fron the queue, use the `q_back` function, pass the pointer to the queue as the first argument.
+To get the last element of the queue, use the `q_back` function, pass the pointer to the queue as the first argument.
 Returns the pointer to the last element.
 ```c
 queue *q = q_create_queue();
@@ -200,8 +205,9 @@ int *r = (int *)q_back();
 if (*r == 1) // true
 ```
 If the queue is empty, the result of the `q_back` function has the `NULL` pointer.
+
 ## Delete the queue
-To delete the queue, use `q_delete_queue` function, pass the pointer to the queue as the first argument.
+To delete the queue, use the `q_delete_queue` function, pass the pointer to the queue as the first argument.
 The function returns nothing.
 Don\`t forget to delete the queue, when you don\`t use it.
 ```c
