@@ -30,36 +30,36 @@ class Queue {
 public:
     
     /*
-     * A constructor.
+     * Constructor.
      */
     Queue();
     
     /*
-     * A constructor, creates the `queue` class from another `queue` class.
-     * @param orig - a constant link to another `queue` class.
+     * Constructor, creates the `queue` class from another `queue` class.
+     * @param orig - another `queue` class.
      */
     Queue(const Queue<Elem> &orig);
     
     /*
-     * A constructor, for the style `Queue q = {1, 2, 3}`.
+     * Constructor, for the style `Queue q = {1, 2, 3}`.
      */
     Queue(std::initializer_list<Elem> lst);
     
     /*
-     * A destructor.
+     * Destructor.
      */
     virtual ~Queue();
     
     /*
      * The `enqueue` function.
-     * Puts an element in the queue.
-     * @param element - a constant link to the value.
+     * Inserts an element into the queue.
+     * @param element - an element.
      */
     void enqueue(const Elem &element);
     
     /*
      * The `dequeue` funciton.
-     * Removes the first element from the queue and returns it. 
+     * Removes the first element of the queue and returns it. 
      */
     Elem dequeue() noexcept;
     
@@ -69,11 +69,11 @@ public:
     uint count() const noexcept { return _count; };
     
     /*
-     * Returns the first element from the queue.
+     * Returns the first element of the queue.
      */
     Elem front() const noexcept;
     /*
-     * Returns the last element from the queue.
+     * Returns the last element of the queue.
      */
     Elem back() const noexcept;
     
@@ -106,7 +106,7 @@ private:
         std::shared_ptr<Node> next; // a pointer to the next `Node` structure.
 
         /*
-         * A constructor.
+         * Constructor.
          */
         Node(const Elem &v, std::shared_ptr<Node> n) : value(v), next(n) {}
     };
@@ -114,7 +114,7 @@ private:
     using sptr = std::shared_ptr<Node>;
     
     /*
-     * Pseudonym for code: `std::make_shared<Node>(Node(...)).
+     * Pseudonym for code: `std::make_shared<Node>(Node(...))`.
      */
     template<typename... Args>
     auto make_sptr(Args&&... args) 
@@ -136,14 +136,12 @@ public:
      * Determines the iterator for the `Queue` class.
      */
     class iterator : public std::iterator<std::forward_iterator_tag, Elem> {
-        /*
-         * Sets the friend class.
-         */
+        
         friend class Queue<Elem>;
         
     private:
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator(sptr node) : m_node(node) {}
         
@@ -154,7 +152,7 @@ public:
         typedef std::forward_iterator_tag iterator_category;
         
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator() : m_node(0) {}
         
@@ -199,7 +197,7 @@ public:
         /*
          * The operator `!=`.
          * Compares two iterators. Returns `true` if 
-         * iterators are not the same. Otherwise returns `false`.
+         * iterators aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(const iterator& rhs) const noexcept
         { 
@@ -209,7 +207,7 @@ public:
         /*
          * The operator `!=`.
          * Returns `true` if the current iterator and `nullptr`
-         * are the same. Otherwise returns `false`.
+         * aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(std::nullptr_t) const noexcept
         { 
@@ -241,7 +239,7 @@ public:
     };
     
     /*
-     * Returns the iterator to the beginning of the queue.
+     * Returns the iterator to the first element of the queue.
      */
     iterator begin() const noexcept { return iterator(_front); }
     
@@ -257,7 +255,7 @@ public:
 };
 
 /*
- * A costructor.
+ * Costructor.
  * Creates a new `Queue` class. 
  */
 template<typename Elem>
@@ -270,7 +268,7 @@ Queue<Elem>::Queue() :
 }
 
 /*
- * A constructor.
+ * Constructor.
  * Creates a new `Queue` class from another `Queue` class.
  */
 template<typename Elem>
@@ -288,7 +286,7 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
         return ; 
     }
     sptr t = orig._front; // copy a pointer to the first element.
-    _front = make_sptr(Node(t->value, NULL)); //new Node(t->value, NULL); // creates a new pointer.
+    _front = make_sptr(Node(t->value, NULL)); // creates a new pointer.
     _back = _front;
     t = t->next; // gets a pointer to the next element.
     while (t) {
@@ -300,7 +298,7 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
 }
 
 /*
- * A constructor, for the style `Queue q = {1, 2, 3}`.
+ * Constructor, for the style `Queue q = {1, 2, 3}`.
  */
 template<typename Elem>
 Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
@@ -318,7 +316,7 @@ Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
 }
 
 /*
- * A destructor.
+ * Destructor.
  * Removes all the elements from memory.
  */
 template<typename Elem>
@@ -326,7 +324,7 @@ Queue<Elem>::~Queue()
 {
     sptr old = sptr(NULL);
     while (_front) {
-        old = _front; // a pointer to a current element.
+        old = _front; // a pointer to the current element.
         _front = _front->next; // a pointer to the next element.
         old.reset();
     }
@@ -334,15 +332,15 @@ Queue<Elem>::~Queue()
 
 /*
  * The `enqueue` function.
- * Puts an element in the queue at the end.
+ * Inserts an element into the queue at the end.
  * Increases the size of the queue.
  */
 template<typename Elem>
 void Queue<Elem>::enqueue(const Elem &element) 
 {
-    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer to an element.
+    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer.
     if (empty) { 
-        _front = new_node; // front == back.
+        _front = new_node; 
         _back = new_node;
         empty = false;
     } else {
@@ -354,9 +352,9 @@ void Queue<Elem>::enqueue(const Elem &element)
 
 /*
  * The `dequeue` function.
- * Removes the first element from the queue.
+ * Removes the first element of the queue.
  * Reduces the size of the queue.
- * If the queue is empty, the result has undefined behavior.
+ * If the queue is empty, the result has an undefined behavior.
  */
 template<typename Elem>
 Elem Queue<Elem>::dequeue() noexcept
@@ -366,7 +364,7 @@ Elem Queue<Elem>::dequeue() noexcept
     if (!empty) {
         old = _front;
         value = _front->value;
-        _front = _front->next; // sets a new front element.
+        _front = _front->next; 
         old.reset();
         _count--;
     }
@@ -377,8 +375,8 @@ Elem Queue<Elem>::dequeue() noexcept
 
 /*
  * The `front` function.
- * Returns the first element from the queue.
- * If the queue is empty, the result has undefined behavior.
+ * Returns the first element of the queue.
+ * If the queue is empty, the result has an undefined behavior.
  */
 template<typename Elem>
 Elem Queue<Elem>::front() const noexcept
@@ -393,7 +391,7 @@ Elem Queue<Elem>::front() const noexcept
 /*
  * The `back` function.
  * Returns the last element from the queue.
- * If the queue is empty, the result has undefined behavior.
+ * If the queue is empty, the result has an undefined behavior.
  */
 template<typename Elem>
 Elem Queue<Elem>::back() const noexcept
@@ -413,7 +411,7 @@ template<typename Elem>
 void Queue<Elem>::clear() noexcept
 {
     while (_front) {
-        sptr old = _front; // a pointer to a current element.
+        sptr old = _front; // a pointer to the current element.
         _front = _front->next; // a pointer to the next element.
         old.reset();
     }
@@ -424,8 +422,8 @@ void Queue<Elem>::clear() noexcept
 }
 
 /*
- * The overloaded `<<` operator for the Queue class.
- * Prints all elements from the queue in the format: `(1, ...,100)`.
+ * The overloaded `<<` operator for the queue.
+ * Prints all the elements from the queue in the format: `(1, ...,100)`.
  * Returns ostream.
  */
 template<typename Elem>
@@ -459,7 +457,7 @@ extern "C" {
     typedef struct q_node q_node;
     
     /*
-     * Node structure for the queue.
+     * The ndoe structure for the queue.
      */
     struct q_node {
         void *value; // a pointer to a value.
@@ -486,7 +484,7 @@ extern "C" {
     
     /*
      * The `q_enqueue` function.
-     * Puts an element in the queue.
+     * Inserts an element into the queue.
      * Takes two arguments:
      * `q` - a pointer to the queue.
      * `element` - a pointer to the element.
@@ -494,27 +492,27 @@ extern "C" {
     void q_enqueue(queue *q, const void *element);
     /*
      * The `q_dequeue` function.
-     * Removes the first element in the queue. 
+     * Removes the first element of the queue. 
      * Returns a pointer to the deleted element.
      * If the queue is empty, returns the `NULL` pointer.
-     * Takes one arguments:
+     * Takes one argument:
      * `q` - a pointer to the queue.
      */
     void *q_dequeue(queue *q);
     
     /*
      * The `q_front` function.
-     * Returns a pointer to the first element from the queue.
+     * Returns a pointer to the first element of the queue.
      * If the queue is empty, returns the `NULL` pointer.
-     * Takes one arguments:
+     * Takes one argument:
      * `q` - a pointer to the queue.
      */
     void *q_front(queue *q);
     /*
      * The `q_back` function.
-     * Returns a pointer to the last element from the queue.
+     * Returns a pointer to the last element of the queue.
      * If the queue is empty, returns the `NULL` pointer.
-     * Takes one arguments:
+     * Takes one argument:
      * `q` - a pointer to the queue.
      */
     void *q_back(queue *q);
@@ -522,16 +520,17 @@ extern "C" {
     /*
      * The `q_count` function.
      * Returns the size of the queue.
-     * Takes one arguments:
+     * Takes one argument:
      * `q` - a pointer to the queue.
      * Use this function, if necessary.
-     * Or instead this function, use `queue->count`.
+     * or instead this function, use `queue->count`.
      */
     uint q_count(queue *q);
     
     /*
      * The `q_delete_queue` function.
      * Removes the queue from memory.
+     * Takes one argument:
      * `q` - a pointer to the queue.
      */
     void q_delete_queue(queue *q);
