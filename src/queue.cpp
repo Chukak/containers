@@ -17,7 +17,7 @@ static void *copy_value(const void *pointer)
 
 /*
  * Checks a pointer to the queue.
- * If a pointer to the queue is NULL, Raises `runtime_error`.
+ * If a pointer to the queue is NULL, throws the `runtime_error` error.
  */
 static void check_queue(const void *q) 
 {
@@ -56,13 +56,13 @@ void q_delete_queue(queue *q)
 }
 
 /*
- * Puts an element in the queue.
+ * Inserts an element into the queue.
  * Increases the size of the queue.
  */
 void q_enqueue(queue *q, const void *element)
 {
     check_queue(q);
-    // if a pointer is NULL, raises `runtime_error`.
+    // if a pointer is NULL, throws `runtime_error`.
     if (!element) {
         throw std::runtime_error("The pointer to an element is NULL.");
     }
@@ -81,7 +81,7 @@ void q_enqueue(queue *q, const void *element)
 }
 
 /*
- * Removes the last element from the queue and returns the deleted element.
+ * Removes the first element of the queue and returns this element.
  * Reduces the size of the queue.
  */
 void *q_dequeue(queue *q) 
@@ -104,7 +104,7 @@ void *q_dequeue(queue *q)
 }
 
 /*
- * Returns a front element from the queue.
+ * Returns the first element of the queue.
  */
 void *q_front(queue *q)
 {
@@ -117,7 +117,7 @@ void *q_front(queue *q)
 }
 
 /*
- * Returns a back element from the queue.
+ * Returns the last element of the queue.
  */
 void *q_back(queue *q)
 {
