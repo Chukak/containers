@@ -47,27 +47,28 @@ class bst {
 public:
     
     /*
-     * A constructor.
+     * Constructor.
      */
     bst();
     
     /*
-     * A constructor, for the style `bst tree = {3, 2, 1}`.
+     * Constructor, for the style `bst tree = {3, 2, 1}`.
      */
     bst(std::initializer_list<E> lst);
     
     /*
-     * A destructor.
+     * Destructor.
      */
     virtual ~bst();
     
     /*
      * The `insert` function.
-     * Inserts an element to the tree. If an element less than root,
-     * the function inserts it, in the left side of the tree.
-     * If an element more than root,
-     * the function inserts it, in the right side of the tree.
-     * @param element - a constant link to the value.
+     * Inserts an element into the tree. If this element less than the root 
+     * of the tree, the function inserts it into the left side of the tree.
+     * If this element more than the root of the tree,
+     * the function inserts in into the right side of the tree.
+     * If this element equal to the root, it doesn`t insert into the tree.
+     * @param element - an element.
      */
     void insert(const E& element) noexcept;
     
@@ -75,31 +76,31 @@ public:
      * The `remove` function.
      * Search for an element in the tree. If an element was found,
      * removes it from the tree.
-     * If the tree is empty, raises the `BSTIsEmpty` error.
-     * @parem - a constant link to the value.
+     * If the tree is empty, throws the `BSTIsEmpty` error.
+     * @param - an element.
      */
     void remove(const E& element);
     
     /*
-     * Returns the minimum element from the tree.
-     * If the tree is empty, raises the `BSTIsEmpty` error.
+     * Returns the minimum element of the tree.
+     * If the tree is empty, throws the `BSTIsEmpty` error.
      */
     E min() const;
     
     /*
-     * Returns the maximum element from the tree.
-     * If the tree is empty, raises the `BSTIsEmpty` error.
+     * Returns the maximum element of the tree.
+     * If the tree is empty, throws the `BSTIsEmpty` error.
      */
     E max() const;
     
     /*
      * Returns the root of the tree.
-     * If the tree is empty, raises the `BSTIsEmpty` error.
+     * If the tree is empty, throws the `BSTIsEmpty` error.
      */
     E root() const;
     
     /*
-     * Returns the number of alements.
+     * Returns the number of elements.
      */
     uint count() const noexcept { return count_; }
     
@@ -140,7 +141,7 @@ private:
         std::shared_ptr<Node> parent; // a pointer to the parent of this element.
         
         /*
-         * A constructor.
+         * Сonstructor.
          */
         Node(const E& e, std::shared_ptr<Node> r, 
             std::shared_ptr<Node> l, std::shared_ptr<Node> p) : 
@@ -154,7 +155,7 @@ private:
     using sptr = std::shared_ptr<Node>;
     
     /*
-     * Pseudonym for code: `std::make_shared<Node>(Node(...)).
+     * Pseudonym for code: `std::make_shared<Node>(Node(...))`.
      */
     template<typename... Args>
     auto make_sptr(Args&&... args) 
@@ -170,7 +171,7 @@ private:
 private:
     
     /*
-     * Destroys all elements in the tree.
+     * Destroys all the elements in the tree.
      */
     void destroy(sptr n) noexcept;
         
@@ -179,17 +180,16 @@ public:
     
     /*
      * The `iterator` class.
-     * Determines the iterator for the sorted list.
+     * Implements the iterator for the tree.
+     * The iterator is `forward_iterator`.
      */
     class iterator : public std::iterator<std::forward_iterator_tag, E> {
-        /*
-         * Sets the friend class.
-         */
+        
         friend class bst<E>;
         
     private:
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator(sptr node) : current(node)
         {
@@ -203,7 +203,7 @@ public:
             // checks the right child.
             if (current->right) {
                 current = current->right;
-                // find the minimum element in the right child.
+                // find the minimum element of the right child.
                 while (current->left) {
                     current = current->left;
                 }
@@ -213,7 +213,7 @@ public:
                     current = parent;
                     parent = parent->parent;
                 }
-                // if all elements is visited.
+                // if all the elements is visited.
                 if (!parent) {
                     current = parent;
                     return ;
@@ -231,7 +231,7 @@ public:
         typedef std::forward_iterator_tag iterator_category;
         
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator() : current(nullptr) {}
         
@@ -276,7 +276,7 @@ public:
         /*
          * The operator `!=`.
          * Compares two iterators. Returns `true` if 
-         * iterators are not the same. Otherwise returns `false`.
+         * iterators aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(const iterator& rhs) const noexcept
         { 
@@ -286,7 +286,7 @@ public:
         /*
          * The operator `!=`.
          * Returns `true` if the current iterator and `nullptr`
-         * are the same. Otherwise returns `false`.
+         * aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(std::nullptr_t) const noexcept
         { 
@@ -319,7 +319,7 @@ public:
     };
     
     /*
-     * Returns the iterator to the minimum element in the tree.
+     * Returns the iterator to the minimum element of the tree.
      */ 
     iterator begin() const noexcept 
     { 
@@ -342,7 +342,7 @@ public:
 };
 
 /*
- * A constructor.
+ * Constructor.
  * Creates a new binary search tree.
  */
 template<typename E>
@@ -354,7 +354,7 @@ bst<E>::bst() :
 }
 
 /*
- * A constructor for the style `bst tree = {3, 5, 1}`.
+ * constructor for the style `bst tree = {3, 5, 1}`.
  */
 template<typename E>
 bst<E>::bst(std::initializer_list<E> lst) :
@@ -371,7 +371,7 @@ bst<E>::bst(std::initializer_list<E> lst) :
 }
 
 /*
- * A destructor.
+ * Destructor.
  */
 template<typename E>
 bst<E>::~bst()
@@ -381,7 +381,7 @@ bst<E>::~bst()
 }
 
 /*
- * Destroys all elements in the tree.
+ * Destroys all the elements in the tree.
  */
 template<typename E>
 void bst<E>::destroy(sptr n) noexcept
@@ -395,16 +395,16 @@ void bst<E>::destroy(sptr n) noexcept
 
 /*
  * The `insert` function.
- * Inserts an element to the tree. If an element less than root,
- * the function inserts it, in the left side of the tree.
- * If an element more than root,
- * the function inserts it, in the right side of the tree.
+ * Inserts an element into the tree. If this element less than the root,
+ * the function inserts it into the left side of the tree.
+ * If an element more than the root,
+ * the function inserts it into the right side of the tree.
  */ 
 template<typename E>
 void bst<E>::insert(const E& element) noexcept
 {
     if (empty) {
-        // this code is `std::make_shared<Node>(Node(...)).
+        // this code is `std::make_shared<Node>(Node(...))`.
         root_ = make_sptr(Node(element, NULL, NULL, NULL));
         empty = false;
     } else {
@@ -443,7 +443,7 @@ void bst<E>::insert(const E& element) noexcept
  * The `remove` function.
  * Search for an element in the tree. If an element was found,
  * removes it from the tree.
- * If the tree is empty, raises the `BSTIsEmpty` error.
+ * If the tree is empty, throws the `BSTIsEmpty` error.
  */ 
 template<typename E>
 void bst<E>::remove(const E& element)
@@ -472,6 +472,7 @@ void bst<E>::remove(const E& element)
     if (!temp) {
         return ;
     }
+    // the function, sets the parent.
     auto set_parent = [](sptr child, sptr parent) {
         if (child) {
             child->parent = parent;
@@ -490,7 +491,7 @@ void bst<E>::remove(const E& element)
                 break;
         }
     };
-    // case 1
+    // case 1.
     // If the right child and the left child is NULL.
     // Just removes it.
     if (!(temp->left) && !(temp->right)) {
@@ -502,9 +503,9 @@ void bst<E>::remove(const E& element)
             set_child(sptr(NULL));
         }
         temp.reset();
-    // case 2
+    // case 2.
     // If the right child or the left child is NULL.
-    // Removes this Node, and replaces it with a child.
+    // Removes this node, and replaces it with the right or left child.
     } else if (!(temp->left) || !(temp->right)) {
         sptr child = temp->left ? temp->left : temp->right;
         if (!parent) {
@@ -515,7 +516,7 @@ void bst<E>::remove(const E& element)
             set_child(child);
         }
         temp.reset();
-    // case 3
+    // case 3.
     // If the right child and the left child is not NULL.
     // Removes this Node, and replaces it with the left child.
     // And replaces the left child with the right child.
@@ -548,8 +549,8 @@ void bst<E>::remove(const E& element)
 } 
 
 /*
- * Returns the minimum element from the tree.
- * If the tree is empty, raises the `BSTIsEmpty` error.
+ * Returns the minimum element of the tree.
+ * If the tree is empty, throws the `BSTIsEmpty` error.
  */ 
 template<typename E>
 E bst<E>::min() const 
@@ -568,8 +569,8 @@ E bst<E>::min() const
 } 
 
 /*
- * Returns the maximum element from the tree.
- * If the tree is empty, raises the `BSTIsEmpty` error.
+ * Returns the maximum element of the tree.
+ * If the tree is empty, throws the `BSTIsEmpty` error.
  */ 
 template<typename E>
 E bst<E>::max() const 
@@ -589,7 +590,7 @@ E bst<E>::max() const
 
 /*
  * Returns the root of the tree.
- * If the tree is empty, raises the `BSTIsEmpty` error.
+ * If the tree is empty, throws the `BSTIsEmpty` error.
  */ 
 template<typename E>
 E bst<E>::root() const 
