@@ -133,7 +133,8 @@ public:
     
     /*
      * The `iterator` class.
-     * Determines the iterator for the `Queue` class.
+     * Implements the iterator for the queue.
+     * The iterator is `forward_iterator`.
      */
     class iterator : public std::iterator<std::forward_iterator_tag, Elem> {
         
