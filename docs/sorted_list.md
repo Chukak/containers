@@ -12,8 +12,8 @@ for these classes, objects, etc.
 <strong>Note</strong>: You can pass a custom function to compare elements in the list. 
 It can be used instead of overrided operators.
 
-<strong>Note</strong>: By default the operator `<=` are used for the comparison. If the list is reversed, the operator `>=` 
-are used for the comparison.
+<strong>Note</strong>: By default the operator `<=` is used for the comparison. If the list is reversed, the operator `>=` 
+is used for the comparison.
 
 ## Header
 The sorted list is implemented in the `sorted_list.h` header file, which is located in the category `sorted_list`. 
