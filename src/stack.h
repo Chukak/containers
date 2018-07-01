@@ -30,46 +30,46 @@ class Stack {
 public:
     
     /*
-     * A constructor.
+     * Constructor.
      */
     Stack();
     
     /*
-     * A constructor, creates the `Stack` class from another `Stack` class.
-     * @param orig - a constant link to another `Stack` class.
+     * Constructor, creates the `Stack` class from another `Stack` class.
+     * @param orig - another `Stack` class.
      */
     Stack(const Stack<Elem> &orig);
     
     /*
-     * A constructor, for the style `Stack s = {1, 2, 3}`.
+     * Constructor, for the style `Stack s = {1, 2, 3}`.
      */
     Stack(std::initializer_list<Elem> lst);
     
     /*
-     * A destructor.
+     * Destructor.
      */
     virtual ~Stack();
     
     /*
      * The `push` function.
-     * Added an element in the stack.
-     * @param element - a constant link to the value.
+     * Inserts an element into the stack.
+     * @param element - an element.
      */
     void push(const Elem &element);
     
     /*
      * The `pop` funciton.
-     * Removes the first element from the stack. 
+     * Removes the first element of the stack. 
      */
     Elem pop() noexcept;
     
     /*
-     * Returns the number of _count.
+     * Returns the number of elements.
      */
     uint count() const noexcept { return _count; }
     
     /*
-     * Returns the first element from the stack.
+     * Returns the first element of the stack.
      */
     Elem front() const noexcept;
     
@@ -81,7 +81,7 @@ public:
 private:
     /*
      * A linked list structure.
-     * Used to represent _count in memory.
+     * Used to represent elements in memory.
      */
     struct Node {
         friend class Stack<Elem>;
@@ -93,10 +93,10 @@ private:
         
         Elem value; // a value.
     private:
-        std::shared_ptr<Node> prev; // a pointer to the previous `Node` structure.
+        std::shared_ptr<Node> prev; // a pointer to the previous element.
         
         /*
-         * A constructor.
+         * Constructor.
          */
         Node(const Elem &v, std::shared_ptr<Node> n) : value(v), prev(n) {}
     };
@@ -104,7 +104,7 @@ private:
     using sptr = std::shared_ptr<Node>;
     
     /*
-     * Pseudonym for code: `std::make_shared<Node>(Node(...)).
+     * Pseudonym for code: `std::make_shared<Node>(Node(...))`.
      */
     template<typename... Args>
     auto make_sptr(Args&&... args) 
@@ -115,7 +115,7 @@ private:
     
     
     sptr _front; // a pointer to the first element.
-    uint _count; // the numbers of _count.
+    uint _count; // the numbers of elements.
     bool empty;
     
 public:
@@ -123,7 +123,8 @@ public:
     
     /*
      * The `iterator` class.
-     * Determines the iterator for the `Stack` class.
+     * Implements the iterator for the stack.
+     * The iperator is `forward_iterator`.
      */
     class iterator : public std::iterator<std::forward_iterator_tag, Elem> {
         /*
@@ -133,7 +134,7 @@ public:
         
     private:
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator(sptr node) : m_node(node) {}
         
@@ -144,7 +145,7 @@ public:
         typedef std::forward_iterator_tag iterator_category;
         
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator() : m_node(0) {}
         
@@ -189,7 +190,7 @@ public:
         /*
          * The operator `!=`.
          * Compares two iterators. Returns `true` if 
-         * iterators are not the same. Otherwise returns `false`.
+         * iterators aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(const iterator& rhs) const noexcept
         { 
@@ -199,7 +200,7 @@ public:
         /*
          * The operator `!=`.
          * Returns `true` if the current iterator and `nullptr`
-         * are the same. Otherwise returns `false`.
+         * aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(std::nullptr_t) const noexcept
         { 
@@ -231,18 +232,19 @@ public:
     };
     
     /*
-     * Returns the iterator to the beginning of the stack.
+     * Returns the iterator to the first element of the stack.
      */
     iterator begin() const noexcept { return iterator(_front); }
     
     /*
      * Returns the iterator to the end of the stack. 
+     * It is usually `nullptr`.
      */
     iterator end() const noexcept { return iterator(nullptr); }
 };
 
 /*
- * A costructor.
+ * Constructor.
  * Creates a new `Stack` class. 
  */
 template<typename Elem>
@@ -254,7 +256,7 @@ Stack<Elem>::Stack() :
 }
 
 /*
- * A constructor.
+ * Constructor.
  * Creates a new `Stack` class from the another `Stack` class.
  */
 template<typename Elem>
@@ -281,7 +283,7 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
 }
 
 /*
- * A constructor, for the style `Stack s = {1, 2, 3}`.
+ * Constructor, for the style `Stack s = {1, 2, 3}`.
  */
 template<typename Elem>
 Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
@@ -298,7 +300,7 @@ Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
 }
 
 /*
- * A destructor.
+ * Destructor.
  * Removes all the elements from memory.
  */
 template<typename Elem>
@@ -314,13 +316,13 @@ Stack<Elem>::~Stack()
 
 /*
  * The `push` function.
- * Added an element in the stack at the beginning.
+ * inserts an element into the stack at the beginning.
  * Increases the size of the stack.
  */
 template<typename Elem>
 void Stack<Elem>::push(const Elem& element)
 {
-    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer to an element.
+    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer.
     if (empty) {
         _front = new_node; // front == back.
         empty = false;
@@ -333,9 +335,9 @@ void Stack<Elem>::push(const Elem& element)
 
 /*
  * The `pop` function.
- * Removes the first element from the stack.
+ * Removes the first element of the stack.
  * Reduces the size of the stack.
- * If the stack is empty, the result has undefined behavior.
+ * If the stack is empty, the result has an undefined behavior.
  */
 template<typename Elem>
 Elem Stack<Elem>::pop() noexcept
@@ -345,7 +347,7 @@ Elem Stack<Elem>::pop() noexcept
     if (!empty) {
         old= _front;
         value = _front->value;
-        _front = _front->prev; // sets a new front element.
+        _front = _front->prev;
         old.reset();
         _count--;
     }
@@ -356,8 +358,8 @@ Elem Stack<Elem>::pop() noexcept
 
 /*
  * The `front` function.
- * Returns the first element from the stack.
- * If the stack is empty, the result has undefined behavior.
+ * Returns the first element of the stack.
+ * If the stack is empty, the result has an undefined behavior.
  */
 template<typename Elem>
 Elem Stack<Elem>::front() const noexcept
@@ -370,8 +372,8 @@ Elem Stack<Elem>::front() const noexcept
 }
 
 /*
- * The overloaded `<<` operator for the Stack class.
- * Prints all _count from the stack in the format: `(1, ...,100)`.
+ * The overloaded `<<` operator for the stack.
+ * Prints all the elements of the stack in the format: `(1, ...,100)`.
  * Returns ostream.
  */
 template<typename Elem>
@@ -406,7 +408,7 @@ extern "C" {
     typedef struct s_node s_node;
     
     /*
-     * Node structure for the stack.
+     * The node structure for the stack.
      */
     struct s_node {
         void *value; // a pointer to a value.
@@ -432,18 +434,19 @@ extern "C" {
     
     /*
      * The `s_push` function.
-     * Added an element in the stack.
+     * Inserts an element into the stack.
      * Takes two arguments:
      * `s` - a pointer to the stack.
      * `element` - a pointer to the element.
      */
     void s_push(stack *s, const void *element);
+    
     /*
      * The `s_pop` function.
      * Removes the first element in the stack. 
      * Returns a pointer to the deleted element.
      * If the stack is empty, returns the `NULL` pointer.
-     * Takes one arguments:
+     * Takes one argument:
      * `s` - a pointer to the stack.
      */
     void *s_pop(stack *s);
@@ -452,7 +455,7 @@ extern "C" {
      * The `s_front` function.
      * Returns a pointer to the first element from the stack.
      * If the stack is empty, returns the `NULL` pointer.
-     * Takes one arguments:
+     * Takes one argument:
      * `s` - a pointer to the stack.
      */
     void *s_front(stack *s);
@@ -460,7 +463,7 @@ extern "C" {
     /*
      * The `s_count` function.
      * Returns the size of the stack.
-     * Takes one arguments:
+     * Takes one argument:
      * `s` - a pointer to the stack.
      * Use this function, if necessary.
      * Or instead this function, use `stack->count`.
@@ -470,9 +473,11 @@ extern "C" {
     /*
      * The `s_delete_stack` function.
      * Removes the stack from memory.
+     * Takes one argument:
      * `s` - a pointer to the stack.
      */
     void s_delete_stack(stack *s);
+    
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
