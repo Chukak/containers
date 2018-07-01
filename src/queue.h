@@ -458,7 +458,7 @@ extern "C" {
     typedef struct q_node q_node;
     
     /*
-     * The ndoe structure for the queue.
+     * The node structure for the queue.
      */
     struct q_node {
         void *value; // a pointer to a value.
