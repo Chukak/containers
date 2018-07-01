@@ -17,7 +17,7 @@ static void *copy_value(const void *pointer)
 
 /*
  * Checks a pointer to the stack.
- * If a pointer to the stack is NULL, Raises `runtime_error`.
+ * If a pointer to the stack is NULL, throws the `runtime_error` error.
  */
 static void check_stack(const void *s) 
 {
@@ -55,13 +55,13 @@ void s_delete_stack(stack *s)
 }
 
 /*
- * Added an element in the stack.
+ * Inserts an element into the stack.
  * Increases the size of the stack.
  */
 void s_push(stack *s, const void *element)
 {
     check_stack(s);
-    // if a pointer is NULL, raises `runtime_error`.
+    // if a pointer is NULL, throws `runtime_error`.
     if (!element) {
         throw std::runtime_error("The pointer to an element is NULL.");
     }
@@ -79,7 +79,7 @@ void s_push(stack *s, const void *element)
 }
 
 /*
- * Removes the last element from the stack and returns the deleted element.
+ * Removes the last element of the stack and returns the deleted element.
  * Reduces the size of the stack.
  */
 void *s_pop(stack *s) 
@@ -100,7 +100,7 @@ void *s_pop(stack *s)
 
 
 /*
- * Returns a front element from the stack.
+ * Returns the first element of the stack.
  */
 void *s_front(stack *s)
 {
@@ -113,7 +113,7 @@ void *s_front(stack *s)
 }
 
 /*
- * Returns the size of the queue.
+ * Returns the size of the stack.
  */
 unsigned int s_count(stack *s) 
 {
