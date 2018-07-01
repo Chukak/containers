@@ -19,15 +19,14 @@ using uint = unsigned int;
 
 /*
  * The `sorted_list` class.
- * Keeps elements in sort order.
- * For the order to be sorted, the class requires operators for elements:
- * 1) `<` - less.
- * 2) `>` - greater.
- * 3) `<=` - less or equal.
- * 4) `>=` - greater or equal.
+ * Saves elements in sort order.
+ * To save the order of the list, the data type, which will be on the list, 
+ * requires the operators for elements:
+ * 1) `<=` - less or equal.
+ * 2) `>=` - greater or equal.
  * 
- * By default, the `<` and `<=` operators are used to compare elements.
- * If the list is reverse, the `>` and `>=` operators are used.
+ * By default, the `<=` operator is used to compare elements.
+ * If the list is reverse, the `>=` operator is used.
  */
 template<typename Num>
 class sorted_list {
@@ -44,74 +43,76 @@ class sorted_list {
 public:
     
     /*
-     * A constructor.
+     * Constructor.
      * @param func - a custom function to compare elements.
      */
     sorted_list(const custom_func& func = nullptr); 
     
     /*
-     * A constructor, creates the `sorted_list` class from another 
+     * Constructor, creates the `sorted_list` class from another 
      * `sorted_list` class.
-     * @param orig - a constant link to another `sorted_list` class.
+     * @param orig - another `sorted_list` class.
      */
     sorted_list(const sorted_list<Num> &orig);
     
     /*
-     * A constructor, for the style `sorted_list list = {3, 2, 1}`.
+     * Constructor, for the style `sorted_list list = {3, 2, 1}`.
      * @param func - a custom function to compare elements.
      */
     sorted_list(std::initializer_list<Num> lst, 
             const custom_func& func = nullptr);
     
     /*
-     * A destructor.
+     * Destructor.
      */
     virtual ~sorted_list();
     
     /*
      * The `push` function.
-     * Inserts an element to the list in a special position 
-     * to save the list in sorted order.
-     * Returns a position of this element.
-     * @param element - a constant link to the value.
+     * Inserts an element into the list in a special position,
+     * to save the order of the list.
+     * Returns the position of this element.
+     * @param element - an element.
      */
     uint push(const Num &element);
     
     /*
      * The `pop_back` function.
-     * Removes the last element from the list and returns it.
+     * Removes the last element of the list and returns it.
+     * If the list is empty, the result has an undefined behavior.
      */
     Num pop_back() noexcept;
     
     /*
      * The `pop_front` function.
-     * Removes the first element from the list and returns it.
+     * Removes the first element of the list and returns it.
+     * If the list is empty, the result has an undefined behavior.
      */
     Num pop_front() noexcept;
     
     /*
      * The `remove` function.
-     * Removes an element from a special position and returns it.
+     * Removes the element from a special position and returns it.
      * This function checks the range of the list. If the range
-     * is invalid or the list is empty, raises the `out_of_range` error.
-     * @param pos - a position from which the element will be deleted.
+     * is invalid or the list is empty, throws the `out_of_range` error.
+     * @param pos - the position from which the element will be deleted.
      */
     Num remove(int pos);
     
     /*
-     * Returns the first element from the list.
+     * Returns the first element of the list.
      * If the list is empty, the result has undefined behavior.
      */
     Num front() const noexcept;
     
     /*
-     * Returns the back element from the list.
+     * Returns the back element of the list.
      * If the list is empty, the result has undefined behavior.
      */
     Num back() const noexcept;
     
     /*
-     * Returns `true` if the list is reverse, otherwise returns `false`.
+     * Returns `true` if the order of the list is reversed, otherwise returns `false`.
      */
     bool is_reversed() const noexcept { return reversed; }
     
@@ -142,16 +143,16 @@ public:
      * The `at` function.
      * Returns an element from the position.
      * This function checks the range of the list. If the range
-     * is invalid or the list is empty, raises the `out_of_range` error.
+     * is invalid or the list is empty, throws the `out_of_range` error.
      * @param pos - a position.
      */
     Num at(int pos) const;
     
     /*
-     * The overloaded operator `[]`.
+     * The operator `[]`.
      * Returns an element from the position.
-     * This function does not checks the range of list. If the range
-     * is invalid, the result has undefined behavior.
+     * This operator doesn`t checks the range of the list. If the range
+     * is invalid, the result has an undefined behavior.
      * @param pos - a position.
      */
     Num operator[](int pos) const noexcept;
@@ -159,7 +160,7 @@ public:
 private:
     
     /*
-     * Returns a result which has undefined behavior.
+     * Returns a result which will have an undefined behavior.
      */
     Num undefined_behavior() const noexcept { return Num(); };
     
@@ -173,14 +174,12 @@ private:
     }
     
     /*
-     * Calls the custom function for comparison elements.
-     * Increments a position.
-     * @param element - constant link to a value.
+     * Calls a custom function for comparison elements.
+     * Increments the position.
+     * @param element - an element.
      * @param pos - a pointer to the position.
-     * The custom function must get 3 arguments and must return true or false. 
-     * Also, the custom function must have the operator `<=` or `>=` 
-     * to compare a new element with the next element. 
-     * Without this operator, the list can not work correctly.
+     * The custom function must get 3 arguments and must return `true` or `false`. 
+     * For example: `[](a, b, c) {  return (a <= b && b <= c); }`.
      */
     void push_with_custom_func(const Num& element, uint *pos);
     
@@ -200,10 +199,10 @@ private:
         Num value; // a value.
     private:
         std::shared_ptr<Node> next; // a pointer to the next node.
-        std::shared_ptr<Node> prev; // a pointer to the prev node.
+        std::shared_ptr<Node> prev; // a pointer to the previous node.
         
         /*
-         * A constructor.
+         * Constructor.
          */
         Node(const Num &e, std::shared_ptr<Node> n, 
             std::shared_ptr<Node> p) : 
@@ -216,7 +215,7 @@ private:
     using sptr = std::shared_ptr<Node>;
     
     /*
-     * Pseudonym for code: `std::make_shared<Node>(Node(...)).
+     * Pseudonym for code: `std::make_shared<Node>(Node(...))`.
      */
     template<typename... Args>
     auto make_sptr(Args&&... args) 
@@ -231,8 +230,8 @@ private:
     bool empty;
     bool reversed;
     custom_func cmp_func;
-    sptr last_node; // save the last inserted node.
-    uint last_pos; // save the last position.
+    sptr last_node; // the last inserted node.
+    uint last_pos; // the last position.
     
 private:
     
@@ -242,16 +241,16 @@ private:
      */
     enum class index {
         FIRST, // the first element. 
-        LAST, // any element between the first and last.
-        MIDDLE // the last element.
+        LAST, // the last element.
+        MIDDLE // any element between the first and last.
     };
     
     /*
-     * Comparison function.
-     * Compares an element from a node with an element.
+     * The comparison function.
+     * Compares the current element with a new element.
      * Used to sort elements in the list.
-     * @param head - a node
-     * @param element - an element
+     * @param head - the current node
+     * @param element - a new element
      * @param ind - a selected element, first, last, or middle.
      */
     bool cmp_operator(const sptr& head, const Num& element, 
@@ -265,17 +264,17 @@ private:
             return (reversed ? _front->value <= element : _front->value >= element);
         } else {
             // compares the middle element.
-            // Calls the function `greater` if the list is reverse,
+            // Calls the function `greater` if the order of the list is reversed,
             // otherwise calls the function `less`.
             return (reversed ? greater(head, element) : less(head, element)); 
         }
     }
     
     /*
-     * Comparison function.
-     * Used when the order of the list is standard.
-     * @param head - a node.
-     * @param element - an element.
+     * The comparison function.
+     * Used when the order of the list isn`t reversed.
+     * @param head - the current node.
+     * @param element - a new element.
      */
     bool less(const sptr& head, const Num& element) const
     {
@@ -285,10 +284,10 @@ private:
     }
     
     /*
-     * Comparison function.
-     * Used when the order of the list is standard.
-     * @param head - a node.
-     * @param element - an element.
+     * The comparison function.
+     * Used when the order of the list is reversed.
+     * @param head - the current node.
+     * @param element - a new element.
      */
     bool greater(const sptr& head, const Num& element) const
     {
@@ -299,7 +298,7 @@ private:
     
     /*
      * Creates a new node, with a new value and inserts this node in
-     * the special position to keep the sorted order.
+     * the special position to save the sorted order.
      */
     void create_new_node(const sptr& head, const Num& element,
             index i = index::MIDDLE) 
@@ -309,7 +308,7 @@ private:
             case index::FIRST: {
                 sptr new_node = make_sptr(Node(element, _front, NULL));
                 _front->prev = new_node; // sets the old first element.
-                _front = new_node;
+                _front = new_node; // changes the first element.
                 break; 
             }
             // After the las element.
@@ -322,7 +321,7 @@ private:
             case index::MIDDLE: {
                 /*
                  * Creates a new node with arguments:
-                 * 1) element - an element.
+                 * 1) element - a new element.
                  * 2) head->next - a pointer to the next node.
                  * 3) head - a pointer to the previous node.
                  */
@@ -348,17 +347,16 @@ public:
     
     /*
      * The `iterator` class.
-     * Determines the iterator for the sorted list.
+     * Implements the iterator for the sorted list.
+     * The iterator is `bidirectional_iterator`.
      */
     class iterator : public std::iterator<std::bidirectional_iterator_tag, Num> {
-        /*
-         * Sets the friend class.
-         */
+        
         friend class sorted_list<Num>;
         
     private:
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator(sptr node, sptr end) : m_node(node), _end(end) {}
         
@@ -369,7 +367,7 @@ public:
         typedef std::bidirectional_iterator_tag iterator_category;
         
         /*
-         * A constructor.
+         * Constructor.
          */
         iterator() : m_node(nullptr), _end(nullptr) {}
         
@@ -444,7 +442,7 @@ public:
         /*
          * The operator `!=`.
          * Compares two iterators. Returns `true` if 
-         * iterators are not the same. Otherwise returns `false`.
+         * iterators aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(const iterator& rhs) const noexcept
         { 
@@ -454,7 +452,7 @@ public:
         /*
          * The operator `!=`.
          * Returns `true` if the current iterator and `nullptr`
-         * are the same. Otherwise returns `false`.
+         * aren`t the same. Otherwise returns `false`.
          */
         bool operator!=(std::nullptr_t) const noexcept
         { 
@@ -487,14 +485,14 @@ public:
     };
     
     /*
-     * Returns the iterator to the beginning of the queue.
+     * Returns the iterator to the first element of the sorted list.
      */
     iterator begin() const noexcept { return iterator(_front, _back); }
     
     /*
-     * Returns the iterator to the end of the queue. 
+     * Returns the iterator to the end of the sorted list. 
      * The iterator points to the element after the 
-     * last element from the queue.
+     * last element from the list.
      */
     iterator end() const noexcept
     { 
@@ -503,7 +501,7 @@ public:
 };
 
 /*
- * A constructor.
+ * Constructor.
  * Creates a new `sorted_list` class.
  */
 template<typename Num>
@@ -520,7 +518,7 @@ sorted_list<Num>::sorted_list(const custom_func& func) :
 }
 
 /*
- * A constructor.
+ * Constructor.
  * Creates a new `sorted_list` class from another `sorted_list` class.
  */
 template<typename Num>
@@ -554,7 +552,7 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
 }
 
 /*
- * A constructor for the style `sorted_list list = {3, 5, 1}`.
+ * Constructor for the style `sorted_list list = {3, 5, 1}`.
  */
 template<typename Num>
 sorted_list<Num>::sorted_list(std::initializer_list<Num> lst, 
@@ -577,7 +575,7 @@ sorted_list<Num>::sorted_list(std::initializer_list<Num> lst,
 }
 
 /*
- * A destructor.
+ * Destructor.
  * Removes all the elements from memory.
  */
 template<typename Num>
@@ -593,7 +591,7 @@ sorted_list<Num>::~sorted_list()
 /*
  * The `push` function.
  * Inserts an element to the list in a special position 
- * to save the list in sorted order.
+ * to save the order of the list.
  * Returns a position of this element.
  */
 template<typename Num>
@@ -606,7 +604,7 @@ uint sorted_list<Num>::push(const Num& element)
             return pos;
         }
         /* 
-         * Compare the first element from the list with a new element.
+         * Compare the first element of the list with a new element.
          * if a new element `<` (`>` if the list is reverse) 
          * than the first element, a new element inserts in the position `0`.
          */ 
@@ -628,7 +626,7 @@ uint sorted_list<Num>::push(const Num& element)
              * if a new element `<` (`>` if the list is reverse) 
              * than any element, a new element inserts in this position.
              */
-            sptr head = last_node;
+            sptr head = last_node; // the last inserted element.
             pos = last_pos;
             
             while (head) {
@@ -637,6 +635,13 @@ uint sorted_list<Num>::push(const Num& element)
                     set_last_node(head->next, pos);
                     break;
                 }
+                /*
+                 * If the last inserted element less than a new element,
+                 * the insertion position located in the right side:
+                 * (the last inserted element ... end of the list)
+                 * Otherwise the insertion position located in the left side:
+                 * (beginning of the list ... the last inserted element).
+                 */
                 head = (last_node->value <= element) ? head->next : head->prev;
                 pos++;
             } 
@@ -652,9 +657,8 @@ uint sorted_list<Num>::push(const Num& element)
 }
 
 /*
- * Calls the user function for comparison elements.
+ * Calls the user function to compare elements.
  * Increments a position. 
- * A custom function must have 3 arguments.
  */
 template<typename Num>
 void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
@@ -663,7 +667,7 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
      * Compare the first element from the list with a new element.
      * Call the custom function with 3 parameters: 
      * `func(a new element, the first element, the first element)`.
-     * If a new element more than the first element, 
+     * If a new element less than the first element, 
      * a new element inserts in the position `0`.
      */ 
     if (cmp_func(element, _front->value, _front->value)) {
@@ -673,6 +677,8 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
      * Compare the last element from the list with a new element.
      * Call the custom function with 3 parameters: 
      * `func(the last element, a new element, a new element)`.
+     * If a new element more than the last element, 
+     * a new element inserts in the last position.
      */
     } else if(cmp_func(_back->value, element, element)) {
         create_new_node(sptr(NULL), element, index::LAST);
@@ -680,17 +686,25 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
         *pos = _count - 1;
     } else {
         /* 
-         * Compare all the elements from the list with a new element.
-         * A new element must be more/(less/equal) than the prevoius element, and
-         * less/(more/equal) than the next element. For example: 2 < 3 <= 4, 
-         * or in the reversed list: 4 > 3 >= 2.
+         * Compare all the elements of the list with a new element.
+         * A new element must be more/equal(less/equal if the order of the list is reversed) 
+         * than the prevoius element, and
+         * less/equal(more/equal) than the next element. For example: 2 <= 3 <= 4, 
+         * or if the order of the list is reversed: 4 => 3 >= 2.
          * Call the custom function with 3 parameters: 
-         * `func(the previous element, a new element, a next element)`.
+         * `func(the previous element, a new element, the next element)`.
          */
-        sptr head = last_node;
+        sptr head = last_node; // the last inserted element.
         *pos = last_pos;
+        /*
+         * If the last inserted element less than a new element,
+         * the insertion position located in the right side:
+         * (the last inserted element ... end of the list)
+         * Otherwise the insertion position located in the left side:
+         * (beginning of the list ... the last inserted element). 
+         */
         bool right = cmp_func(last_node->value, element, _back->value);
-        sptr next = right ? last_node->next : last_node->prev;
+        sptr next = right ? last_node->next : last_node->prev; // sets the next element.
         
         while (head && next) {
             if (cmp_func(head->value, element, head->next->value)) {
@@ -698,6 +712,7 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
                 set_last_node(head->next, *pos);
                 break;
             }
+            
             head = right ? head->next : head->prev;
             next = right ? next->next : next->prev;
             (*pos)++;
@@ -708,8 +723,8 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
 
 /*
  * The `pop_back` function.
- * Removes the last element from the list and returns it.
- * If the list is empty, the result has undefined behavior.
+ * Removes the last element of the list and returns it.
+ * If the list is empty, the result has an undefined behavior.
  */
 template<typename Num>
 Num sorted_list<Num>::pop_back() noexcept
@@ -718,7 +733,7 @@ Num sorted_list<Num>::pop_back() noexcept
         Num value;
         sptr old = _back;
         if (_back == _front) {
-            // Gets a value from the last element.
+            // Gets the value of the last element.
             if (_back) {
                 value = _back->value;
             }
@@ -729,8 +744,7 @@ Num sorted_list<Num>::pop_back() noexcept
         } else {
             value = _back->value;
             /* 
-             * Changes the pointer to the next node
-             * from the previous element.
+             * Changes the pointer to the next element.
              */ 
             _back->prev->next = sptr(NULL);
             _back = _back->prev; 
@@ -746,8 +760,8 @@ Num sorted_list<Num>::pop_back() noexcept
 
 /*
  * The `pop_front` function.
- * Removes the first element from the list and returns it.
- * If the list is empty, the result has undefined behavior.
+ * Removes the first element of the list and returns it.
+ * If the list is empty, the result has an undefined behavior.
  */
 template<typename Num>
 Num sorted_list<Num>::pop_front() noexcept
@@ -756,7 +770,7 @@ Num sorted_list<Num>::pop_front() noexcept
         Num value;
         sptr old = _front;
         if (_front == _back) {
-            // Gets a value from the last element.
+            // Gets the value of the last element.
             if (_front) {
                 value = _back->value;
             }
@@ -767,8 +781,7 @@ Num sorted_list<Num>::pop_front() noexcept
         } else {
             value = _front->value;
             /* 
-             * Changes the pointer to the previous node
-             * from the next element.
+             * Changes the pointer to the previous element.
              */
             _front->next->prev = sptr(NULL);
             _front = _front->next; 
@@ -784,15 +797,15 @@ Num sorted_list<Num>::pop_front() noexcept
 
 /*
  * The `remove` function.
- * Removes an element from a special position and returns it.
+ * Removes the element from a special position and returns it.
  * This function checks the range of the list. If the range
- * is invalid or the list is empty, raises the `out_of_range` error.
+ * is invalid or the list is empty, throws the `out_of_range` error.
  */
 template<typename Num>
 Num sorted_list<Num>::remove(int pos)
 {
     // Checks the range of the list.
-    // If the range is invalid, raises the `out_of_range` error.
+    // If the range is invalid, throws the `out_of_range` error.
     if (is_out_of_range(pos)) { 
         throw std::out_of_range("Error: list index out of range.");
     }
@@ -804,14 +817,14 @@ Num sorted_list<Num>::remove(int pos)
     sptr old = head;
     // Gets a value from the element.
     Num value = head->value;
-    // Changes the pointer to the next element from the previous element.
+    // Changes the pointer to the next element.
     if (head->prev) {
         head->prev->next = head->next; 
     // if the list has only one element.
     } else {
         _front = head->next;
     }
-    // Changes the pointer to the previous element from the next element.
+    // Changes the pointer to the previous element.
     if (head->next) {
         head->next->prev = head->prev; 
     // if the list has only one element.
@@ -824,8 +837,8 @@ Num sorted_list<Num>::remove(int pos)
 }
 
 /*
- * Returns the first element from the list.
- * If the list is empty, the result has undefined behavior.
+ * Returns the first element of the list.
+ * If the list is empty, the result has an undefined behavior.
  */
 template<typename Num>
 Num sorted_list<Num>::front() const noexcept
@@ -834,8 +847,8 @@ Num sorted_list<Num>::front() const noexcept
 }
 
 /*
- * Returns the last element from the list.
- * If the list is empty, the result has undefined behavior.
+ * Returns the last element of the list.
+ * If the list is empty, the result has an undefined behavior.
  */
 template<typename Num>
 Num sorted_list<Num>::back() const noexcept
@@ -845,7 +858,7 @@ Num sorted_list<Num>::back() const noexcept
 
 /*
  * The `reverse` function.
- * Changes the order of the list on reverse.
+ * Changes the order of the list.
  */
 template<typename Num>
 void sorted_list<Num>::reverse() noexcept
@@ -896,13 +909,13 @@ void sorted_list<Num>::clear() noexcept
  * The `at` function.
  * Returns an element from the position.
  * This function checks the range of the list. If the range
- * is invalid or the list is empty, raises the `out_of_range` error.
+ * is invalid or the list is empty, throws the `out_of_range` error.
  */
 template<typename Num>
 Num sorted_list<Num>::at(int pos) const
 {
     // Checks the range of the list.
-    // If the range is invalid, raises the `out_of_range` error.
+    // If the range is invalid, throws the `out_of_range` error.
     if (is_out_of_range(pos)) {
         throw std::out_of_range("Error: list index out of range.");
     }
@@ -915,10 +928,10 @@ Num sorted_list<Num>::at(int pos) const
  }
 
 /*
- * The overloaded operator `[]`.
+ * The operator `[]`.
  * Returns an element from the position.
- * This function does not checks the range of list. If the range
- * is invalid, the result has undefined behavior.
+ * This function doesn`t checks the range of list. If the range
+ * is invalid, the result has an undefined behavior.
  */
 template<typename Num>
 Num sorted_list<Num>::operator[](int pos) const noexcept
@@ -933,7 +946,7 @@ Num sorted_list<Num>::operator[](int pos) const noexcept
 
 /*
  * The overloaded `<<` operator for the sorted list.
- * Prints all elements from the sorted list in the format: `[1, ...,100]`.
+ * Prints all the elements of the sorted list in the format: `[1, ...,100]`.
  * Returns ostream.
  */
 template<typename Num>
