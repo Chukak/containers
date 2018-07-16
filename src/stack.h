@@ -35,10 +35,15 @@ public:
     Stack();
     
     /*
-     * Constructor, creates the `Stack` class from another `Stack` class.
+     * Copy constructor.
      * @param orig - another `Stack` class.
      */
     Stack(const Stack<Elem> &orig);
+    
+    /*
+     * Move constructor.
+     */
+    Stack(Stack<Elem> &&orig);
     
     /*
      * Constructor, for the style `Stack s = {1, 2, 3}`.
@@ -281,6 +286,21 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
         t = t->prev;
     }
 }
+
+/*
+ * Move constructor.
+ */
+template<typename Elem>
+Stack<Elem>::Stack(Stack<Elem>&& orig) :
+    _front(orig._front),
+    _count(orig._count),
+    empty(orig.empty)
+{
+    orig._front = sptr(NULL);
+    orig._count = 0;
+    orig.empty = true;
+}
+
 
 /*
  * Constructor, for the style `Stack s = {1, 2, 3}`.
