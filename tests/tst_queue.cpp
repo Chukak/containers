@@ -61,7 +61,7 @@ TEST_CASE("[Queue] Initialization a queue.", "[queue]") {
         REQUIRE(orig.count() == 0);
         CHECK(orig.is_empty());
         REQUIRE_FALSE(orig.front() == 1);
-        REQUIRE_FALSE(orig.back() == 1);
+        REQUIRE_FALSE(orig.back() == 3);
         
         REQUIRE(&q != nullptr); 
         CHECK_FALSE(q.is_empty());
