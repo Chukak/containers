@@ -56,6 +56,11 @@ public:
     sorted_list(const sorted_list<Num> &orig);
     
     /*
+     * Move constructor.
+     */
+    sorted_list(sorted_list<Num> &&orig);
+    
+    /*
      * Constructor, for the style `sorted_list list = {3, 2, 1}`.
      * @param func - a custom function to compare elements.
      */
@@ -549,6 +554,30 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
         _back = new_node;
         t = t->next;
     }
+}
+
+/*
+ * Move constructor.
+ */
+template<typename Num>
+sorted_list<Num>::sorted_list(sorted_list<Num>&& orig) :
+    _front(orig._front),
+    _back(orig._back),
+    _count(orig._count),
+    empty(orig.empty),
+    reversed(orig.reversed),
+    cmp_func(orig.cmp_func),
+    last_node(sptr(NULL)),
+    last_pos(0)
+{
+    orig._front = sptr(NULL);
+    orig._back = sptr(NULL);
+    orig._count = 0;
+    orig.empty = true;
+    orig.reversed = false;
+    orig.cmp_func = nullptr;
+    orig.last_node = sptr(NULL);
+    orig.last_pos = 0;
 }
 
 /*
