@@ -4,13 +4,13 @@
 /*
  * Testing the initialization of the queue.
  */
-TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
+TEST_CASE("[Queue] Initialization a queue.", "[queue]") {
     /*
      * Testing the standart initialization.
      */
     SECTION("Testing the initialization №1.") {
         Queue<int> q; 
-        
+
         REQUIRE(&q != nullptr); 
         CHECK(q.is_empty());
         REQUIRE(q.count() == 0); 
@@ -49,6 +49,29 @@ TEST_CASE("[Queue] Initialization an queue.", "[queue]") {
         
         q.~Queue();
     }
+    /*
+     * Testing the initialization of the queue from another queue.
+     */
+    SECTION("Testing the initialization №4.") {
+        Queue<int> orig = {1, 2, 3};
+        REQUIRE(&orig != nullptr); 
+        
+        Queue<int> q(std::move(orig));
+        
+        REQUIRE(orig.count() == 0);
+        CHECK(orig.is_empty());
+        REQUIRE_FALSE(orig.front() == 1);
+        REQUIRE_FALSE(orig.back() == 1);
+        
+        REQUIRE(&q != nullptr); 
+        CHECK_FALSE(q.is_empty());
+        REQUIRE(q.count() == 3);
+        REQUIRE(q.back() == 3);
+        REQUIRE(q.front() == 1);
+        
+        orig.~Queue();
+        q.~Queue();
+    } 
 }
 
 /*
