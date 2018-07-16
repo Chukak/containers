@@ -49,6 +49,29 @@ TEST_CASE("[sorted_list] Initialization the sorted list.", "[sorted list]") {
         
         list.~sorted_list();
     }
+    /*
+     * Testing the initialization of the sorted list from another sorted list.
+     */
+    SECTION("Testing the initialization №3.") {
+        sorted_list<int> orig = {3, 2, 1};
+        REQUIRE(&orig != nullptr); 
+        
+        sorted_list<int> list(std::move(orig));
+        
+        REQUIRE(orig.count() == 0);
+        CHECK(orig.is_empty());
+        REQUIRE_FALSE(orig.front() == 1);
+        REQUIRE_FALSE(orig.back() == 3);
+        
+        REQUIRE(&list != nullptr); 
+        CHECK_FALSE(list.is_empty());
+        REQUIRE(list.count() == 3);
+        REQUIRE(list.back() == 3);
+        REQUIRE(list.front() == 1);
+        
+        orig.~sorted_list();
+        list.~sorted_list();
+    }
 }
 
 /*
