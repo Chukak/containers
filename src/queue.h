@@ -35,10 +35,15 @@ public:
     Queue();
     
     /*
-     * Constructor, creates the `queue` class from another `queue` class.
-     * @param orig - another `queue` class.
+     * Copy constructor.
+     * @param orig - another `Queue` class.
      */
-    Queue(const Queue<Elem> &orig);
+    Queue(const Queue<Elem>& orig);
+    
+    /*
+     * Move constructor.
+     */
+    Queue(Queue<Elem> &&orig);
     
     /*
      * Constructor, for the style `Queue q = {1, 2, 3}`.
@@ -296,6 +301,21 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
         _back = new_node;
         t = t->next;
     } 
+}
+
+/*
+ */
+template<typename Elem>
+Queue<Elem>::Queue(Queue<Elem>&& orig) :
+    _front(orig._front),
+    _back(orig._back),
+    _count(orig._count),
+    empty(orig.empty)
+{
+    orig._front = sptr(NULL);
+    orig._back = sptr(NULL);
+    orig._count = 0;
+    orig.empty = true;
 }
 
 /*
