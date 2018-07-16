@@ -47,6 +47,27 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
         
         s.~Stack();
     }
+    /*
+     * Testing the initialization of the stack from another stack.
+     */
+    SECTION("Testing the initialization №4.") {
+        Stack<int> orig = {1, 2, 3};
+        REQUIRE(&orig != nullptr); 
+        
+        Stack<int> s(std::move(orig));
+        
+        REQUIRE(orig.count() == 0);
+        CHECK(orig.is_empty());
+        REQUIRE_FALSE(orig.front() == 3);
+        
+        REQUIRE(&s != nullptr); 
+        CHECK_FALSE(s.is_empty());
+        REQUIRE(s.count() == 3);
+        REQUIRE(s.front() == 3);
+        
+        orig.~Stack();
+        s.~Stack();
+    } 
 }
 
 /*
