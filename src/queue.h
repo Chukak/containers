@@ -48,7 +48,7 @@ public:
     /*
      * Constructor, for the style `Queue q = {1, 2, 3}`.
      */
-    Queue(std::initializer_list<Elem> lst);
+    explicit Queue(std::initializer_list<Elem> lst);
     
     /*
      * Destructor.
@@ -149,7 +149,7 @@ public:
         /*
          * Constructor.
          */
-        iterator(sptr node) : m_node(node) {}
+        explicit iterator(sptr node) : m_node(node) {}
         
     public:
         // value type.
@@ -343,9 +343,9 @@ Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
 template<typename Elem>
 Queue<Elem>::~Queue() 
 {
-    sptr old = sptr(NULL);
+    //sptr old = sptr(NULL);
     while (_front) {
-        old = _front; // a pointer to the current element.
+        sptr old = _front; // a pointer to the current element.
         _front = _front->next; // a pointer to the next element.
         old.reset();
     }
@@ -380,10 +380,10 @@ void Queue<Elem>::enqueue(const Elem &element)
 template<typename Elem>
 Elem Queue<Elem>::dequeue() noexcept
 {
-    sptr old = NULL;
+    //sptr old = NULL;
     Elem value; 
     if (!empty) {
-        old = _front;
+        sptr old = _front;
         value = _front->value;
         _front = _front->next; 
         old.reset();
