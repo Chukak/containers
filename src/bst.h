@@ -17,7 +17,7 @@
 namespace bst_exception {
     class BSTIsEmpty : public std::runtime_error {
     public:
-        BSTIsEmpty(const char* message = "The binary search tree is empty.") : 
+        explicit BSTIsEmpty(const char* message = "The binary search tree is empty.") : 
             std::runtime_error(message) 
         {}
     };
@@ -54,7 +54,7 @@ public:
     /*
      * Constructor, for the style `bst tree = {3, 2, 1}`.
      */
-    bst(std::initializer_list<E> lst);
+    explicit bst(std::initializer_list<E> lst);
     
     /*
      * Destructor.
@@ -191,7 +191,7 @@ public:
         /*
          * Constructor.
          */
-        iterator(sptr node) : current(node)
+        explicit iterator(sptr node) : current(node)
         {
         }
         
