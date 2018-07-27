@@ -48,7 +48,7 @@ public:
     /*
      * Constructor, for the style `Stack s = {1, 2, 3}`.
      */
-    Stack(std::initializer_list<Elem> lst);
+    explicit Stack(std::initializer_list<Elem> lst);
     
     /*
      * Destructor.
@@ -141,7 +141,7 @@ public:
         /*
          * Constructor.
          */
-        iterator(sptr node) : m_node(node) {}
+        explicit iterator(sptr node) : m_node(node) {}
         
     public:
         // value type.
@@ -326,9 +326,9 @@ Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
 template<typename Elem>
 Stack<Elem>::~Stack() 
 {
-    sptr old = NULL;
+    //sptr old = sptr(NULL);
     while (_front) {
-        old = _front; // a pointer to the current element.
+        sptr old = _front; // a pointer to the current element.
         _front = _front->prev; // a pointer to the previous element.
         old.reset();
     }
@@ -362,10 +362,10 @@ void Stack<Elem>::push(const Elem& element)
 template<typename Elem>
 Elem Stack<Elem>::pop() noexcept
 {
-    sptr old = sptr(NULL);
+    //sptr old = sptr(NULL);
     Elem value;
     if (!empty) {
-        old= _front;
+        sptr old= _front;
         value = _front->value;
         _front = _front->prev;
         old.reset();
