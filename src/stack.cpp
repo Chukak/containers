@@ -44,9 +44,8 @@ stack *s_create_stack()
 void s_delete_stack(stack *s)
 {
     check_stack(s);
-    s_node *old = NULL;
     while (s->front) {
-        old = s->front;
+        s_node *old = s->front;
         s->front = s->front->prev;
         ::operator delete(old->value);
         delete old;
@@ -85,10 +84,9 @@ void s_push(stack *s, const void *element)
 void *s_pop(stack *s) 
 {
     check_stack(s);
-    s_node *temp = NULL;
     void *value = NULL;
     if (!s->empty) {
-        temp = s->front;
+        s_node *temp = s->front;
         value = copy_value(s->front->value); // gets a value from the element.
         s->front = s->front->prev;
         delete temp;
