@@ -41,6 +41,11 @@ public:
     Stack(const Stack<Elem> &orig);
     
     /*
+     * The operator `=`.
+     */
+    Stack<Elem>& operator=(const Stack<Elem>& orig);
+    
+    /*
      * Move constructor.
      */
     Stack(Stack<Elem> &&orig);
@@ -285,6 +290,20 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
         temp = temp->prev;
         t = t->prev;
     }
+}
+/*
+ * The operator `=`.
+ */
+template<typename Elem>
+Stack<Elem>& Stack<Elem>::operator=(const Stack<Elem>& orig)
+{
+    if (this == &orig) {
+        return *this;
+    }
+    _front = orig._front;
+    _count = orig._count;
+    empty = orig.empty;
+    return *this;
 }
 
 /*
