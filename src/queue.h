@@ -41,6 +41,11 @@ public:
     Queue(const Queue<Elem>& orig);
     
     /*
+     * The operator `=`.
+     */
+    Queue<Elem>& operator=(const Queue<Elem>& orig);
+    
+    /*
      * Move constructor.
      */
     Queue(Queue<Elem> &&orig);
@@ -304,6 +309,23 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
 }
 
 /*
+ * The operator `=`.
+ */
+template<typename Elem>
+Queue<Elem>& Queue<Elem>::operator=(const Queue<Elem>& orig)
+{
+    if (this == &orig) {
+        return *this;
+    }
+    _front = orig._front;
+    _back = orig._back;
+    _count = orig._count;
+    empty = orig.empty;
+    return *this;
+}
+
+/*
+ * Move constructor.
  */
 template<typename Elem>
 Queue<Elem>::Queue(Queue<Elem>&& orig) :
