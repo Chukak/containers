@@ -46,7 +46,7 @@ public:
      * Constructor.
      * @param func - a custom function to compare elements.
      */
-    sorted_list(const custom_func& func = nullptr); 
+    explicit sorted_list(const custom_func& func = nullptr); 
     
     /*
      * Constructor, creates the `sorted_list` class from another 
@@ -363,7 +363,7 @@ public:
         /*
          * Constructor.
          */
-        iterator(sptr node, sptr end) : m_node(node), _end(end) {}
+        explicit iterator(sptr node, sptr end) : m_node(node), _end(end) {}
         
     public:
         // value type.
