@@ -45,9 +45,8 @@ queue *q_create_queue()
 void q_delete_queue(queue *q)
 {
     check_queue(q);
-    q_node *old = NULL; 
     while (q->_front) {
-        old = q->_front;
+        q_node *old = q->_front;
         q->_front = q->_front->next;
         ::operator delete(old->value);
         delete old;
@@ -87,10 +86,9 @@ void q_enqueue(queue *q, const void *element)
 void *q_dequeue(queue *q) 
 {
     check_queue(q);
-    q_node *temp = NULL;
     void *value = NULL;
     if (!q->empty) {
-        temp = q->_front;
+        q_node *temp = q->_front;
         value = copy_value(q->_front->value); // gets a value from the element.
         q->_front = q->_front->next;
         delete temp;
