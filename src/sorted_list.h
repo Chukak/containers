@@ -390,7 +390,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++(int j) noexcept
+        iterator operator++(int j) noexcept
         {
             m_node = m_node->next;
             return *this;
@@ -415,7 +415,7 @@ public:
          * The postfix operator `--`.
          * Reduces the pointer and returns it. 
          */
-        iterator& operator--(int j) noexcept
+        iterator operator--(int j) noexcept
         {
             if (m_node == nullptr || 
                     m_node == NULL) {

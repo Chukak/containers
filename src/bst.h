@@ -21,7 +21,7 @@ namespace bst_exception {
             std::runtime_error(message) 
         {}
     };
-};
+}
 
 
 using uint = unsigned int;
@@ -249,7 +249,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator& operator++(int j) noexcept
+        iterator operator++(int j) noexcept
         {
             increment();
             return *this;
@@ -408,7 +408,7 @@ void bst<E>::insert(const E& element) noexcept
         root_ = make_sptr(Node(element, NULL, NULL, NULL));
         empty = false;
     } else {
-        sptr parent = NULL;
+        sptr parent = sptr(NULL);
         sptr temp = root_;
         bool is_left = false; 
         while (temp) {
@@ -452,7 +452,7 @@ void bst<E>::remove(const E& element)
         throw bst_exception::BSTIsEmpty();
     }
     sptr temp = root_; 
-    sptr parent = NULL;
+    sptr parent = sptr(NULL);
     bool is_left = false;
     // search for an element in the tree.
     while(temp) {
@@ -473,9 +473,9 @@ void bst<E>::remove(const E& element)
         return ;
     }
     // the function, sets the parent.
-    auto set_parent = [](sptr child, sptr parent) {
+    auto set_parent = [](sptr child, sptr new_parent) {
         if (child) {
-            child->parent = parent;
+            child->parent = new_parent;
         }
     };
     // the function, sets the child.
