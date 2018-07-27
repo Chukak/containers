@@ -53,7 +53,12 @@ public:
      * `sorted_list` class.
      * @param orig - another `sorted_list` class.
      */
-    sorted_list(const sorted_list<Num> &orig);
+    sorted_list(const sorted_list<Num>& orig);
+    
+    /*
+     * The operator `=`.
+     */
+    sorted_list<Num>& operator=(const sorted_list<Num>& orig);
     
     /*
      * Move constructor.
@@ -554,6 +559,26 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
         _back = new_node;
         t = t->next;
     }
+}
+
+/*
+ * The operator `=`.
+ */
+template<typename Num>
+sorted_list<Num>& sorted_list<Num>::operator=(const sorted_list<Num>& orig)
+{
+    if (this == &orig) {
+        return *this;
+    }
+    _front = orig._front;
+    _back = orig._back;
+    _count = orig._count;
+    empty = orig.empty;
+    reversed = orig.reversed;
+    cmp_func = orig.cmp_func;
+    last_node = sptr(NULL);
+    last_pos = 0;
+    return *this;
 }
 
 /*
