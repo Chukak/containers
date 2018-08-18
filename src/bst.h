@@ -54,7 +54,7 @@ public:
     /*
      * Constructor, for the style `bst tree = {3, 2, 1}`.
      */
-    explicit bst(std::initializer_list<E> lst);
+    bst(std::initializer_list<E> lst);
     
     /*
      * Destructor.

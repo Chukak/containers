@@ -53,7 +53,7 @@ public:
     /*
      * Constructor, for the style `Stack s = {1, 2, 3}`.
      */
-    explicit Stack(std::initializer_list<Elem> lst);
+    Stack(std::initializer_list<Elem> lst);
     
     /*
      * Destructor.

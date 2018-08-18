@@ -53,7 +53,7 @@ public:
     /*
      * Constructor, for the style `Queue q = {1, 2, 3}`.
      */
-    explicit Queue(std::initializer_list<Elem> lst);
+    Queue(std::initializer_list<Elem> lst);
     
     /*
      * Destructor.
