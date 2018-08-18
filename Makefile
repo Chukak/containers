@@ -36,6 +36,8 @@ STACKDIR=$(TARGETDIR)/stack
 SLISTDIR=$(TARGETDIR)/sorted_list
 # bst/bst.so
 BSTDIR=$(TARGETDIR)/bst
+# counter/counter.so
+COUNTERDIR=$(TARGETDIR)/counter
 # Sources files
 SOURCES=src
 
@@ -43,7 +45,7 @@ SOURCES=src
 all: compile copy end 
 
 # Compile all the sources files
-compile: $(QUEUEDIR)/queue.so $(STACKDIR)/stack.so $(SLISTDIR)/sorted_list.so $(BSTDIR)/bst.so
+compile: $(QUEUEDIR)/queue.so $(STACKDIR)/stack.so $(SLISTDIR)/sorted_list.so $(BSTDIR)/bst.so $(COUNTERDIR)/counter.so
 
 # queue
 $(QUEUEDIR)/queue.so: $(QUEUEDIR) $(OBJS)/queue.o
@@ -72,6 +74,13 @@ $(BSTDIR)/bst.so: $(BSTDIR) $(OBJS)/bst.o
 
 $(OBJS)/bst.o: $(OBJS) $(SOURCES)/bst.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $(SOURCES)/bst.cpp
+
+# counter
+$(COUNTERDIR)/counter.so: $(COUNTERDIR) $(OBJS)/counter.o
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)/counter.o $(LDFLAGS)
+
+$(OBJS)/counter.o: $(OBJS) $(SOURCES)/counter.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $(SOURCES)/counter.cpp
 	
 
 clean:
@@ -112,6 +121,9 @@ $(SLISTDIR):
 
 $(BSTDIR):
 	mkdir -p $(BSTDIR)
+
+$(COUNTERDIR):
+	mkdir -p $(COUNTERDIR)
 
 .KEEP_STATE:
 .KEEP_STATE_FILE:.make.state.GNU-amd64-Linux
