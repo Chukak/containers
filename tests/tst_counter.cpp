@@ -1,4 +1,4 @@
-include "catch/catch.hpp"
+#include "catch/catch.hpp"
 #include "../src/counter.h"
 
 #include <string>
