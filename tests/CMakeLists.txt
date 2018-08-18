@@ -5,8 +5,18 @@ project(containers_tests)
 
 CHECK_CXX_COMPILER_FLAG(-std=c++14 COMPILER_SUPPORTS_CXX14)
 
-add_compile_options("-g")
-add_compile_options("-Wall")
+#set(CMAKE_CXX_FLAGS "-g -O -Wall -fPIC -Weffc++ -pedantic  \
+#	-pedantic-errors -Wextra -Waggregate-return -Wcast-align \
+#	-Wcast-qual -Wconversion -Wdisabled-optimization -Werror \
+#	-Wfloat-equal -Wformat=2 -Wformat-nonliteral -Wformat-security  \
+#	-Wformat-y2k -Wimport  -Winit-self  -Winline \
+#	-Winvalid-pch -Wlong-long -Wmissing-field-initializers \
+#	-Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn \
+#	-Wpacked  -Wpadded -Wpointer-arith -Wredundant-decls \
+#	-Wshadow -Wstack-protector -Wstrict-aliasing=2 -Wswitch-default \
+#	-Wswitch-enum -Wunreachable-code -Wunused -Wunused-parameter \
+#	-Wvariadic-macros -Wwrite-strings")
+
 add_compile_options("-Werror")
 
 if(COMPILER_SUPPORTS_CXX14)
@@ -26,6 +36,7 @@ set(
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_stack_c.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_sorted_list.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/tst_bst.cpp
+                 ${CMAKE_CURRENT_SOURCE_DIR}/tst_counter.cpp
                  ${SOURCES_DIR}/queue.cpp
                  ${SOURCES_DIR}/stack.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
