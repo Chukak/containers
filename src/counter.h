@@ -101,8 +101,7 @@ public:
     /*
      * The static `map` function.
      * Gets two iterators on the sequence.
-     * Countes number of eleemnts in the sequence and 
-     * sorts it by the greater number of elements.
+     * Countes number of elemnts in the sequence.
      * Return `std::map<T, int>`: T - element, int - number of this element.
      * For example: ('a', 'b', 'c', 'a', 'c', 'd', 'a', 'a', 'b', 'c') 
      * -> {'a': 4, 'c': 3, 'b': 2, 'd': 1}.
