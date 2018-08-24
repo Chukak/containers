@@ -4,6 +4,7 @@
 * [Stack](https://github.com/Chukak/containers/blob/master/docs/stack.md)
 * [Sorted list](https://github.com/Chukak/containers/blob/master/docs/sorted_list.md)
 * [Binary search tree](https://github.com/Chukak/containers/blob/master/docs/bst.md)
+* [Counter](https://github.com/Chukak/containers/blob/master/docs/counter.md)
 
 ## How to compile
 In Linux, you need g++ version 5 or newer, Make version 4 or newer. Clone this repository.
