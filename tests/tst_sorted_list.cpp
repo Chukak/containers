@@ -1,5 +1,5 @@
-#include "catch/catch.hpp"
-#include "../src/sorted_list.h"
+#include <catch.hpp>
+#include "sorted_list.h"
 
 /*
  * Testing the initialization of the sorted list.

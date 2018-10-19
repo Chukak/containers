@@ -1,5 +1,5 @@
-#include "catch/catch.hpp"
-#include "../src/queue.h"
+#include <catch.hpp>
+#include "queue.h"
 #include <stdexcept>
 
 TEST_CASE("[queue] Initialization of the queue in C.", "[queue_c]") {

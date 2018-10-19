@@ -1,5 +1,5 @@
-#include "catch/catch.hpp"
-#include "../src/counter.h"
+#include <catch.hpp>
+#include "counter.h"
 
 #include <string>
 #include <list>

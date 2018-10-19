@@ -1,5 +1,5 @@
-#include "catch/catch.hpp"
-#include "../src/queue.h"
+#include <catch.hpp>
+#include "queue.h"
 
 /*
  * Testing the initialization of the queue.

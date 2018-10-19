@@ -1,5 +1,5 @@
-#include "catch/catch.hpp"
-#include "../src/stack.h"
+#include <catch.hpp>
+#include "stack.h"
 #include <stdexcept>
 
 TEST_CASE("[Stack] Initialization of the stack in C.", "[stack_c]") {

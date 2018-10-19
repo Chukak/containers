@@ -1,5 +1,5 @@
-#include "catch/catch.hpp"
-#include "../src/stack.h"
+#include <catch.hpp>
+#include "stack.h"
 
 /*
  * Testing the initialization of the stack.
