@@ -2,11 +2,6 @@ sudo: required
 
 language: cpp
 
-branches:
-  only:
-    - master
-    - travis_ci
-
 matrix:
   include:
     - os: linux
@@ -34,12 +29,11 @@ install: true
 
 script: 
   - sudo mkdir build && cd build
-  - echo "$PWD"
-  - cmake ../tests/
-  - make
-  - ./containers_tests
+  - sudo cmake ../tests/
+  - sudo make
+  - sudo ./containers_tests
   - cd ../
-  - rm -rf build
+  - sudo rm -rf build
 
 
     
