@@ -20,8 +20,7 @@
 
 
 using uint = unsigned int;
-using uintL = long unsigned int;
-
+using long_uint = long unsigned int;
 
 /*
  * The `Counter` class.
@@ -116,7 +115,7 @@ public:
      * The `size` function.
      * Returns size of the original sequence.
      */
-    uintL size() const noexcept
+    long_uint size() const noexcept
     {
         return _elements.size();
     }
@@ -275,7 +274,7 @@ public:
     template<template <class ... > class Array,
             typename IteratorBegin, 
             typename IteratorEnd>
-    static Array<std::pair<T, uint>> count(IteratorBegin _begin, IteratorEnd _end);
+    constexpr static Array<std::pair<T, uint>> count(IteratorBegin _begin, IteratorEnd _end);
     
     /*
      * Returns the iterator to the first element of the `Counter` class.
@@ -359,7 +358,7 @@ template<typename T>
 template<template <class ... > class Array,
         typename IteratorBegin, 
         typename IteratorEnd>
-Array<std::pair<T, uint>> Counter<T>::count(IteratorBegin _begin, IteratorEnd _end)
+constexpr Array<std::pair<T, uint>> Counter<T>::count(IteratorBegin _begin, IteratorEnd _end)
 {
     std::map<T, uint> map;
     for (auto it = _begin; it != _end; it++) {
@@ -367,18 +366,24 @@ Array<std::pair<T, uint>> Counter<T>::count(IteratorBegin _begin, IteratorEnd _e
     }
     std::vector<std::pair<T, uint>> vec;
     
-    std::copy(map.begin(), map.end(), std::back_inserter(vec)); 
-    std::sort(vec.begin(), vec.end(), 
-            [](const std::pair<T, uint>& a, const std::pair<T, uint>& b) -> bool { 
-                return a.second > b.second; 
-            });
+    std::copy(map.begin(), map.end(), std::back_inserter(vec));
+
+    constexpr auto sort_func = [](const std::pair<T, uint>& a, const std::pair<T, uint>& b) -> bool {
+        return a.second > b.second;
+    };
+
+    std::sort(vec.begin(), vec.end(), sort_func);
             
     Array<std::pair<T, uint>> result;
+
+    constexpr auto insert_func = [](std::pair<T, uint>&& p) -> std::pair<T, uint> {
+        return p;
+     };
     
-    std::transform(vec.begin(), vec.end(), std::inserter(result, std::begin(result)),
-            [](std::pair<T, uint> p) -> std::pair<T, uint> {
-               return p; 
-            });
+    std::transform(std::make_move_iterator(vec.begin()),
+                   std::make_move_iterator(vec.end()),
+                   std::inserter(result, std::begin(result)),
+                   insert_func);
     
     return result;
 }
