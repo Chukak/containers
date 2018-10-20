@@ -1,5 +1,3 @@
-sudo: required
-
 language: cpp
 
 matrix:
@@ -28,12 +26,12 @@ before_install:
 install: true
 
 script: 
-  - sudo mkdir build && cd build
-  - sudo cmake ../tests/
-  - sudo make
-  - sudo ./containers_tests
+  - mkdir build && cd build
+  - cmake ../tests/
+  - make
+  - ./containers_tests
   - cd ../
-  - sudo rm -rf build
+  - rm -rf build
 
 
     
