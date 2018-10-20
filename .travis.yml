@@ -13,7 +13,7 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-tollchain-r-test
+            - ubuntu-toolchain-r-test
           packages:
           - g++-7
       env:
