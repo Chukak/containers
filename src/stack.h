@@ -138,8 +138,7 @@ private:
 		return std::make_shared<Node>(std::forward<Args>(args)...);
 	}
 
-
-	sptr _front; // a pointer to the first element.
+    sptr _front; // a pointer to the first element.
 	uint _count; // the numbers of elements.
 	bool empty;
 
@@ -165,10 +164,9 @@ public:
 		explicit iterator(sptr node) : m_node(node) {}
 
 	public:
-		// value type.
-		typedef Elem value_type;
-		// iterator category
-		typedef std::forward_iterator_tag iterator_category;
+
+        typedef Elem value_type; // value type.
+        typedef std::forward_iterator_tag iterator_category; // iterator category
 
 		/*
 		 * Constructor.
@@ -311,6 +309,7 @@ template<typename Elem> Stack<Elem>::Stack(const Stack<Elem>& orig) :
 		t = t->prev;
 	}
 }
+
 /*
  * The operator `=`.
  */
@@ -339,7 +338,6 @@ template<typename Elem> Stack<Elem>::Stack(Stack<Elem>&& orig) :
 	orig.empty = true;
 }
 
-
 /*
  * Constructor, for the style `Stack s = {1, 2, 3}`.
  */
@@ -362,7 +360,6 @@ template<typename Elem> Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
  */
 template<typename Elem> Stack<Elem>::~Stack()
 {
-	//sptr old = sptr(NULL);
 	while (_front) {
 		sptr old = _front; // a pointer to the current element.
 		_front = _front->prev; // a pointer to the previous element.
@@ -404,7 +401,6 @@ void Stack<Elem>::push(const Elem& element)
 template<typename Elem>
 Elem Stack<Elem>::pop() noexcept
 {
-	//sptr old = sptr(NULL);
 	Elem value;
 	if (!empty) {
 		sptr old = _front;
@@ -530,7 +526,7 @@ void * s_front(stack * s);
  * Use this function, if necessary.
  * Or instead this function, use `stack->count`.
  */
-uint s_count(stack * s);
+unsigned int s_count(stack * s);
 
 /*
  * The `s_delete_stack` function.

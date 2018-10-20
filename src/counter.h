@@ -163,10 +163,9 @@ public:
 		{}
 
 	public:
-		// value type.
-		typedef T value_type;
-		// iterator category
-		typedef std::forward_iterator_tag iterator_category;
+
+        typedef T value_type; // value type.
+        typedef std::forward_iterator_tag iterator_category; // iterator category
 
 		/*
 		 * Constrctor.

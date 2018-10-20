@@ -375,7 +375,6 @@ template<typename Elem> Queue<Elem>::Queue(std::initializer_list<Elem> lst) :
  */
 template<typename Elem> Queue<Elem>::~Queue()
 {
-	//sptr old = sptr(NULL);
 	while (_front) {
 		sptr old = _front; // a pointer to the current element.
 		_front = _front->next; // a pointer to the next element.
@@ -418,7 +417,6 @@ void Queue<Elem>::enqueue(const Elem& element)
 template<typename Elem>
 Elem Queue<Elem>::dequeue() noexcept
 {
-	//sptr old = NULL;
 	Elem value;
 	if (!empty) {
 		sptr old = _front;
@@ -584,7 +582,7 @@ void * q_back(queue * q);
  * Use this function, if necessary.
  * or instead this function, use `queue->count`.
  */
-uint q_count(queue * q);
+unsigned int q_count(queue * q);
 
 /*
  * The `q_delete_queue` function.
