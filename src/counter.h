@@ -20,6 +20,7 @@
 
 
 using uint = unsigned int;
+using uintL = long unsigned int;
 
 
 /*
@@ -115,7 +116,7 @@ public:
      * The `size` function.
      * Returns size of the original sequence.
      */
-    uint size() const noexcept
+    uintL size() const noexcept
     {
         return _elements.size();
     }

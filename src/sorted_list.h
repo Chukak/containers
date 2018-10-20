@@ -63,14 +63,13 @@ public:
     /*
      * Move constructor.
      */
-    sorted_list(sorted_list<Num> &&orig);
+    sorted_list(sorted_list<Num>&& orig);
     
     /*
      * Constructor, for the style `sorted_list list = {3, 2, 1}`.
      * @param func - a custom function to compare elements.
      */
-    sorted_list(std::initializer_list<Num> lst, 
-            const custom_func& func = nullptr);
+    sorted_list(std::initializer_list<Num> lst, const custom_func& func = nullptr);
     
     /*
      * Destructor.
@@ -84,7 +83,12 @@ public:
      * Returns the position of this element.
      * @param element - an element.
      */
-    uint push(const Num &element);
+    uint push(Num&& element);
+
+    /*
+     * The same `insert` function, but for l-value.
+     */
+    uint push(const Num& element);
     
     /*
      * The `pop_back` function.
@@ -172,7 +176,7 @@ private:
     /*
      * Returns a result which will have an undefined behavior.
      */
-    Num undefined_behavior() const noexcept { return Num(); };
+    Num undefined_behavior() const noexcept { return Num(); }
     
     /*
      * Returns `true` if out of range, otherwise `false`.
@@ -191,13 +195,14 @@ private:
      * The custom function must get 3 arguments and must return `true` or `false`. 
      * For example: `[](a, b, c) {  return (a <= b && b <= c); }`.
      */
-    void push_with_custom_func(const Num& element, uint *pos);
+    void push_with_custom_func(Num&& element, uint *pos);
     
     /*
      * A linked list structure.
      * Used to represent elements in memory.
      */
-    struct Node {
+    struct Node
+    {
         friend class sorted_list<Num>;
         
         friend class iterator;
@@ -205,7 +210,7 @@ private:
         template<typename T>
         friend std::ostream& operator<<(std::ostream& stream, 
         const sorted_list<T>& list);
-        
+
         Num value; // a value.
     private:
         std::shared_ptr<Node> next; // a pointer to the next node.
@@ -214,12 +219,20 @@ private:
         /*
          * Constructor.
          */
-        Node(const Num &e, std::shared_ptr<Node> n, 
+        Node(Num&& e, std::shared_ptr<Node> n,
             std::shared_ptr<Node> p) : 
             value(e), 
             next(n), 
             prev(p) 
         {}
+
+    public:
+        Node() :
+            value(),
+            next(nullptr),
+            prev(nullptr)
+        {}
+        ~Node() {}
     };
     
     using sptr = std::shared_ptr<Node>;
@@ -310,43 +323,44 @@ private:
      * Creates a new node, with a new value and inserts this node in
      * the special position to save the sorted order.
      */
-    void create_new_node(const sptr& head, const Num& element,
+    void create_new_node(const sptr& head, Num&& element,
             index i = index::MIDDLE) 
     {
         switch (i) { 
-            // Before the first element.
-            case index::FIRST: {
-                sptr new_node = make_sptr(Node(element, _front, NULL));
-                _front->prev = new_node; // sets the old first element.
-                _front = new_node; // changes the first element.
-                break; 
-            }
+        // Before the first element.
+        case index::FIRST: {
+            sptr new_node = make_sptr(Node(std::move(element), _front, NULL));
+            _front->prev = new_node; // sets the old first element.
+            _front = new_node; // changes the first element.
+            break;
+        }
             // After the las element.
-            case index::LAST: {
-                sptr new_node = make_sptr(Node(element, NULL, _back));
-                _back->next = new_node; // sets the old last element.
-                _back = new_node; // changes the last element.
-                break; 
-            }
-            case index::MIDDLE: {
-                /*
+        case index::LAST: {
+            sptr new_node = make_sptr(Node(std::move(element), NULL, _back));
+            _back->next = new_node; // sets the old last element.
+            _back = new_node; // changes the last element.
+            break;
+        }
+        case index::MIDDLE: {
+            /*
                  * Creates a new node with arguments:
                  * 1) element - a new element.
                  * 2) head->next - a pointer to the next node.
                  * 3) head - a pointer to the previous node.
                  */
-                sptr new_node = make_sptr(Node(element, head->next, head));
-                head->next->prev = new_node; 
-                head->next = new_node; 
-                break;
-            }
+            sptr new_node = make_sptr(Node(std::move(element), head->next, head));
+            head->next->prev = new_node;
+            head->next = new_node;
+            break;
+        }
+        default: break;
         }
     }
     
     /*
      * Sets the last node which was inserted.
      */
-    void set_last_node(const sptr& last, uint pos)
+    void set_last_node(sptr&& last, uint pos)
     {
         last_node = last;
         last_pos = pos;
@@ -360,7 +374,8 @@ public:
      * Implements the iterator for the sorted list.
      * The iterator is `bidirectional_iterator`.
      */
-    class iterator : public std::iterator<std::bidirectional_iterator_tag, Num> {
+    class iterator : public std::iterator<std::bidirectional_iterator_tag, Num>
+    {
         
         friend class sorted_list<Num>;
         
@@ -380,6 +395,11 @@ public:
          * Constructor.
          */
         iterator() : m_node(nullptr), _end(nullptr) {}
+
+        /*
+         * Destructor.
+         */
+        ~iterator() {}
         
         /*
          * The prefix operator `++`.
@@ -395,7 +415,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator operator++(int j) noexcept
+        iterator operator++([[maybe_unused]] int j) noexcept
         {
             m_node = m_node->next;
             return *this;
@@ -550,11 +570,11 @@ sorted_list<Num>::sorted_list(const sorted_list<Num>& orig) :
         return ;
     }
     sptr t = orig._front; // copy a pointer to the first element.
-    _front = make_sptr(Node(t->value, NULL, NULL)); // creates a new pointer.
+    _front = make_sptr(Node(std::move(t->value), NULL, NULL)); // creates a new pointer.
     _back = _front;
     t = t->next; // gets a pointer to the next element.
     while (t) {
-        sptr new_node = make_sptr(Node(t->value, NULL, _back));
+        sptr new_node = make_sptr(Node(std::move(t->value), NULL, _back));
         _back->next = new_node;
         _back = new_node;
         t = t->next;
@@ -649,12 +669,12 @@ sorted_list<Num>::~sorted_list()
  * Returns a position of this element.
  */
 template<typename Num>
-uint sorted_list<Num>::push(const Num& element)
+uint sorted_list<Num>::push(Num&& element)
 {
     uint pos = 0;
     if (!empty) {
         if (cmp_func != nullptr) {
-            push_with_custom_func(element, &pos);
+            push_with_custom_func(std::move(element), &pos);
             return pos;
         }
         /* 
@@ -662,18 +682,18 @@ uint sorted_list<Num>::push(const Num& element)
          * if a new element `<` (`>` if the list is reverse) 
          * than the first element, a new element inserts in the position `0`.
          */ 
-        if (cmp_operator(sptr(NULL), element, index::FIRST)) {
-            create_new_node(sptr(NULL), element, index::FIRST);
-            set_last_node(_front, pos);
+        if (cmp_operator(sptr(NULL), std::move(element), index::FIRST)) {
+            create_new_node(sptr(NULL), std::move(element), index::FIRST);
+            set_last_node(std::move(_front), pos);
         /* 
          * Compare the last element from the list with a new element.
          * if a new element `>` (`<` if the list is reverse) 
          * than the last element, a new element inserts in the last position.
          */
-        } else if (cmp_operator(sptr(NULL), element, index::LAST)) {
-            create_new_node(sptr(NULL), element, index::LAST);
+        } else if (cmp_operator(sptr(NULL), std::move(element), index::LAST)) {
+            create_new_node(sptr(NULL), std::move(element), index::LAST);
             pos = _count - 1;
-            set_last_node(_back, pos);
+            set_last_node(std::move(_back), pos);
         } else {
             /* 
              * Compare all the elements from the list with a new element.
@@ -685,8 +705,8 @@ uint sorted_list<Num>::push(const Num& element)
             
             while (head) {
                 if (cmp_operator(head, element)) {
-                    create_new_node(head, element);
-                    set_last_node(head->next, pos);
+                    create_new_node(head, std::move(element));
+                    set_last_node(std::move(head->next), pos);
                     break;
                 }
                 /*
@@ -701,7 +721,7 @@ uint sorted_list<Num>::push(const Num& element)
             } 
         }
     } else {
-        sptr new_node = make_sptr(Node(element, NULL, NULL));
+        sptr new_node = make_sptr(Node(std::move(element), NULL, NULL));
         _front = new_node; 
         _back = new_node;
         empty = false;
@@ -710,12 +730,18 @@ uint sorted_list<Num>::push(const Num& element)
     return pos;
 }
 
+template<typename Num>
+uint sorted_list<Num>::push(const Num& element)
+{
+    return push(std::move(std::remove_const_t<Num>(element)));
+}
+
 /*
  * Calls the user function to compare elements.
  * Increments a position. 
  */
 template<typename Num>
-void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
+void sorted_list<Num>::push_with_custom_func(Num&& element, uint *pos)
 {
     /* 
      * Compare the first element from the list with a new element.
@@ -725,8 +751,8 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
      * a new element inserts in the position `0`.
      */ 
     if (cmp_func(element, _front->value, _front->value)) {
-        create_new_node(sptr(NULL), element, index::FIRST);
-        set_last_node(_front, *pos);
+        create_new_node(sptr(NULL), std::move(element), index::FIRST);
+        set_last_node(std::move(_front), *pos);
     /* 
      * Compare the last element from the list with a new element.
      * Call the custom function with 3 parameters: 
@@ -735,8 +761,8 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
      * a new element inserts in the last position.
      */
     } else if(cmp_func(_back->value, element, element)) {
-        create_new_node(sptr(NULL), element, index::LAST);
-        set_last_node(_back, *pos);
+        create_new_node(sptr(NULL), std::move(element), index::LAST);
+        set_last_node(std::move(_back), *pos);
         *pos = _count - 1;
     } else {
         /* 
@@ -762,8 +788,8 @@ void sorted_list<Num>::push_with_custom_func(const Num& element, uint *pos)
         
         while (head && next) {
             if (cmp_func(head->value, element, head->next->value)) {
-                create_new_node(head, element);
-                set_last_node(head->next, *pos);
+                create_new_node(head, std::move(element));
+                set_last_node(std::move(head->next), *pos);
                 break;
             }
             
@@ -921,14 +947,14 @@ void sorted_list<Num>::reverse() noexcept
         sptr t = _back;
         sptr old = _back;
         // Creates the first element from the last element.
-        _front = make_sptr(Node(t->value, NULL, NULL));
+        _front = make_sptr(Node(std::move(t->value), NULL, NULL));
         // Removes the last element.
         old.reset();
         _back = _front;
         // Sets the previous element.
         t = t->prev;
         while (t) {
-            sptr new_node = make_sptr(Node(t->value, NULL, _back));
+            sptr new_node = make_sptr(Node(std::move(t->value), NULL, _back));
             old = t;
             _back->next = new_node;
             // Sets the last element.

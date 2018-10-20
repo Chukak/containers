@@ -65,8 +65,13 @@ public:
      * Inserts an element into the stack.
      * @param element - an element.
      */
-    void push(const Elem &element);
+    void push(Elem&& element);
     
+    /*
+     * The same `insert` function, but for l-value.
+     */
+    void push(const Elem& element);
+
     /*
      * The `pop` funciton.
      * Removes the first element of the stack. 
@@ -108,7 +113,10 @@ private:
         /*
          * Constructor.
          */
-        Node(const Elem &v, std::shared_ptr<Node> n) : value(v), prev(n) {}
+        Node(Elem&& v, std::shared_ptr<Node> n) :
+            value(v),
+            prev(n)
+        {}
     };
     
     using sptr = std::shared_ptr<Node>;
@@ -173,7 +181,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator operator++(int j) noexcept
+        iterator operator++([[maybe_unused]] int j) noexcept
         {
             m_node = m_node->prev;
             return *this;
@@ -282,11 +290,11 @@ Stack<Elem>::Stack(const Stack<Elem> &orig) :
         empty = true;
         return ;
     }
-    _front = make_sptr(Node(orig._front->value, NULL)); // copy a pointer to the first element.
+    _front = make_sptr(Node(std::move(orig._front->value), NULL)); // copy a pointer to the first element.
     sptr t = _front;
     sptr temp = orig._front->prev; // gets a pointer to the previous element.
     while (temp) {
-        t->prev = make_sptr(Node(temp->value, NULL));
+        t->prev = make_sptr(Node(std::move(temp->value), NULL));
         temp = temp->prev;
         t = t->prev;
     }
@@ -334,7 +342,7 @@ Stack<Elem>::Stack(std::initializer_list<Elem> lst) :
      * Just copy all the _count.
      */
     for (auto element : lst) {
-        push(element);
+        push(std::move(element));
     }
 }
 
@@ -359,9 +367,9 @@ Stack<Elem>::~Stack()
  * Increases the size of the stack.
  */
 template<typename Elem>
-void Stack<Elem>::push(const Elem& element)
+void Stack<Elem>::push(Elem&& element)
 {
-    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer.
+    sptr new_node = make_sptr(Node(std::move(element), NULL)); // a new pointer.
     if (empty) {
         _front = new_node; // front == back.
         empty = false;
@@ -370,6 +378,12 @@ void Stack<Elem>::push(const Elem& element)
         _front = new_node; // sets the first element.
     }
     _count++;
+}
+
+template<typename Elem>
+void Stack<Elem>::push(const Elem &element)
+{
+    push(std::move(std::remove_const_t<Elem>(element)));
 }
 
 /*

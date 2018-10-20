@@ -34,7 +34,8 @@ using uint = unsigned int;
  * 2) `>` - greater.
  */
 template<typename E>
-class bst {
+class bst
+{
     
     friend class iterator;
     
@@ -69,6 +70,11 @@ public:
      * the function inserts in into the right side of the tree.
      * If this element equal to the root, it doesn`t insert into the tree.
      * @param element - an element.
+     */
+    void insert(E&& element) noexcept;
+
+    /*
+     * The same `insert` function, but for l-value.
      */
     void insert(const E& element) noexcept;
     
@@ -143,8 +149,8 @@ private:
         /*
          * Сonstructor.
          */
-        Node(const E& e, std::shared_ptr<Node> r, 
-            std::shared_ptr<Node> l, std::shared_ptr<Node> p) : 
+        Node(E&& e, std::shared_ptr<Node> r,
+            std::shared_ptr<Node> l, std::shared_ptr<Node> p) :
             data(e), 
             right(r), 
             left(l), 
@@ -249,7 +255,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator operator++(int j) noexcept
+        iterator operator++([[maybe_unused]] int j) noexcept
         {
             increment();
             return *this;
@@ -366,7 +372,7 @@ bst<E>::bst(std::initializer_list<E> lst) :
      * Just copy all the elements.
      */
     for (auto e : lst) {
-        insert(e);
+        insert(std::move(e));
     }
 }
 
@@ -401,11 +407,11 @@ void bst<E>::destroy(sptr n) noexcept
  * the function inserts it into the right side of the tree.
  */ 
 template<typename E>
-void bst<E>::insert(const E& element) noexcept
+void bst<E>::insert(E&& element) noexcept
 {
     if (empty) {
         // this code is `std::make_shared<Node>(Node(...))`.
-        root_ = make_sptr(Node(element, NULL, NULL, NULL));
+        root_ = make_sptr(Node(std::move(element), NULL, NULL, NULL));
         empty = false;
     } else {
         sptr parent = sptr(NULL);
@@ -427,17 +433,21 @@ void bst<E>::insert(const E& element) noexcept
                 return ;
             }
         }
-        switch (is_left) {
-            case true:
-                parent->left = make_sptr(Node(element, NULL, NULL, parent));
-                break;
-            case false:
-                parent->right = make_sptr(Node(element, NULL, NULL, parent));
-                break;
+
+        if (is_left) {
+            parent->left = make_sptr(Node(std::move(element), NULL, NULL, parent));
+        } else {
+            parent->right = make_sptr(Node(std::move(element), NULL, NULL, parent));
         }
     }
     ++count_;
 } 
+
+template<typename E>
+void bst<E>::insert(const E& element) noexcept
+{
+    insert(std::move(std::remove_const_t<E>(element)));
+}
 
 /*
  * The `remove` function.
@@ -473,22 +483,19 @@ void bst<E>::remove(const E& element)
         return ;
     }
     // the function, sets the parent.
-    auto set_parent = [](sptr child, sptr new_parent) {
+    constexpr auto set_parent = [](sptr child, sptr new_parent) {
         if (child) {
             child->parent = new_parent;
         }
     };
     // the function, sets the child.
     auto set_child = [&parent, &is_left, &set_parent](sptr child) {
-        switch (is_left) {
-            case true: 
-                parent->left = child;
-                set_parent(child, parent->left);
-                break;
-            case false: 
-                parent->right = child; 
-                set_parent(child, parent->right);
-                break;
+        if (is_left) {
+            parent->left = child;
+            set_parent(child, parent->left);
+        } else {
+            parent->right = child;
+            set_parent(child, parent->right);
         }
     };
     // case 1.
@@ -530,17 +537,14 @@ void bst<E>::remove(const E& element)
             is_left = false;
         }
         temp->data = rep_node->data;
-        switch (is_left) {
-            case true:
-                if (!rep_node->right) {
-                    temp->left = rep_node->left;
-                    set_parent(rep_node->left, temp->left);
-                }
-                break;
-            case false:
-                parent_rep_node->right = rep_node->left;
-                set_parent(rep_node->left, parent_rep_node->right);
-                break;
+        if (is_left) {
+            if (!rep_node->right) {
+                temp->left = rep_node->left;
+                set_parent(rep_node->left, temp->left);
+            }
+        } else {
+            parent_rep_node->right = rep_node->left;
+            set_parent(rep_node->left, parent_rep_node->right);
         }
         rep_node.reset();
     }

@@ -65,7 +65,11 @@ public:
      * Inserts an element into the queue.
      * @param element - an element.
      */
-    void enqueue(const Elem &element);
+    void enqueue(Elem&& element);
+    /*
+     * The same `insert` function, but for l-value.
+     */
+    void enqueue(const Elem& element);
     
     /*
      * The `dequeue` funciton.
@@ -76,7 +80,7 @@ public:
     /*
      * Returns the number of elements.
      */
-    uint count() const noexcept { return _count; };
+    uint count() const noexcept { return _count; }
     
     /*
      * Returns the first element of the queue.
@@ -118,7 +122,7 @@ private:
         /*
          * Constructor.
          */
-        Node(const Elem &v, std::shared_ptr<Node> n) : value(v), next(n) {}
+        Node(Elem&& v, std::shared_ptr<Node> n) : value(v), next(n) {}
     };
     
     using sptr = std::shared_ptr<Node>;
@@ -181,7 +185,7 @@ public:
          * The postfix operator `++`.
          * Increases the pointer and returns it. 
          */
-        iterator operator++(int j) noexcept
+        iterator operator++([[maybe_unused]] int j) noexcept
         {
             m_node = m_node->next;
             return *this;
@@ -297,11 +301,11 @@ Queue<Elem>::Queue(const Queue<Elem> &orig) :
         return ; 
     }
     sptr t = orig._front; // copy a pointer to the first element.
-    _front = make_sptr(Node(t->value, NULL)); // creates a new pointer.
+    _front = make_sptr(Node(std::move(t->value), NULL)); // creates a new pointer.
     _back = _front;
     t = t->next; // gets a pointer to the next element.
     while (t) {
-        sptr new_node = make_sptr(Node(t->value, NULL));
+        sptr new_node = make_sptr(Node(std::move(t->value), NULL));
         _back->next = new_node;
         _back = new_node;
         t = t->next;
@@ -379,9 +383,9 @@ Queue<Elem>::~Queue()
  * Increases the size of the queue.
  */
 template<typename Elem>
-void Queue<Elem>::enqueue(const Elem &element) 
+void Queue<Elem>::enqueue(Elem&& element)
 {
-    sptr new_node = make_sptr(Node(element, NULL)); // a new pointer.
+    sptr new_node = make_sptr(Node(std::move(element), NULL)); // a new pointer.
     if (empty) { 
         _front = new_node; 
         _back = new_node;
@@ -391,6 +395,12 @@ void Queue<Elem>::enqueue(const Elem &element)
         _back = new_node; // sets the last element.
     }
     _count++;
+}
+
+template<typename Elem>
+void Queue<Elem>::enqueue(const Elem &element)
+{
+    enqueue(std::move(std::remove_const_t<Elem>(element)));
 }
 
 /*
