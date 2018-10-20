@@ -237,14 +237,6 @@ private:
 			next(n),
 			prev(p)
 		{}
-
-	public:
-		Node() :
-			value(),
-			next(nullptr),
-			prev(nullptr)
-		{}
-		~Node() {}
 	};
 
 	using sptr = std::shared_ptr<Node>;

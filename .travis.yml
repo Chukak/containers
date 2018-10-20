@@ -10,6 +10,7 @@ matrix:
           packages:
             - gcc-7
             - g++-7
+            - lcov
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -25,3 +26,17 @@ script:
   - ./containers_tests
   - cd ../
   - rm -rf build
+  # for coverage
+  - mkdir build && cd build
+  - cmake -DCMAKE_BUILD_TYPE="Coverage" ../tests/
+  - make
+  - ./containers_tests
+  - lcov --base-directory . --directory . -c -o coverage.info
+  - lcov --remove coverage.info "/usr/*" "*submodules*" "*tests/tst_*" -o coverage.info 
+  - lcov --summary coverage.info
+  #- genhtml cov.info -o coverage
+  - cd ../
+  - rm -rf build
+  
+
+  
