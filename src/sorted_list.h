@@ -354,12 +354,12 @@ private:
 			break;
 		}
 		case index::MIDDLE: {
-            /*
-             * Creates a new node with arguments:
-             * 1) element - a new element.
-             * 2) head->next - a pointer to the next node.
-             * 3) head - a pointer to the previous node.
-             */
+			/*
+			 * Creates a new node with arguments:
+			 * 1) element - a new element.
+			 * 2) head->next - a pointer to the next node.
+			 * 3) head - a pointer to the previous node.
+			 */
 			sptr new_node = make_sptr(Node(std::move(element), head->next, head));
 			head->next->prev = new_node;
 			head->next = new_node;
@@ -400,8 +400,8 @@ public:
 
 	public:
 
-        typedef Num value_type; // value type.
-        typedef std::bidirectional_iterator_tag iterator_category; // iterator category
+		typedef Num value_type; // value type.
+		typedef std::bidirectional_iterator_tag iterator_category; // iterator category
 
 		/*
 		 * Constructor.
@@ -695,12 +695,12 @@ uint sorted_list<Num>::push(Num&& element)
 		if (cmp_operator(sptr(NULL), std::move(element), index::FIRST)) {
 			create_new_node(sptr(NULL), std::move(element), index::FIRST);
 			set_last_node(std::move(_front), pos);
-        } else if (cmp_operator(sptr(NULL), std::move(element), index::LAST)) {
-            /*
-             * Compare the last element from the list with a new element.
-             * if a new element `>` (`<` if the list is reverse)
-             * than the last element, a new element inserts in the last position.
-             */
+		} else if (cmp_operator(sptr(NULL), std::move(element), index::LAST)) {
+			/*
+			 * Compare the last element from the list with a new element.
+			 * if a new element `>` (`<` if the list is reverse)
+			 * than the last element, a new element inserts in the last position.
+			 */
 			create_new_node(sptr(NULL), std::move(element), index::LAST);
 			pos = _count - 1;
 			set_last_node(std::move(_back), pos);
@@ -763,14 +763,14 @@ void sorted_list<Num>::push_with_custom_func(Num&& element, uint * pos)
 	if (cmp_func(element, _front->value, _front->value)) {
 		create_new_node(sptr(NULL), std::move(element), index::FIRST);
 		set_last_node(std::move(_front), *pos);
-    } else if (cmp_func(_back->value, element, element)) {
-        /*
-         * Compare the last element from the list with a new element.
-         * Call the custom function with 3 parameters:
-         * `func(the last element, a new element, a new element)`.
-         * If a new element more than the last element,
-         * a new element inserts in the last position.
-         */
+	} else if (cmp_func(_back->value, element, element)) {
+		/*
+		 * Compare the last element from the list with a new element.
+		 * Call the custom function with 3 parameters:
+		 * `func(the last element, a new element, a new element)`.
+		 * If a new element more than the last element,
+		 * a new element inserts in the last position.
+		 */
 		create_new_node(sptr(NULL), std::move(element), index::LAST);
 		set_last_node(std::move(_back), *pos);
 		*pos = _count - 1;
@@ -823,10 +823,10 @@ Num sorted_list<Num>::pop_back() noexcept
 		Num value;
 		sptr old = _back;
 		if (_back == _front) {
-            if (_back) {
-                value = _back->value; // Gets the value of the last element.
+			if (_back) {
+				value = _back->value; // Gets the value of the last element.
 			}
-            _back = sptr(NULL); // Removes the element from memory.
+			_back = sptr(NULL); // Removes the element from memory.
 			_front = sptr(NULL);
 			old.reset();
 		} else {
@@ -842,7 +842,7 @@ Num sorted_list<Num>::pop_back() noexcept
 		empty = _count == 0 ? true : false;
 		return value;
 	}
-    // Returns it, if the list is empty.
+	// Returns it, if the list is empty.
 	return undefined_behavior();
 }
 
@@ -858,10 +858,10 @@ Num sorted_list<Num>::pop_front() noexcept
 		Num value;
 		sptr old = _front;
 		if (_front == _back) {
-            if (_front) {
-                value = _back->value; // Gets the value of the last element.
+			if (_front) {
+				value = _back->value; // Gets the value of the last element.
 			}
-            _front = sptr(NULL); // Removes the element from memory.
+			_front = sptr(NULL); // Removes the element from memory.
 			_back = sptr(NULL);
 			old.reset();
 		} else {
@@ -877,7 +877,7 @@ Num sorted_list<Num>::pop_front() noexcept
 		empty = _count == 0 ? true : false;
 		return value;
 	}
-    // Returns it, if the list is empty.
+	// Returns it, if the list is empty.
 	return undefined_behavior();
 }
 

@@ -516,10 +516,10 @@ void bst<E>::remove(const E& element)
 			set_child(sptr(NULL));
 		}
 		temp.reset();
-    } else if (!(temp->left) || !(temp->right)) {
-        // case 2.
-        // If the right child or the left child is NULL.
-        // Removes this node, and replaces it with the right or left child.
+	} else if (!(temp->left) || !(temp->right)) {
+		// case 2.
+		// If the right child or the left child is NULL.
+		// Removes this node, and replaces it with the right or left child.
 		sptr child = temp->left ? temp->left : temp->right;
 		if (!parent) {
 			if (temp == root_) {
@@ -529,11 +529,11 @@ void bst<E>::remove(const E& element)
 			set_child(child);
 		}
 		temp.reset();
-    } else {
-        // case 3.
-        // If the right child and the left child is not NULL.
-        // Removes this Node, and replaces it with the left child.
-        // And replaces the left child with the right child.
+	} else {
+		// case 3.
+		// If the right child and the left child is not NULL.
+		// Removes this Node, and replaces it with the left child.
+		// And replaces the left child with the right child.
 		sptr parent_rep_node = temp;
 		sptr rep_node = temp->left;
 		is_left = true;

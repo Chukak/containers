@@ -138,7 +138,7 @@ private:
 		return std::make_shared<Node>(std::forward<Args>(args)...);
 	}
 
-    sptr _front; // a pointer to the first element.
+	sptr _front; // a pointer to the first element.
 	uint _count; // the numbers of elements.
 	bool empty;
 
@@ -165,8 +165,8 @@ public:
 
 	public:
 
-        typedef Elem value_type; // value type.
-        typedef std::forward_iterator_tag iterator_category; // iterator category
+		typedef Elem value_type; // value type.
+		typedef std::forward_iterator_tag iterator_category; // iterator category
 
 		/*
 		 * Constructor.
