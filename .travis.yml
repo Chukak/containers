@@ -4,7 +4,8 @@ language: cpp
 
 branches:
   only:
-    - c++17
+    - master
+    - travis_ci
 
 matrix:
   include:
