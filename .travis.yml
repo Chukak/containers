@@ -11,6 +11,7 @@ matrix:
             - gcc-7
             - g++-7
             - lcov
+            - libboost-all-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -37,6 +38,17 @@ script:
   #- genhtml cov.info -o coverage
   - cd ../
   - rm -rf build
+  # python module and tests
+  - mkdir build && cd build
+  - cmake ../python/
+  - make
+  - cp ./containers.so ../python/tests/containers.so
+  - cd ../python/tests/
+  - python3 -m unittest discover -s ./ -p "tst_*.py"
+  - rm containers.so
+  - cd ../../
+  - rm -rf build
+  
   
 
   

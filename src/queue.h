@@ -426,6 +426,11 @@ Elem Queue<Elem>::dequeue() noexcept
 		_count--;
 	}
 	// checks if the queue is empty.
+	if (_count == 0) {
+		empty = true;
+		_back.reset();
+		_back = sptr(NULL);
+	}
 	empty = _count == 0 ? true : false;
 	return value;
 }
