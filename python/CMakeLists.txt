@@ -10,15 +10,18 @@ set(CMAKE_CXX_STANDART_REQUIRED ON)
 set(ENABLE_PYTHON3 ON)
 set(PYTHON_EXECUTABLE_PATH)
 
+#TODO
+#fix for travis
 
-#find_package(PythonInterp ${PY_VERSION} REQUIRED)
-#find_package(PythonLibs ${PY_VERSION} REQUIRED)
-#find_package(Boost 1.61.0 COMPONENTS python REQUIRED)
-
-# my version of python
 find_package(PythonInterp 3.5 REQUIRED)
 find_package(PythonLibs 3.5 REQUIRED)
-find_package(Boost 1.61.0 COMPONENTS python-py35 REQUIRED)
+if (PythonLibs_FOUND AND PythonIterp_FOUND)
+    find_package(Boost 1.52.0 COMPONENTS python-py35 REQUIRED)
+else(PythonLibs_FOUND AND PythonIterp_FOUND)
+    find_package(PythonInterp 3.4 REQUIRED)
+    find_package(PythonLibs 3.4 REQUIRED)
+    find_package(Boost 1.52.0 COMPONENTS python-py34 REQUIRED)
+endif()
 
 add_definitions("-g -O -Wall -Werror -fPIC")
 
