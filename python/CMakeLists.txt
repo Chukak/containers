@@ -12,16 +12,26 @@ set(PYTHON_EXECUTABLE_PATH)
 
 #TODO
 #fix for travis
-
-find_package(PythonInterp 3.5 REQUIRED)
-find_package(PythonLibs 3.5 REQUIRED)
-if (PythonLibs_FOUND AND PythonIterp_FOUND)
-    find_package(Boost 1.52.0 COMPONENTS python-py35 REQUIRED)
-else(PythonLibs_FOUND AND PythonIterp_FOUND)
-    find_package(PythonInterp 3.4 REQUIRED)
-    find_package(PythonLibs 3.4 REQUIRED)
-    find_package(Boost 1.52.0 COMPONENTS python-py34 REQUIRED)
+find_package(Boost 1.52.0 COMPONENTS python-py36 QUIET)
+if (NOT Boost_FOUND)
+    find_package(Boost 1.52.0 COMPONENTS python-py35 QUIET)
+    if (NOT Boost_FOUND)
+        find_package(Boost 1.52.0 COMPONENTS python-py34 QUIET)
+        if (NOT Boost_FOUND)
+            find_library(BOOST_PY boost_python)
+        else()
+            find_package(PythonInterp 3.4 REQUIRED)
+            find_package(PythonLibs 3.4 REQUIRED)
+        endif()
+    else()
+        find_package(PythonInterp 3.5 REQUIRED)
+        find_package(PythonLibs 3.5 REQUIRED)
+    endif()
+else()
+    find_package(PythonInterp 3.6 REQUIRED)
+    find_package(PythonLibs 3.6 REQUIRED)
 endif()
+
 
 add_definitions("-g -O -Wall -Werror -fPIC")
 
