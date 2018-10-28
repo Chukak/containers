@@ -12,6 +12,7 @@ matrix:
             - g++-7
             - lcov
             - libboost-all-dev
+            - realpath
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
