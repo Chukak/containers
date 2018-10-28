@@ -186,7 +186,7 @@ public:
 		 * The postfix operator `++`.
 		 * Increases the pointer and returns it.
 		 */
-		iterator operator++(int j) noexcept
+        iterator operator++([[maybe_unused]]int j) noexcept
 		{
 			_begin++;
 			return *this;
