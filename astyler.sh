@@ -3,4 +3,4 @@ astyle --indent=tab=4 --indent-namespaces \
        --pad-oper --pad-comma --pad-header --add-braces --align-pointer=middle \
        --align-reference=type --max-code-length=160 --close-templates \
        --attach-return-type --attach-return-type-decl \
-       --recursive ./src/*.cpp,*.h
+       --recursive ./src/*.cpp,*.h --recursive ./tests/*.cpp,*h --recursive ./tests/performance/*.cpp,*.h
