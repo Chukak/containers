@@ -1,221 +1,167 @@
 #!/bin/bash
 
-CC=""
-CXX=""
-MAKE=""
-PLACE=""
+CXX_LIB=""
+PLACE_LIB=""
+PLACE_HEADERS=""
 COMMONDIR="containers"
 CONTAINERS=(queue stack sorted_list bst counter)
 declare -A SOURCES
 SOURCES=([queue]=queue [stack]=stack [sorted_list]=sorted_list [bst]=bst [counter]=counter)
-CC_FLAGS="-lstd++ -g -Wall -Werror -std=c++14"
-CXX_FLAGS="-g -Wall -Werror -std=c++14"
-FLAGS=""
 
+check_return_code() {
+    until eval $1;
+    do
+        exit 1
+    done
+}
 
 config_gxx() {
     echo "Checking g++."
-    dpkg -s g++ &> /dev/null
+    gxx_version="$(g++ -dumpversion)"
     if [[ $? -ne 0 ]]; then
         echo "Package `g++` not found."
-        exit 1;
-    else
-        gxx_version="$(g++ -dumpversion)"
-        regex='^[5-9]{1}\.[0-9]+\.[0-9]+$'
-        if [[ $gxx_version =~ $regex ]]; then
-            CXX="g++"
-        else
-            echo "You need 'g++' 5 version and newer."
-            exit 1
-        fi
-        unset gxx_version
-        unset regex
+        exit 1
     fi
+    regex='^[7-9]{1}.*$'
+    if ! [[ $gxx_version =~ $regex ]]; then
+        echo "You need 'g++' 7 version and newer."
+        exit 1
+    fi
+    unset gxx_version
+    unset regex
 }
 
-config_make() {
-    echo "Checking make."
-    dpkg -s make &> /dev/null
+config_cmake() {
+    echo "Checking cmake."
+    check_cmake=$(cmake --version)
     if [[ $? -ne 0 ]]; then
-        echo "Package `make` not found."
+        echo "Package `cmake` not found."
         exit 1;
-    else
-        make_version="$(make -v | grep "^GNU Make [4-9]\.[0-9]*")"
-        if [[ $make_version ]]; then
-            MAKE="make"
-        else
-            echo "You need 'make' 4 version and newer."
-            exit 1
-        fi
-        unset make_version
     fi
+    cmake_version="$(cmake --version | grep -E "^cmake version [3-9]\.([7-9]|10)\.[0-9]")"
+    if ! [[ $cmake_version ]]; then
+        echo "You need 'cmake' 3.7.2 version and newer."
+        exit 1
+    fi
+    unset cmake_version
+    unset check_cmake
 }
+
+
 
 build_library() {
-    if ! [[ $CXX ]] && ! [[ $CC ]]; then
+    config_cmake
+    
+    if ! [[ $CXX ]]; then
         config_gxx
     fi
-
-    if ! [[ $MAKE ]]; then
-        config_make
-    fi
     
-    compiler=""
-    if [[ $CC ]]; then
-        compiler=$CC
-    elif [[ $CXX ]]; then
-       compiler=$CXX
+    if [[ -d $PWD/build_lib ]]; then
+        check_return_code "rm -rf build_lib"
     fi
-    
-    if ! [[ $FLAGS ]]; then
-        if [[ $compiler == $CXX ]]; then
-            FLAGS=$CXX_FLAGS
-        else
-            FLAGS=$CC_FLAGS
-        fi
-    fi
-
-    if [[ $MAKE ]] && [[ $compiler ]]; then
-        if [[ $PLACE ]]; then 
-            COMMONDIR=$PLACE/$COMMONDIR
-        fi
-        if [[ -d $COMMONDIR ]]; then
-            rm -rf $COMMONDIR
-            if [[ $? -ne 0 ]]; then
-                echo "Can not delete an existing directory $COMMONDIR."
-                exit 1
-            fi
-        fi
-        mkdir $COMMONDIR
-        if [[ $? -ne 0 ]]; then
-            echo "Can not create $COMMONDIR."
-            exit 1
-        fi
-        echo "Current compiler: $compiler ."
-        echo "Flags: $FLAGS ."
-        if [[ $compiler ]]; then
-            for lib in ${CONTAINERS[@]}; do
-                echo "Create $lib directory."
-                mkdir $COMMONDIR/$lib
-                if [[ $? -ne 0 ]]; then
-                    echo "Can not create $COMMONDIR/$lib."
-                    exit 1
-                fi
-                echo "Building a ${SOURCES[$lib]} library."
-                $compiler $FLAGS -fPIC -c -o $COMMONDIR/$lib/${SOURCES[$lib]}.o src/${SOURCES[$lib]}.cpp
-                $compiler $FLAGS -fPIC -o $COMMONDIR/$lib/${SOURCES[$lib]}.so $COMMONDIR/$lib/${SOURCES[$lib]}.o -shared 
-                rm $COMMONDIR/$lib/${SOURCES[$lib]}.o   
-                cp src/${SOURCES[$lib]}.h $COMMONDIR/$lib/
-            done
-        else
-            echo "The compiler was not found. Check your -gcc or -g++ options."
-        fi
+    check_return_code "mkdir build_lib"
+    check_return_code "cd build_lib"
+    if [[ -x $CXX ]]; then
+        check_return_code "cmake -DCMAKE_CXX_COMPILER=$CXX_LIB ../"
     else
-        echo "Unknown error."
-        exit 128
+        check_return_code "cmake ../"
     fi
-    unset compiler
+    check_return_code "make"
+    check_return_code  "cp $PWD/libcontainers.so  $PLACE_LIB/libcontainers.so"
+    if [[ -d $PLACE_HEADERS/$COMMONDIR ]]; then
+        check_return_code "rm -rf $PLACE_HEADERS/$COMMONDIR"
+    fi
+    check_return_code "mkdir $PLACE_HEADERS/$COMMONDIR"
+    for lib in ${CONTAINERS[@]}; do
+        echo "Create $lib directory."
+        check_return_code "mkdir $PLACE_HEADERS/$COMMONDIR/$lib"
+        check_return_code "cp ../src/${SOURCES[$lib]}.h $PLACE_HEADERS/$COMMONDIR/$lib/"
+    done
+    check_return_code "cd ../"
+    check_return_code "rm -rf build_lib"
 }
 
 usage() {
-    echo "Usage: ./build_library.sh [options] /path/to/library
+    echo "Usage: ./build_library.sh /path/to/library /path/to/includes
 Options:
   --help            Display this information.
 
 Build options:
-  -make             Make special path.
-  -gcc              A special path to the C compiler.
   -g++              A special path to the C++ compiler.
-  -flags            Flags of compiler, for example: \" -g -Werror \".
-                    Also if you compile with gcc, use \" -lstdc++ -std=c++xx \"
-                    flags.
-  --inplace         Create a library in the same directory.
-  /path/to/library  Create a library in the special directory."
+  --inplace/-inp        Create a library in the same directory.
+Paths:
+  /path/to/library  Create a library in the special directory.
+  /path/to/includes  Create headers in the special directory."
 }
 
 
 if [[ $# -eq 1 ]]; then
     if [[ $1 == "--help" ]]; then
         usage
-        exit 0
+        exit 0 
+    elif [[ $1 == "--inplace" ]]; then
+        PLACE_LIB=$(realpath $PWD)
+        PLACE_HEADERS=$(realpath $PWD)
+        
+        build_library
+    else 
+        echo "$1: unknown option."
     fi
-    
+elif [[ $# -ge 2 ]]; then
     if ! [[ $1 =~ ^-[a-zA-Z\+]+=* ]]; then
-        if [[ $1 == "--inplace" ]]; then
-            PLACE=$PWD
-        elif [[ $1 ]] && [[ -d $1 ]]; then
-            PLACE=$1
+        if [[ $1 ]] && [[ -d $1 ]]; then
+            PLACE_LIB=$(realpath $1)
         else
             echo "The $1 directory does not exists."
             exit 1;
         fi
+        if [[ $2 ]] && [[ -d $2 ]]; then
+            PLACE_HEADERS=$(realpath $2)
+        else
+            echo "The $2 directory does not exists."
+            exit 1;
+        fi
+        if [[ $# -eq 2 ]]; then
+            build_library
+        else
+            for arg in "$@"; do
+            case $arg in
+                -g++=*)
+                    CXX_LIB="${arg#*=}"
+                    shift
+                    ;;
+                -inp)
+                    PLACE_LIB=$(realpath $PWD)
+                    PLACE_HEADERS=$(realpath $PWD)
+                    shift
+                    ;;
+                --help)
+                    usage
+                    exit 0
+                    ;;
+                -*)
+                    echo "Unknown option."
+                    exit 128
+                    ;;
+                *)
+                    ;;
+            esac
+            done
 
-        build_library
+            build_library
+        fi
     else
-        echo "You need to the path to the library or --inplace option."
+        echo "You need set the path to the library and set the path to the headers."
         exit 1;
     fi
-
-elif [[ $# -ge 1 ]]; then
-    for arg in "$@"; do
-        case $arg in
-            -make=*)
-                MAKE="${arg#*=}"
-                shift
-                ;;
-            -g++=*)
-                CXX="${arg#*=}"
-                shift
-                ;;
-            -gcc=*)
-                CC="${arg#*=}"
-                shift
-                ;;
-            -flags=*)
-                FLAGS="${arg#*=}"
-                shift
-                ;;
-            --inplace)
-                PLACE=$PWD
-                shift
-                ;;
-            --help)
-                usage
-                exit 0
-                ;;
-            -*)
-                echo "Unknown option."
-                exit 128
-                ;;
-            *)
-                ;;
-        esac
-    done
-    if ! [[ $PLACE=="" ]]; then 
-        if [[ $arg =~ --* ]] || [[ $arg =~ -*=* ]]; then
-            echo "You need to the path to the library or --inplace option."
-            exit 1
-        elif ! [[ -d $arg ]]; then
-            echo "The $arg directory does not exists."
-            exit 1
-        else
-            PLACE=$arg
-        fi
-    fi
-
-    build_library
-
 else
     echo "No options found. --help - for help."
 fi
 
-unset CC
-unset CXX
-unset MAKE
-unset PLACE
+unset CXX_LIB
+unset PLACE_LIB
+unset PLACE_HEADERS
+unset SOURCES
 unset COMMONDIR
 unset CONTAINERS
-unset SOURCES
-unset CXX_FLAGS
-unset CC_FLAGS
-unset FLAGS
+

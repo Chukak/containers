@@ -1,45 +1,55 @@
-# Python 
+# Python 3
 
 ## How to compile module
-This library can be compiled as a python module. You need to set the path to the files `Python.h` and `structmember.h`.
-By default used the following paths are used: `/usr/include/python*.*`, `/usr/local/include/python*.*`, `/usr/lib/python*.*`, 
-`/usr/local/lib/python*.*`, where `*.*` - version of python. For example: `/usr/include/python3.5`. 
-To use a special path to the files `Python.h` and `structmember.h` set the variable `PY_HEADER_PATH`.
 
-For example with default paths, in Linux:
+This library can be compiled as a python module. You need `Boost` 1.52 or newer.
+
+Commands:
 ```bash
-python setup.py built_ext --inplace
+apt-get install python3-dev
+apt-get install libboost-all-dev
+
+mkdir build && cd build
+cmake ../python/
+make
 ```
-With a special path:
-```bash
-PY_HEADER_PATH=/path/to/files python setup.py build_ext --inplace
-```
+And put `containers.so` in place with your *.py files
+
 ## How to use
+
 ### Import module
+
 In python:
+
 ```python
 import containers
 ```
+
 Or:
+
 ```python
 from containers import queue, stack
 ```
+
 ## Containers
+
 ### Stack
+
 Stack - an abstract data type, representing a list of elements, organized by the principle LIFO(Last-In-First-Out).
-This python module used version of stack, written in C.
 
 #### Methods 
 
 ##### Create a stack
 To create a stack, just call the class `stack`.
+
 ```python
 s = stack()
 ```
 
 ##### Add elements
-To add elements to the stack, call the `push` method of the `stack` class. 
-The method returns `True` if successful, otherwise `False`.
+
+To add elements to the stack, use the `push` method. 
+
 ```python
 s = stack()
 ...
@@ -49,8 +59,10 @@ s.push(3)
 ```
 
 ##### Remove elements
-To remove elements from the stack, call the `pop` method of the `stack` class. 
+
+To remove elements from the stack, use the `pop` method. 
 The method returns the deleted element. If the stack is empty, the method returns `None`.
+
 ```python
 s = stack()
 ...
@@ -62,38 +74,30 @@ b = s.pop() # b = 1
 c = s.pop() # c = None
 ```
 
-##### Get the first element from the stack
-To get the fisrt element from the stack, call the `front` method of the `stack` class. 
-The method returns the first element. If the stack is empty, the method returns `None`.
-```python
-s = stack()
-...
-s.push(1)
-...
-a = s.front() # a = 1
-b = s.pop() # b = 1
-c = s.front() # c = None
-```
+#### Members
 
-### Members
 * `stack.count` - the numbers of elements.
-* `stack.empty` - `0` if the stack is empty, otherwise `1`.
+* `stack.empty` - `True` if the stack is empty, otherwise `False`.
+* `stack.front` - the first element of the stack.`
 
 ### Queue
-Queue - an abstract data type, has an implementation of access to elements by the principle FIFO(First-In-First-Out).
-This python module used version of queue, written in C.
 
-#### Methods 
+Queue - an abstract data type, has an implementation of access to elements by the principle FIFO(First-In-First-Out).
+
+##### Methods 
 
 ##### Create an queue
-To create a stack, just call the class `queue`.
+
+To create a queue, just call the class `queue`.
+
 ```python
 q = queue()
 ```
 
 ##### Add elements
-To put elements to the queue, call the `enqueue` method of the `queue` class. 
-The method returns `True` if successful, otherwise `False`.
+
+To add elements to the queue, use the `enqueue` method. 
+
 ```python
 q = queue()
 ...
@@ -103,8 +107,10 @@ q.enqueue(3)
 ```
 
 ##### Remove elements
-To remove elements from the queue, call the `dequeue` method of the `queue` class. 
+
+To remove elements from the queue, use the `dequeue` method. 
 The method returns the deleted element. If the queue is empty, the method returns `None`.
+
 ```python
 q = queue()
 ...
@@ -116,44 +122,110 @@ b = q.dequeue() # b = 2
 c = q.dequeue() # c = None
 ```
 
-##### Get the first element from the queue
-To get the fisrt element from the queue, call the `front` method of the `queue` class. 
-The method returns the first element. If the queue is empty, the method returns `None`.
-```python
-q = queue()
-...
-q.enqueue(1)
-...
-a = q.front() # a = 1
-b = q.dequeue() # b = 1
-c = q.front() # c = None
-```
+##### Clear the queue
 
-##### Get the last element from the queue
-To get the last element from the queue, call the `back` method of the `queue` class. 
-The method returns the last element. If the queue is empty, the method returns `None`.
+To clear the queue, use the `clear` method. 
+
 ```python
-q = queue()
+q = queue();
+...
 ...
 q.enqueue(1)
 q.enqueue(2)
 ...
-a = q.back() # a = 2
-b = q.dequeue() # b = 1
-a = q.back() # a = 2
-b = q.dequeue() # b = 2
-c = q.back() # c = None
+q.clear();
+q.is_empty(); // True
 ```
 
-### Members
+#### Members
+
 * `queue.count` - the numbers of elements.
-* `queue.empty` - `0` if the queue is empty, otherwise `1`.
+* `queue.empty` - `True` if the queue is empty, otherwise `False`.
+* `queue.front` - the first element of the queue.
+* `back` - the last element of the queue.
+
+
+## Binary search tree
+
+Binary search tree - a sorted binary tree, stores objects in memory, can find, insert and delete objects. Elements insert in the sorted order.
+
+#### Methods
+
+##### Insert elements
+
+To insert elements into the in the tree, use the `insert` method. 
+ 
+```python
+tree = bst();
+...
+tree.insert(1); // the root of the tree
+tree.insert(5);
+tree.insert(-10);
+```
+
+##### Remove elements
+
+To remove elements from the tree, use the `remove` method. 
+
+```python
+tree = bst();
+...
+tree.insert(1);
+tree.insert(5);
+...
+tree.remove(5);
+...
+tree.remove(7); // RuntimeError
+```
+
+##### Find elements(if the tree has this element)
+
+To find an element in the tree, use the `find` method. Return `True` is the tree has this element, otherwise returns `False`.
+If the tree is empty, returns `False`.
+
+```python
+tree = bst();
+...
+tree.insert(1);
+tree.insert(5);
+...
+tree.find(1); // True
+...
+tree.find(10); // False
+```
+
+### Clear the tree
+
+To clear the tree, use the `clear` method. 
+
+```python
+tree = bst();
+...
+tree.insert(1);
+tree.insert(5);
+...
+tree.clear(); 
+tree.is_empty(); // true
+```
+
+#### Members
+
+* `bst.count` - the number of elements.
+* `bst.is_empty` - `True` if the queue is empty, otherwise `False`.
+* `bst.min` - the minimum element of the tree.
+* `bst.max` - the maximum element of the tree.
+* `bst.root` - the root of the tree.
+
 
 ## Testing the python module
-To test the `containers` module, call `pytests.py` to run all the tests:
+
+To test the `containers` module, put `containers.so` in `python/tests` directory and run command:
+
 ```bash
-cd tests && python pytests.py
+python3 -m unittest discover -s ./ -p "tst_*.py"
 ```
+
+Also, in files `python/tests/tst_*.py` you will find examples of use.
 
 <hr>
 

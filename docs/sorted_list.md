@@ -16,33 +16,40 @@ It can be used instead of overrided operators.
 is used for the comparison.
 
 ## Header
+
 The sorted list is implemented in the `sorted_list.h` header file, which is located in the category `sorted_list`. 
 To include the header file:
+
 ```cpp
 #include "containers/sorted_list/sorted_list.h"
 ```
 
 ## Create a sorted list
+
 The sorted list is implemented using C++ templates. To create a sorted list, pass the data type, 
 which will be in the sorted list, in the constructor.
 
 Standard initialization:
+
 ```cpp
 sorted_list<int> list;
 ```
 
 Initialization with braces:
+
 ```cpp
 sorted_list<int> list = {3, 5, 1, 4, 2}; // list - [1, 2, 3, 4, 5]
 ```
 
 Initialization a sorted list fron another sorted list:
+
 ```cpp
 sorted_list<int> orig = {3, 1, 2};
 sorted_list<int> list(orig);
 ```
 
 If you want to compare elements using a custom function, pass a custom function in constructor:
+
 ```cpp
 auto f = [](int a, int b, int c) {
   return a <= b && b <= c;
@@ -52,8 +59,10 @@ sorted_list<int> list(f);
 Note: Use it only with standart initialization, when the list is empty.
 
 ## Add elements
+
 To add elements in the list, use the `push` method. The `push` method adds an element to a special position.
 The order in the list is saved when the element inserted. Returns a position.
+
 ```cpp 
 sorted_list<int> list;
 ...
@@ -61,40 +70,52 @@ list.push(27); // list - [27]
 list.push(-45); // list - [-45, 27]
 list.push(1); // list - [-45, 1, 27]
 ```
-If a new element less(more is the list is reversed) than the first element of the list or more(less if the list is reversed) 
+
+If a new element less(more if the list is reversed) than the first element of the list or more(less if the list is reversed) 
 the last element of the list, the insertion will be executed instantly. Otherwise, the `push` method will find a special position for this element, the insertion can be take some time. 
-Depends on the numbers of elements. If the list is large, the performance can be slow. 
+Depends on the numbers of elements. At the moment if the list is large, the performance can be slow. 
 
 ## Remove elements
+
 To remove the `sorted_list` class has three methods: `pop_front`, `pop_back`, `remove`.
 
 ### Remove the first element
+
 To remove the first element of the list, use the `pop_front` method. The `pop_front` method removes the 
 first element of the list. Returns the deleted element.
+
 ```cpp
 sorted_list<int> list = {2, 3, 1};
 ...
 list.pop_front(); // returns 1
 list.pop_front(); // returns 2
 ```
-If the list is empty, the result of the `pop_front` method has an undefined behavior. Be careful when using this method.
+
+At the moment if the list is empty, the result of the `pop_front` method has an undefined behavior. 
+Be careful when using this method.
 
 ### Remove the last element
+
 To remove the last element of the list, use the `pop_back` method. The `pop_back` method removes the 
 last element of the list. Returns the deleted element.
+
 ```cpp
 sorted_list<int> list = {2, 3, 1};
 ...
 list.pop_back(); // returns 3
 list.pop_back(); // returns 2
 ```
-If the list is empty, the result of the `pop_back` method has an undefined behavior. Be careful when using this method.
+
+At the moment if the list is empty, the result of the `pop_back` method has an undefined behavior. 
+Be careful when using this method.
 
 ### Remove from the position
+
 To remove an element from a position, use the `remove` method. The `remove` method, checks an available range. 
 If the position, from which you want to remove an element is less than zero, or outside of the range of the list, 
 the `remove` method throws the `out_of_range` error. This method is safe, can be use when the list is empty.
 Returns the deleted element.
+
 ```cpp
 sorted_list<int> list = {2, 3, 1};
 ...
@@ -106,30 +127,39 @@ list.remove(0); // out of range
 ```
 
 ## Get the first element
+
 To get the first element of the list, use the `front` method. Returns the first element of the list.
+
 ```cpp
 sorted_list<int> list = {2, 1};
 ...
 list.front(); // returns 1
 ```
-If the list is empty, the result of the `front` method has an undefined behavior. Be careful when using this method.
+
+At the moment if the list is empty, the result of the `front` method has an undefined behavior. 
+Be careful when using this method.
 
 ## Get the last element
 To get the last element of the list, use the `back` method. Returns the last element of the list.
+
 ```cpp
 sorted_list<int> list = {2, 1};
 ...
 list.last(); // returns 2
 ```
-If the list is empty, the result of the `back` method has an undefined behavior. Be careful when using this method.
+
+At the moment if the list is empty, the result of the `back` method has an undefined behavior. 
+Be careful when using this method.
 
 ## Get elements from the position
 
 ### the `at` method
+
 To get an element from the position, use the `at` method. The `at` method, checks an available range.
 If the position, from which you want to get an element is less than zero, or outside of the range of the list, 
 the `at` method throws the `out_of_range` error. This method is safe, can be use when the list is empty.
 Returns an element from the position.
+
 ```
 sorted_list<int> list = {2, 1};
 ...
@@ -140,10 +170,14 @@ sorted_list<int> list2;
 ...
 list2.at(0); // out of range
 ```
+
 ### the operator `[]`
+
 Also, you can use the operator `[]` to get an element from the position. But this method doesn\`t check an available range.
 Returns an element from the position.
+
 If the list is empty or the position less than zero, the result has an undefined behavior. Be careful when using this method.
+
 ```cpp
 sorted_list<int> list = {3, 1, 2};
 ...
@@ -154,7 +188,9 @@ list[-1]; // ????
 ## Extra methods
 
 ### The number of elements
+
 To get the number of elements in the list, use the `count` method. Returns the number of elements.
+
 ```cpp
 sorted_list<int> list = {1, 2, 3};
 ...
@@ -162,7 +198,9 @@ list.count(); // returns 3
 ```
 
 ### Check if the list is empty
+
 To check if the list is empty or not, use the `is_empty` method. Returns `true` if the list is empty, otherwise `false`.
+
 ```cpp
 sorted_list<int> list;
 ...
@@ -173,9 +211,11 @@ list.is_empty(); // false
 ```
 
 ### Change the order of the list
+
 To change the order of the list, use the `reverse` method. 
 Changes the order of the list and the operator for the comparison. If the operator for comparison is a custom function, 
 changes only the order of the list. 
+
 ```cpp
 sorted_list<int> = {3, 1, 2}; // [1, 2, 3]
 ...
@@ -187,8 +227,10 @@ list.push(5); // [5, 3, 2, 1, -1, -5]
 ```
 
 ### Check the order of the list
+
 To check if the order of the list, use the `is_reversed` method. Returns `true` if the order of the list is reversed, 
 otherwise `false`.
+
 ```cpp
 sorted_list<int> list = {3, 2, 1}; // [1, 2, 3]
 ...
@@ -202,7 +244,9 @@ list.is_reversed(); // false
 ```
 
 ### Clear the list
-To clear the list, use the `clear` method. The method returns nothing.
+
+To clear the list, use the `clear` method. 
+
 ```cpp
 sorted_list<int> list = {3, 4, 1, 2, 5};
 ...
@@ -211,44 +255,55 @@ list.is_empty(); // true
 ```
 
 ## Custom comparison functions
+
 You can use a custom function to compare elements and to keep the order in the list. You must follow the following rules:
 * the function must have 3 parameters! Like the standatd comparison function, it must compare the previous element
 with a new element and the next element with a new element. 
 For example, we want to add `3` in the list `[1, 2, 4, 5]`. We must compare `3` with two other elements, 
 in our list, it will be `2` and `4`. In this case, the function must be get 3 arguments `2`, `3` and `4`, 
 and must return `true` or `false` in this statement: `2 <= 3 <= 4`. For example:
+
 ```cpp
 auto = [](int a, int b, int c) {
   return a <= b && b <= c;
 }; 
 ```
+
 Note: Instead of a custom function you can override the operators `>=`, `<=`. 
 
 * the function must return `true` or `false`
 
-The `push` function checks 3 different situations:
+The `push` method checks 3 different situations:
 * when the added element must be added before the first element in the list (instantly)
 * when the added element must be added after the last element in the list (instantly)
 * when the added element must be added to the middle of the list (can be take some time)
 
 
 ## Iterators
-The `sorted_list` class has iterators of list. The iterators are `bidirectional_iterator`. 
+
+The `sorted_list` class has iterators. The iterators have a `bidirectional_iterator` type. 
 You can increase and reduce the iterators.
 
 ### Use iterators
-To get the iterator on the first element iof the list, use the `begin()` method. 
+
+To get the iterator on the first element of the list, use the `begin()` method. 
 Returns the iterator to the first element of the list. You can increase the iterator. 
 But, don\`t reduce this iterator!
 
 To get the iterator to the end of the list, use the `end()` method. 
 Returns the iterator to the end of the list. You can reduce the iterator. 
 But, don\`t increase this iterator! 
-For example: `for (auto it = list.end(); it != list.begin(); it--) { ... }`. 
+
+For example: 
+```
+for (auto it = list.end(); it != list.begin(); it--) { ... }
+```
+
 But, in this case, you can\`t get the first element of the list. 
 Maybe, in the future, this problem will be solved. Be careful when you reduce this iterator.
 
 To get the type of iterators, use `sorted_list<...>::iterator` or use `auto`.
+
 ```cpp
 sorted_list<int> l = {5, 3, 2, 4, 1};
 for (auto it = l.begin(), it != l.end(); it++) { ... }
