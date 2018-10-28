@@ -49,7 +49,16 @@ script:
   - rm containers.so
   - cd ../../
   - rm -rf build
-  
+  # check build_library.sh script
+  - mkdir libdir
+  -  ./build_library.sh libdir libdir -g++=/usr/bin/g++-7
+  - ls libdir/containers &> /dev/null
+  - ls libdir/containers/queue &> /dev/null
+  - ls libdir/containers/stack &> /dev/null
+  - ls libdir/containers/bst &> /dev/null
+  - ls libdir/containers/sorted_list &> /dev/null
+  - ls libdir/containers/counter &> /dev/null
+  - rm -rf libdir
   
 
   
