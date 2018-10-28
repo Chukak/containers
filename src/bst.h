@@ -22,7 +22,8 @@ namespace bst_exception
 		explicit BSTIsEmpty(const char * message = "The binary search tree is empty.") :
 			std::runtime_error(message)
 		{}
-		virtual ~BSTIsEmpty();
+		virtual ~BSTIsEmpty()
+		{}
 	};
 }
 
