@@ -444,7 +444,7 @@ public:
 		 * The postfix operator `--`.
 		 * Reduces the pointer and returns it.
 		 */
-        iterator operator--([[maybe_unused]]int j) noexcept
+		iterator operator--([[maybe_unused]]int j) noexcept
 		{
 			if (m_node == nullptr ||
 			        m_node == NULL) {

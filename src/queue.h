@@ -519,86 +519,86 @@ extern "C" {
 namespace pure_c
 {
 
-typedef struct q_node q_node;
+	typedef struct q_node q_node;
 
-/*
- * The node structure for the queue.
- */
-struct q_node {
-	void * value; // a pointer to a value.
-	q_node * next; // a pointer to the next node.
-};
+	/*
+	 * The node structure for the queue.
+	 */
+	struct q_node {
+		void * value; // a pointer to a value.
+		q_node * next; // a pointer to the next node.
+	};
 
-/*
- * The structure `queue`.
- * The queue is the structure "First-In-First-Out".
- *
- */
-typedef struct {
-	q_node * _front; // a pointer to the first node.
-	q_node * _back; // a pointer to the last node.
-	uint count;
-	int empty;
-} queue;
+	/*
+	 * The structure `queue`.
+	 * The queue is the structure "First-In-First-Out".
+	 *
+	 */
+	typedef struct {
+		q_node * _front; // a pointer to the first node.
+		q_node * _back; // a pointer to the last node.
+		uint count;
+		int empty;
+	} queue;
 
-/*
- * The `q_create_queue` function.
- * Creates a queue and returns a pointer to it.
- */
-queue * q_create_queue(void);
+	/*
+	 * The `q_create_queue` function.
+	 * Creates a queue and returns a pointer to it.
+	 */
+	queue * q_create_queue(void);
 
-/*
- * The `q_enqueue` function.
- * Inserts an element into the queue.
- * Takes two arguments:
- * `q` - a pointer to the queue.
- * `element` - a pointer to the element.
- */
-void q_enqueue(queue * q, const void * element);
-/*
- * The `q_dequeue` function.
- * Removes the first element of the queue.
- * Returns a pointer to the deleted element.
- * If the queue is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `q` - a pointer to the queue.
- */
-void * q_dequeue(queue * q);
+	/*
+	 * The `q_enqueue` function.
+	 * Inserts an element into the queue.
+	 * Takes two arguments:
+	 * `q` - a pointer to the queue.
+	 * `element` - a pointer to the element.
+	 */
+	void q_enqueue(queue * q, const void * element);
+	/*
+	 * The `q_dequeue` function.
+	 * Removes the first element of the queue.
+	 * Returns a pointer to the deleted element.
+	 * If the queue is empty, returns the `NULL` pointer.
+	 * Takes one argument:
+	 * `q` - a pointer to the queue.
+	 */
+	void * q_dequeue(queue * q);
 
-/*
- * The `q_front` function.
- * Returns a pointer to the first element of the queue.
- * If the queue is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `q` - a pointer to the queue.
- */
-void * q_front(queue * q);
-/*
- * The `q_back` function.
- * Returns a pointer to the last element of the queue.
- * If the queue is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `q` - a pointer to the queue.
- */
-void * q_back(queue * q);
+	/*
+	 * The `q_front` function.
+	 * Returns a pointer to the first element of the queue.
+	 * If the queue is empty, returns the `NULL` pointer.
+	 * Takes one argument:
+	 * `q` - a pointer to the queue.
+	 */
+	void * q_front(queue * q);
+	/*
+	 * The `q_back` function.
+	 * Returns a pointer to the last element of the queue.
+	 * If the queue is empty, returns the `NULL` pointer.
+	 * Takes one argument:
+	 * `q` - a pointer to the queue.
+	 */
+	void * q_back(queue * q);
 
-/*
- * The `q_count` function.
- * Returns the size of the queue.
- * Takes one argument:
- * `q` - a pointer to the queue.
- * Use this function, if necessary.
- * or instead this function, use `queue->count`.
- */
-unsigned int q_count(queue * q);
+	/*
+	 * The `q_count` function.
+	 * Returns the size of the queue.
+	 * Takes one argument:
+	 * `q` - a pointer to the queue.
+	 * Use this function, if necessary.
+	 * or instead this function, use `queue->count`.
+	 */
+	unsigned int q_count(queue * q);
 
-/*
- * The `q_delete_queue` function.
- * Removes the queue from memory.
- * Takes one argument:
- * `q` - a pointer to the queue.
- */
-void q_delete_queue(queue * q);
+	/*
+	 * The `q_delete_queue` function.
+	 * Removes the queue from memory.
+	 * Takes one argument:
+	 * `q` - a pointer to the queue.
+	 */
+	void q_delete_queue(queue * q);
 
 }
 

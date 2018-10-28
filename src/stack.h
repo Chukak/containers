@@ -466,78 +466,78 @@ extern "C" {
 namespace pure_c
 {
 
-typedef struct s_node s_node;
+	typedef struct s_node s_node;
 
-/*
- * The node structure for the stack.
- */
-struct s_node {
-	void * value; // a pointer to a value.
-	s_node * prev; // a pointer to the next node.
-};
+	/*
+	 * The node structure for the stack.
+	 */
+	struct s_node {
+		void * value; // a pointer to a value.
+		s_node * prev; // a pointer to the next node.
+	};
 
-/*
- * The structure `stack`.
- * The stack is the structure "Last-In-First-Out".
- *
- */
-typedef struct {
-	s_node * front; // a pointer to the first node.
-	uint count; // a pointer to the last node.
-	int empty;
-} stack;
+	/*
+	 * The structure `stack`.
+	 * The stack is the structure "Last-In-First-Out".
+	 *
+	 */
+	typedef struct {
+		s_node * front; // a pointer to the first node.
+		uint count; // a pointer to the last node.
+		int empty;
+	} stack;
 
-/*
- * The `s_create_stack` function.
- * Creates a stack and returns a pointer to it.
- */
-stack * s_create_stack();
+	/*
+	 * The `s_create_stack` function.
+	 * Creates a stack and returns a pointer to it.
+	 */
+	stack * s_create_stack();
 
-/*
- * The `s_push` function.
- * Inserts an element into the stack.
- * Takes two arguments:
- * `s` - a pointer to the stack.
- * `element` - a pointer to the element.
- */
-void s_push(stack * s, const void * element);
+	/*
+	 * The `s_push` function.
+	 * Inserts an element into the stack.
+	 * Takes two arguments:
+	 * `s` - a pointer to the stack.
+	 * `element` - a pointer to the element.
+	 */
+	void s_push(stack * s, const void * element);
 
-/*
- * The `s_pop` function.
- * Removes the first element in the stack.
- * Returns a pointer to the deleted element.
- * If the stack is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `s` - a pointer to the stack.
- */
-void * s_pop(stack * s);
+	/*
+	 * The `s_pop` function.
+	 * Removes the first element in the stack.
+	 * Returns a pointer to the deleted element.
+	 * If the stack is empty, returns the `NULL` pointer.
+	 * Takes one argument:
+	 * `s` - a pointer to the stack.
+	 */
+	void * s_pop(stack * s);
 
-/*
- * The `s_front` function.
- * Returns a pointer to the first element from the stack.
- * If the stack is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `s` - a pointer to the stack.
- */
-void * s_front(stack * s);
+	/*
+	 * The `s_front` function.
+	 * Returns a pointer to the first element from the stack.
+	 * If the stack is empty, returns the `NULL` pointer.
+	 * Takes one argument:
+	 * `s` - a pointer to the stack.
+	 */
+	void * s_front(stack * s);
 
-/*
- * The `s_count` function.
- * Returns the size of the stack.
- * Takes one argument:
- * `s` - a pointer to the stack.
- * Use this function, if necessary.
- * Or instead this function, use `stack->count`.
- */
-unsigned int s_count(stack * s);
+	/*
+	 * The `s_count` function.
+	 * Returns the size of the stack.
+	 * Takes one argument:
+	 * `s` - a pointer to the stack.
+	 * Use this function, if necessary.
+	 * Or instead this function, use `stack->count`.
+	 */
+	unsigned int s_count(stack * s);
 
-/*
- * The `s_delete_stack` function.
- * Removes the stack from memory.
- * Takes one argument:
- * `s` - a pointer to the stack.
- */
-void s_delete_stack(stack * s);
+	/*
+	 * The `s_delete_stack` function.
+	 * Removes the stack from memory.
+	 * Takes one argument:
+	 * `s` - a pointer to the stack.
+	 */
+	void s_delete_stack(stack * s);
 
 }
 
