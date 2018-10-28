@@ -17,36 +17,34 @@ check_return_code() {
 
 config_gxx() {
     echo "Checking g++."
-    check_return_code "dpkg -s g++ &> /dev/null"
+    gxx_version="$(g++ -dumpversion)"
     if [[ $? -ne 0 ]]; then
         echo "Package `g++` not found."
-        exit 1;
-    else
-        gxx_version="$(g++ -dumpversion)"
-        regex='^[7-9]{1}.*$'
-        if ! [[ $gxx_version =~ $regex ]]; then
-            echo "You need 'g++' 7 version and newer."
-            exit 1
-        fi
-        unset gxx_version
-        unset regex
+        exit 1
     fi
+    regex='^[7-9]{1}.*$'
+    if ! [[ $gxx_version =~ $regex ]]; then
+        echo "You need 'g++' 7 version and newer."
+        exit 1
+    fi
+    unset gxx_version
+    unset regex
 }
 
 config_cmake() {
     echo "Checking cmake."
-    check_return_code "dpkg -s cmake &> /dev/null"
+    check_cmake=$(cmake --version)
     if [[ $? -ne 0 ]]; then
         echo "Package `cmake` not found."
         exit 1;
-    else
-        cmake_version="$(cmake --version | grep -E "^cmake version [3-9]\.([7-9]|10)\.[0-9]")"
-        if ! [[ $cmake_version ]]; then
-            echo "You need 'cmake' 3.7.2 version and newer."
-            exit 1
-        fi
-        unset make_version
     fi
+    cmake_version="$(cmake --version | grep -E "^cmake version [3-9]\.([7-9]|10)\.[0-9]")"
+    if ! [[ $cmake_version ]]; then
+        echo "You need 'cmake' 3.7.2 version and newer."
+        exit 1
+    fi
+    unset cmake_version
+    unset check_cmake
 }
 
 
