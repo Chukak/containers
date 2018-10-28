@@ -516,6 +516,9 @@ extern "C" {
 #define NULL ((void *)0)
 #endif
 
+namespace pure_c
+{
+
 typedef struct q_node q_node;
 
 /*
@@ -596,6 +599,9 @@ unsigned int q_count(queue * q);
  * `q` - a pointer to the queue.
  */
 void q_delete_queue(queue * q);
+
+}
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

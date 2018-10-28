@@ -2,6 +2,8 @@
 #include "queue.h"
 #include <stdexcept>
 
+using namespace pure_c;
+
 TEST_CASE("[queue] Initialization of the queue in C.", "[queue_c]") {
     SECTION("Initialization 1.") {
         queue *q = q_create_queue();

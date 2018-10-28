@@ -3,6 +3,9 @@
 #include <stdexcept>
 #include <new>
 
+namespace pure_c
+{
+
 /*
  * Creates a new pointer.
  * Copies a value from the another pointer to a new pointer.
@@ -133,4 +136,6 @@ void * q_back(queue * q)
 unsigned int q_count(queue * q)
 {
 	return q->count;
+}
+
 }

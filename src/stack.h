@@ -463,6 +463,9 @@ extern "C" {
 #define NULL ((void *)0)
 #endif
 
+namespace pure_c
+{
+
 typedef struct s_node s_node;
 
 /*
@@ -535,6 +538,8 @@ unsigned int s_count(stack * s);
  * `s` - a pointer to the stack.
  */
 void s_delete_stack(stack * s);
+
+}
 
 #ifdef __cplusplus
 }

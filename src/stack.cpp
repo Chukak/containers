@@ -3,6 +3,9 @@
 #include <stdexcept>
 #include <new>
 
+namespace pure_c
+{
+
 /*
  * Creates a new pointer.
  * Copies a value from the another pointer to a new pointer.
@@ -116,4 +119,6 @@ void * s_front(stack * s)
 unsigned int s_count(stack * s)
 {
 	return s->count;
+}
+
 }

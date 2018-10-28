@@ -2,6 +2,8 @@
 #include "stack.h"
 #include <stdexcept>
 
+using namespace pure_c;
+
 TEST_CASE("[Stack] Initialization of the stack in C.", "[stack_c]") {
     SECTION("Initialization 1.") {
         stack *s = s_create_stack();
