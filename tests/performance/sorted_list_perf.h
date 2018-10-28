@@ -1,33 +1,34 @@
 #ifndef SORTED_LIST_PERF_H
 #define SORTED_LIST_PERF_H
 
-#include "../../src/sorted_list.h"
+#include "sorted_list.h"
 #include "performance.h"
 #include <vector>
+#include <cassert>
+#include <iostream>
 
 class SListPerformance : public Performance {
 public:
     explicit SListPerformance()
     {}
     
-private:
-    
-    enum class ACTION {
+public:
+    enum ACTION {
         INSERTION,
         DELETION,
         CLEARING,
         REVERSE
     };
-    
-    void insertions(const uint& num)
+private:
+    void insertions(const int& num)
     {
         sorted_list<int> list;
         
-        srand(time(0));
+        srand(static_cast<uint>(time(nullptr)));
         
         std::vector<int> random_elements;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             random_elements.push_back((rand() % num + 1));// - (50000));
         }
         
@@ -37,45 +38,45 @@ private:
         }
         finish_timer();
         
-        assert(list.count() == num);
+        assert(list.count() == static_cast<uint>(num));
         
         list.~sorted_list();
     }
     
-    void deletions(const uint& num)
+    void deletions(const int& num)
     {
-        sorted_list<uint> list;
+        sorted_list<int> list;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             list.push(i);
         }
         
-        assert(list.count() == num);
+        assert(list.count() == static_cast<uint>(num));
         
-        srand(time(0));
+        srand(static_cast<uint>(time(nullptr)));
         
         start_timer();
         try {
-            for (uint i = 0; i != list.count();) {
-                list.remove(rand() % list.count());
+            for (int i = 0; static_cast<uint>(i) != list.count();) {
+                list.remove(static_cast<int>(rand() % static_cast<int>(list.count())));
             } 
         } catch (std::out_of_range& e) {
-            
+            std::cerr << e.what() << "\n";
         }
         finish_timer();
         
         list.~sorted_list();
     }
     
-    void clearing(const uint& num)
+    void clearing(const int& num)
     {
         sorted_list<int> list;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             list.push(i);
         }
         
-        assert(list.count() == num);
+        assert(list.count() == static_cast<uint>(num));
         
         start_timer();
         list.clear();
@@ -86,15 +87,15 @@ private:
         list.~sorted_list();
     }
     
-    void reverse(const uint& num)
+    void reverse(const int& num)
     {
-        sorted_list<uint> list;
+        sorted_list<int> list;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             list.push(i);
         }
         
-        assert(list.count() == num);
+        assert(list.count() == static_cast<uint>(num));
         
         start_timer();
         list.reverse();
@@ -107,7 +108,7 @@ private:
     
 public:
     
-    void run(ACTION action, const uint& number) 
+    void run(const ACTION& action, const int& number)
     {
         reset();
         switch (action) {
@@ -121,14 +122,6 @@ public:
                 reverse(number); break;
         }
     }
-    
-    static const ACTION INSERTION = ACTION::INSERTION;
-    
-    static const ACTION DELETION = ACTION::DELETION;
-    
-    static const ACTION CLEARING = ACTION::CLEARING;
-    
-    static const ACTION REVERSE = ACTION::REVERSE;
 };
 
 #endif /* SORTED_LIST_PERF_H */

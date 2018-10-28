@@ -1,34 +1,34 @@
 #ifndef BST_PERF_H
 #define BST_PERF_H
 
-#include "../../src/bst.h"
+#include "bst.h"
 #include "performance.h"
 #include <vector>
 #include <iostream>
+#include <cassert>
 
 class BSTPerformance : public Performance {
 public:
     explicit BSTPerformance()
     {}
     
-private:
-    
-    enum class ACTION {
+public:
+    enum ACTION {
         INSERTION,
         DELETION,
         CLEARING,
         SEARCH
     };
-    
-    void insertions(const uint& num)
+private:
+    void insertions(const int& num)
     {
         bst<int> tree;
         
-        srand(time(0));
+        srand(static_cast<uint>(time(nullptr)));
         
         std::vector<int> random_elements;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
         }
         
@@ -38,18 +38,18 @@ private:
         }
         finish_timer();
         
-        assert(tree.count() > 0 && tree.count() <= num);
+        assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
         
         tree.~bst();
     }
     
-    void deletions(const uint& num)
+    void deletions(const int& num)
     {
         bst<int> tree;
         
         std::vector<int> random_elements;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
         }
         
@@ -57,7 +57,7 @@ private:
             tree.insert(random_elements[s]);
         }
         
-        assert(tree.count() > 0 && tree.count() <= num);
+        assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
         
         start_timer();
         try {
@@ -65,20 +65,20 @@ private:
                 tree.remove(random_elements[j]);
             } 
         } catch (const bst_exception::BSTIsEmpty& e) {
-            
+            std::cerr << e.what() << "\n";
         }
         finish_timer();
         
         tree.~bst();
     }
     
-    void search(const uint& num)
+    void search(const int& num)
     {
         bst<int> tree;
         
         std::vector<int> random_elements;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
         }
         
@@ -86,7 +86,7 @@ private:
             tree.insert(random_elements[s]);
         }
         
-        assert(tree.count() > 0 && tree.count() <= num);
+        assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
         
         start_timer();
         for (uint j = 0; j < random_elements.size(); j++) {
@@ -97,13 +97,13 @@ private:
         tree.~bst();
     }
     
-    void clearing(const uint& num)
+    void clearing(const int& num)
     {
         bst<int> tree;
         
         std::vector<int> random_elements;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
         }
         
@@ -111,7 +111,7 @@ private:
             tree.insert(random_elements[s]);
         }
         
-        assert(tree.count() > 0 && tree.count() <= num);
+        assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
         
         start_timer();
         tree.clear();
@@ -122,7 +122,7 @@ private:
     
 public:
     
-    void run(ACTION action, const uint& number) 
+    void run(const ACTION& action, const int& number)
     {
         reset();
         switch (action) {
@@ -136,14 +136,6 @@ public:
                 clearing(number); break;
         }
     }
-    
-    static const ACTION INSERTION = ACTION::INSERTION;
-    
-    static const ACTION DELETION = ACTION::DELETION;
-    
-    static const ACTION SEARCH = ACTION::SEARCH;
-    
-    static const ACTION CLEARING = ACTION::CLEARING;
 };
 
 

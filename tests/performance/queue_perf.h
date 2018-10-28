@@ -1,46 +1,46 @@
 #ifndef QUEUE_PERF_H
 #define QUEUE_PERF_H
 
-#include "../../src/queue.h"
+#include "queue.h"
 #include "performance.h"
+#include <cassert>
 
 class QueuePerformance : public Performance {
 public:
     explicit QueuePerformance()
     {}
     
-private:
-    
-    enum class ACTION {
+public:
+    enum ACTION {
         INSERTION,
         DELETION,
         CLEARING
     };
-    
-    void insertions(const uint& num)
+private:
+    void insertions(const int& num)
     {
         Queue<int> queue;
     
         start_timer();
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             queue.enqueue(i);
         }
         finish_timer();
         
-        assert(queue.count() == num);
+        assert(queue.count() == static_cast<uint>(num));
 
         queue.~Queue();
     }
     
-    void deletions(const uint& num)
+    void deletions(const int& num)
     {
         Queue<int> queue;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             queue.enqueue(i);
         }
         
-        assert(queue.count() == num);
+        assert(queue.count() == static_cast<uint>(num));
         
         start_timer();
         while (queue.count()) {
@@ -51,15 +51,15 @@ private:
         queue.~Queue();
     }
     
-    void clearing(const uint& num)
+    void clearing(const int& num)
     {
         Queue<int> queue;
         
-        for (uint i = 0; i < num; i++) {
+        for (int i = 0; i < num; i++) {
             queue.enqueue(i);
         }
         
-        assert(queue.count() == num);
+        assert(queue.count() == static_cast<uint>(num));
         
         start_timer();
         queue.clear();
@@ -70,7 +70,7 @@ private:
     
 public:
     
-    void run(ACTION action, uint number) 
+    void run(const ACTION& action, const int& number)
     {
         reset();
         switch (action) {
@@ -82,12 +82,6 @@ public:
                 clearing(number); break;
         }
     }
-    
-    static const ACTION INSERTION = ACTION::INSERTION;
-    
-    static const ACTION DELETION = ACTION::DELETION;
-    
-    static const ACTION CLEARING = ACTION::CLEARING;
 };
 
 

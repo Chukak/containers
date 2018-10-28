@@ -3,7 +3,6 @@
 
 #include <chrono>
 #include <cstdint>
-#include <cassert>
 
 using uint = unsigned int;
 
@@ -18,17 +17,17 @@ public:
     explicit Performance() : start(), end()
     {}
     
-    auto milliseconds() -> int64_t
+    auto milliseconds()
     {
         return std::chrono::duration_cast<ms>(end - start).count();
     }
     
-    auto seconds() -> int64_t
+    auto seconds()
     {
         return std::chrono::duration_cast<sec>(end - start).count();
     }
     
-    auto microseconds() -> int64_t
+    auto microseconds()
     {
         return std::chrono::duration_cast<mic>(end - start).count();
     }
