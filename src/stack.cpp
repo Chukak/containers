@@ -33,9 +33,9 @@ static void check_stack(const void * s)
  * Checks the pointer to the element.
  * If a pointer is NULL, throws `runtime_error`.
  */
-static void check_element(const void * s)
+static void check_element(const void * e)
 {
-	if (!s) {
+	if (!e) {
 		throw std::runtime_error("The pointer to an element is NULL.");
 	}
 }
@@ -128,5 +128,4 @@ unsigned int stack_count(stack * s)
 {
 	return s->count;
 }
-
 }
