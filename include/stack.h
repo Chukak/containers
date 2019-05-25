@@ -435,7 +435,7 @@ extern "C" {
 
 #ifndef NULL
 #define NULL ((void *)0)
-#endif
+#endif /* NULL */
 
 namespace pure_c
 {
