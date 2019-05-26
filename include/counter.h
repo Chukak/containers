@@ -2,67 +2,53 @@
 #define COUNTER_H
 
 #ifdef __cplusplus
-	#ifndef NULL
-		#define NULL nullptr
-	#endif
-#endif
-
-#ifdef __cplusplus
 #include <initializer_list>
-#include <map>
+#include <unordered_map>
 #include <vector>
-#include <set>
-#include <ostream>
 #include <utility>
 #include <algorithm>
 #include <iterator>
 #include <ostream>
 
-
-using uint = unsigned int;
-using long_uint = long unsigned int;
-
 /*
  * The `Counter` class.
  * Counts number of elements from a some sequence.
  */
-template<typename T>
+template<typename T,
+         bool SortFirst = true>
 class Counter
 {
-
 	/*
-	 * Sets the friend function for the overloaded operator `<<`.
+	 * Makes the overloaded operator `<<` friend.
 	 */
 	template<typename Type>
 	friend std::ostream& operator<<(std::ostream& stream, const Counter<Type>& c);
-
 public:
-
 	/*
+	 * Pair type - first - element from a some sequence, second - number of such elements
 	 */
-	typedef std::vector<std::pair<T, uint>> vector_t;
-
+	using pair_t = std::pair<T, unsigned int>;
 	/*
+	 * Vector type. Contains pairs.
 	 */
-	typedef std::map<T, uint> map_t;
-
+	using vector_t = std::vector<pair_t>;
 	/*
+	 * Map type. key - element from a some sequence, value - number of these elements
 	 */
-	typedef std::pair<T, uint> pair_t;
-
+	using map_t = std::unordered_map<T, unsigned int>;
+public:
 	/*
 	 * Constructor.
 	 * @param _begin - the iterator to the beginning of the sequence.
 	 * @param _end - the iterator to the end of the sequence.
 	 */
-	template<typename IteratorBegin, typename IteratorEnd>
+	template<typename IteratorBegin,
+	         typename IteratorEnd>
 	explicit Counter(IteratorBegin _begin, IteratorEnd _end);
-
 	/*
 	 * Destructor.
 	 */
-	virtual ~Counter();
-
+	virtual ~Counter() = default;
 	/*
 	 * The `most_common` function.
 	 * Counts number of elements in the sequence.
@@ -73,10 +59,9 @@ public:
 	 * The vector of pairs is sorted by the greater number of elements.
 	 * If you want to get some number of elements, you must pass a
 	 * number as the first argument.
-	 * @paran n - number.
+	 * @param n - number.
 	 */
-	std::vector<std::pair<T, uint>> most_common(int n = -1);
-
+	vector_t most_common(int n = -1);
 	/*
 	 * The alternative `most_common` function.
 	 * Counts number of elements in the sequence and
@@ -92,59 +77,59 @@ public:
 	 */
 	template<typename Array>
 	void most_common(Array& list, int n = -1);
-
 	/*
 	 * Update the `Counter` class.
 	 */
-	template<typename IteratorBegin, typename IteratorEnd>
+	template<typename IteratorBegin,
+	         typename IteratorEnd>
 	void update(IteratorBegin begin, IteratorEnd end);
-
 	/*
 	 * The static `map` function.
 	 * Gets two iterators on the sequence.
 	 * Counts number of elemnts in the sequence.
-	 * Return `std::map<T, int>`: T - element, int - number of this element.
+	 * Return `std::unordered_map<T, int>`: T - element, int - number of such elements.
 	 * For example: ('a', 'b', 'c', 'a', 'c', 'd', 'a', 'a', 'b', 'c')
 	 * -> {'a': 4, 'c': 3, 'b': 2, 'd': 1}.
 	 * @param _begin - the iterator to the beginning of the sequence.
 	 * @param _end - the iterator to the end of the sequence.
 	 */
-	template<typename IteratorBegin, typename IteratorEnd>
-	static std::map<T, uint> map(IteratorBegin _begin, IteratorEnd _end);
-
+	template<typename IteratorBegin,
+	         typename IteratorEnd>
+	static map_t map(IteratorBegin _begin, IteratorEnd _end);
 	/*
 	 * The `size` function.
-	 * Returns size of the original sequence.
+	 * Returns size of the counted sequence.
 	 */
-	long_uint size() const noexcept
+	inline long unsigned int size() const noexcept
 	{
 		return _elements.size();
 	}
-
 private:
-
 	/*
+	 * Iterator of vector type.
 	 */
-	using vc_it = typename std::vector<std::pair<T, uint>>::const_iterator;
-
+	using vc_it = typename vector_t::const_iterator;
 	/*
 	 * The private `count` function.
 	 * Return pair of iterators on a sorted vector.
 	 */
 	auto count(int& n) -> std::pair<vc_it, vc_it>;
-
 	/*
 	 * The private `update` function.
 	 * Updates the vector of pairs and sorts it.
 	 */
 	void update();
+	/*
+	 * Compares two pair
+	 */
+	constexpr static inline bool sort_pair(const pair_t& a, const pair_t& b) noexcept
+	{
+		return SortFirst && a.second == b.second ? a.first < b.first : a.second > b.second;
+	}
 
-	std::map<T, uint> _elements; // map of elements.
-	std::vector<std::pair<T, uint>> _current; // a sorted vector of elements.
-
+	map_t _elements; // map of elements.
+	vector_t _current; // a sorted vector of elements.
 public:
-	class iterator;
-
 	/*
 	 * The `iterator` class.
 	 * Implements the iterator for the `Counter` class.
@@ -152,109 +137,93 @@ public:
 	 */
 	class iterator : public std::iterator<std::forward_iterator_tag, T>
 	{
-
 		friend class Counter<T>;
-
 	private:
 		/*
 		 * Constructor.
 		 */
-		explicit iterator(vc_it it, vc_it end) : _begin(it), _end(end)
-		{}
-
+		explicit iterator(vc_it it, vc_it end);
 	public:
-
-		typedef T value_type; // value type.
-		typedef std::forward_iterator_tag iterator_category; // iterator category
-
+		using value_type = T; // value type.
+		using iterator_category = std::forward_iterator_tag; // iterator category
 		/*
-		 * Constrctor.
+		 * Default constrctor.
 		 */
-		iterator() : _begin(NULL) {}
-
+		iterator() = default;
 		/*
 		 * The prefix operator `++`.
 		 * Increases the pointer and returns it.
 		 */
-		iterator& operator++() noexcept
+		inline iterator& operator++() noexcept
 		{
 			_begin++;
 			return *this;
 		}
-
 		/*
 		 * The postfix operator `++`.
 		 * Increases the pointer and returns it.
 		 */
-		iterator operator++([[maybe_unused]]int j) noexcept
+		inline iterator operator++([[maybe_unused]]int j) noexcept
 		{
 			_begin++;
 			return *this;
 		}
-
 		/*
 		 * The operator `*`.
 		 * Returns a value from the pair.
 		 */
-		T operator*() const noexcept
+		inline T operator*() const noexcept
 		{
 			return (*_begin).first;
 		}
-
 		/*
 		 * The operator `->`.
 		 * Returns a pointer to the pair.
 		 */
-		const std::pair<T, uint> * operator->() const noexcept
+		inline const pair_t * operator->() const noexcept
 		{
 			return &(*_begin);
 		}
-
 		/*
 		 * The operator `!=`.
 		 * Compares two iterators. Returns `true` if
 		 * iterators aren`t the same. Otherwise returns `false`.
 		 */
-		bool operator!=(const iterator& rhs) const noexcept
+		inline bool operator!=(const iterator& rhs) const noexcept
 		{
 			return _begin != rhs._begin;
 		}
-
 		/*
 		 * The operator `!=`.
 		 * Returns `true` if the current iterator and `nullptr`
 		 * aren`t the same. Otherwise returns `false`.
 		 */
-		bool operator!=(std::nullptr_t) const noexcept
+		inline bool operator!=(std::nullptr_t) const noexcept
 		{
 			return _begin != _end;
 		}
-
 		/*
 		 * The operator `==`.
 		 * Compares two iterators. Returns `true` if
 		 * iterators are the same. Otherwise returns `false`.
 		 */
-		bool operator==(const iterator& rhs) const noexcept
+		inline bool operator==(const iterator& rhs) const noexcept
 		{
 			return _begin == rhs._begin;
 		}
-
 		/*
 		 * The operator `==`.
 		 * Returns `true` if the current iterator and `nullptr`
 		 * are the same. Otherwise returns `false`.
 		 */
-		bool operator==(std::nullptr_t) const noexcept
+		inline bool operator==(std::nullptr_t) const noexcept
 		{
 			return _begin == _end;
 		}
-
 	private:
 		vc_it _begin; // the iterator of the beginning.
 		vc_it _end; // the iterator of the end.
 	};
-
 	/*
 	 * The static `count` function.
 	 * Counts number of elements in the sequence and
@@ -275,25 +244,21 @@ public:
 	template<template <class ... > class Array,
 	         typename IteratorBegin,
 	         typename IteratorEnd>
-	constexpr static Array<std::pair<T, uint>> count(IteratorBegin _begin, IteratorEnd _end);
-
+	constexpr static Array<pair_t> count(IteratorBegin _begin, IteratorEnd _end);
 	/*
 	 * Returns the iterator to the first element of the `Counter` class.
 	 */
-	iterator begin() noexcept
+	inline iterator begin() noexcept
 	{
-		update();
 		return iterator(_current.cbegin(), _current.cend());
 	}
-
 	/*
 	 * Returns the iterator to the end of the `Counter` class.
 	 */
-	iterator end() const noexcept
+	inline iterator end() const noexcept
 	{
 		return iterator(_current.cend(), _current.cend());
 	}
-
 };
 
 /*
@@ -301,37 +266,35 @@ public:
  * @param _begin - the iterator to the beginning of the sequence.
  * @param _end - the iterator to the end of the sequence.
  */
-template<typename T>
-template<typename IteratorBegin, typename IteratorEnd> Counter<T>::Counter(IteratorBegin _begin, IteratorEnd _end) :
+template<typename T,
+         bool SortFirst>
+template<typename IteratorBegin,
+         typename IteratorEnd> Counter<T, SortFirst>::Counter(IteratorBegin _begin, IteratorEnd _end) :
 	_elements(),
 	_current()
 {
 	for (auto it = _begin; it != _end; it++) {
 		_elements[*it]++;
 	}
-}
-
-/*
- * Destructor.
- */
-template<typename T> Counter<T>::~Counter()
-{
+	update();
 }
 
 /*
  * The static `map` function.
  * Gets two iterators on the sequence.
- * Countes number of eleemnts in the sequence and
+ * Countes number of elemnts in the sequence and
  * sorts it by the greater number of elements.
  * Return `std::map<T, int>`: T - element, int - number of this element.
  * For example: ('a', 'b', 'c', 'a', 'c', 'd', 'a', 'a', 'b', 'c')
  * -> {'a': 4, 'c': 3, 'b': 2, 'd': 1}.
  */
-template<typename T>
-template<typename IteratorBegin, typename IteratorEnd>
-std::map<T, uint> Counter<T>::map(IteratorBegin _begin, IteratorEnd _end)
+template<typename T,
+         bool SortFirst>
+template<typename IteratorBegin,
+         typename IteratorEnd>
+typename Counter<T, SortFirst>::map_t Counter<T, SortFirst>::map(IteratorBegin _begin, IteratorEnd _end)
 {
-	std::map<T, uint> result;
+	map_t result;
 	for (auto it = _begin; it != _end; it++) {
 		result[*it]++;
 	}
@@ -353,37 +316,27 @@ std::map<T, uint> Counter<T>::map(IteratorBegin _begin, IteratorEnd _end)
  * std::set<Counter<std::string>::pair_t set = Counter<std::string>::count<std::set>(begin(...), end(...));
  * ```
  */
-template<typename T>
+template<typename T,
+         bool SortFirst>
 template<template <class ... > class Array,
          typename IteratorBegin,
          typename IteratorEnd>
-constexpr Array<std::pair<T, uint>> Counter<T>::count(IteratorBegin _begin, IteratorEnd _end)
+constexpr Array<typename Counter<T, SortFirst>::pair_t> Counter<T, SortFirst>::count(IteratorBegin _begin, IteratorEnd _end)
 {
-	std::map<T, uint> map;
+	map_t map;
 	for (auto it = _begin; it != _end; it++) {
 		map[*it]++;
 	}
-	std::vector<std::pair<T, uint>> vec;
+	vector_t vec(map.begin(), map.end());
+	std::sort(vec.begin(), vec.end(), sort_pair);
 
-	std::copy(map.begin(), map.end(), std::back_inserter(vec));
-
-	constexpr auto sort_func = [](const std::pair<T, uint>& a, const std::pair<T, uint>& b) -> bool {
-		return a.second > b.second;
-	};
-
-	std::sort(vec.begin(), vec.end(), sort_func);
-
-	Array<std::pair<T, uint>> result;
-
-	constexpr auto insert_func = [](std::pair<T, uint>&& p) -> std::pair<T, uint> {
-		return p;
-	};
-
+	Array<pair_t> result;
 	std::transform(std::make_move_iterator(vec.begin()),
 	               std::make_move_iterator(vec.end()),
 	               std::inserter(result, std::begin(result)),
-	               insert_func);
-
+	[](pair_t&& p) {
+		return p;
+	});
 	return result;
 }
 
@@ -391,30 +344,27 @@ constexpr Array<std::pair<T, uint>> Counter<T>::count(IteratorBegin _begin, Iter
  * The private `update` function.
  * Updates the vector of pairs and sorts it.
  */
-template<typename T>
-auto Counter<T>::count(int& n) -> std::pair<Counter<T>::vc_it, Counter<T>::vc_it>
+template<typename T,
+         bool SortFirst>
+auto Counter<T, SortFirst>::count(int& n) -> std::pair<Counter<T, SortFirst>::vc_it, Counter<T, SortFirst>::vc_it>
 {
-	update();
 	vc_it end = _current.end();
-	if (n != -1 && static_cast<uint>(n) <= _elements.size()) {
+	if (n != -1 && static_cast<unsigned int>(n) <= _elements.size()) {
 		end = _current.begin() + n;
 	}
-
 	return std::pair<vc_it, vc_it>(_current.begin(), end);
 }
 
 /*
+ * Updates the `Counter` class.
  */
-template<typename T>
-void Counter<T>::update()
+template<typename T,
+         bool SortFirst>
+void Counter<T, SortFirst>::update()
 {
 	_current.clear();
-	std::copy(_elements.begin(), _elements.end(),
-	          std::back_inserter(_current));
-	std::sort(_current.begin(), _current.end(),
-	[](std::pair<T, uint>& a, std::pair<T, uint>& b) -> bool {
-		return a.second > b.second;
-	});
+	std::copy(_elements.begin(), _elements.end(), std::back_inserter(_current));
+	std::sort(_current.begin(), _current.end(), sort_pair);
 }
 
 /*
@@ -428,11 +378,12 @@ void Counter<T>::update()
  * If you want to get some number of elements, you must pass a
  * number as the first argument.
  */
-template<typename T>
-std::vector<std::pair<T, uint>> Counter<T>::most_common(int n)
+template<typename T,
+         bool SortFirst>
+typename Counter<T, SortFirst>::vector_t Counter<T, SortFirst>::most_common(int n)
 {
 	auto iterators = count(n);
-	return std::vector<std::pair<T, uint>>(iterators.first, iterators.second);
+	return vector_t(iterators.first, iterators.second);
 }
 
 /*
@@ -446,14 +397,15 @@ std::vector<std::pair<T, uint>> Counter<T>::most_common(int n)
  * -> {'a', 'c', 'b', 'd'}.
  * Your array must have a type. For example: vector<T>.
  */
-template<typename T>
+template<typename T,
+         bool SortFirst>
 template<typename Array>
-void Counter<T>::most_common(Array& list, int n)
+void Counter<T, SortFirst>::most_common(Array& list, int n)
 {
 	auto iterators = count(n);
 	std::transform(iterators.first, iterators.second,
 	               std::inserter(list, std::begin(list)),
-	[](const std::pair<T, uint>& p) -> T {
+	[](const pair_t& p) {
 		return p.first;
 	});
 }
@@ -461,33 +413,45 @@ void Counter<T>::most_common(Array& list, int n)
 /*
  * Update the `Counter` class
  */
-template<typename T>
+template<typename T,
+         bool SortFirst>
 template<typename IteratorBegin, typename IteratorEnd>
-void Counter<T>::update(IteratorBegin _begin, IteratorEnd _end)
+void Counter<T, SortFirst>::update(IteratorBegin _begin, IteratorEnd _end)
 {
 	for (auto it = _begin; it != _end; it++) {
 		_elements[*it]++;
 	}
+	update();
 }
+
+/*
+ * Constructor.
+ */
+template<typename T,
+         bool SortFirst> Counter<T, SortFirst>::iterator::iterator(vc_it it, vc_it end) :
+	_begin(it),
+	_end(end)
+{}
 
 /*
  * The overloaded `<<` operator for the `Counter` class.
  * Prints all the elements in the format: `{(a, 10), (b, 8) ... (h, 1)}`.
  * Returns ostream.
  */
-template<typename Type>
-std::ostream& operator<<(std::ostream& stream, Counter<Type>& c)
+template<typename Type,
+         bool SortFirst>
+std::ostream& operator<<(std::ostream& stream, Counter<Type, SortFirst>& c)
 {
 	stream << "{";
+	std::size_t i = 0;
 	for (auto it = c.begin(); it != c.end(); ++it) {
-		stream << "(" << it->first << ", " << it->second << "), ";
+		stream << "(" << it->first << ": " << it->second << ")" ;
+		stream << (i + 1 < c._current.size() ? ", " : "");
+		++i;
 	}
-	stream << "\b\b";
-	stream << "";
 	stream << "}";
 	return stream;
 }
-
 
 #endif
 
