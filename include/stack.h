@@ -404,10 +404,11 @@ Type Stack<Type>::front() const noexcept
 template<typename Type>
 std::ostream& operator<<(std::ostream& stream, const Stack<Type>& s)
 {
-	auto * t = s._front;
 	stream << "(";
-	for (size_t i = 0; i < s._count; ++i) {
-		stream << t->value << (i + 1 < s._count ? ", " : "");
+	std::size_t i = 0;
+	for (auto it = s.begin(); it != s.end(); ++it) {
+		stream << it->value << (i + 1 < s._count ? ", " : "");
+		++i;
 	}
 	stream << ")";
 	return stream;

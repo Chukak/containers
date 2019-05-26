@@ -449,10 +449,11 @@ void Queue<Type>::clear() noexcept
 template<typename Type>
 std::ostream& operator<<(std::ostream& stream, const Queue<Type>& q)
 {
-	auto * t = q._front;
 	stream << "(";
-	for (size_t i = 0; i < q._count; ++i) {
-		stream << t->value << (i + 1 < q._count ? ", " : "");
+	std::size_t i = 0;
+	for (auto it = q.begin(); it != q.end(); ++it) {
+		stream << it->value << (i + 1 < q._count ? ", " : "");
+		++i;
 	}
 	stream << ")";
 	return stream;
