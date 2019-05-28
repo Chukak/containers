@@ -1,12 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
 
-#ifndef NULL
-#ifdef __cplusplus
-#define NULL nullptr
-#endif
-#endif
-
 #ifdef __cplusplus
 #include "extensions.h"
 #include <initializer_list>
@@ -31,15 +25,15 @@ class Stack
 		friend class iterator;
 		template<typename T>
 		friend std::ostream& operator<<(std::ostream& stream, const Stack<T>& s);
-
-		Type value; // a value.
-	private:
-		std::shared_ptr<Node> prev; // the pointer to the previous element.
 		/*
 		 * Constructor.
 		 */
 		Node(Type&& v, std::shared_ptr<Node> p);
 		Node(const Type& v, std::shared_ptr<Node> p);
+
+		Type value; // a value.
+	private:
+		std::shared_ptr<Node> prev; // the pointer to the previous element.
 	};
 private:
 	using node_ptr = std::shared_ptr<Node>;
@@ -234,15 +228,17 @@ public:
 /*
  * Constructor
  */
-template<typename Type> Stack<Type>::Node::Node(Type&& v, std::shared_ptr<Node> p) :
-	value(v),
+template<typename Type>
+Stack<Type>::Node::Node(Type&& v, std::shared_ptr<Node> p) :
+	value(std::forward<Type>(v)),
 	prev(p)
 {}
 
 /*
  * Constructor
  */
-template<typename Type> Stack<Type>::Node::Node(const Type& v, std::shared_ptr<Node> p) :
+template<typename Type>
+Stack<Type>::Node::Node(const Type& v, std::shared_ptr<Node> p) :
 	value(v),
 	prev(p)
 {}
@@ -251,8 +247,9 @@ template<typename Type> Stack<Type>::Node::Node(const Type& v, std::shared_ptr<N
  * Constructor.
  * Creates a new `Stack` class.
  */
-template<typename Type> Stack<Type>::Stack() :
-	_front(node_ptr(NULL)),
+template<typename Type>
+Stack<Type>::Stack() :
+	_front(nullptr),
 	_count(0),
 	_empty(true)
 {
@@ -262,16 +259,17 @@ template<typename Type> Stack<Type>::Stack() :
  * Constructor.
  * Creates a new `Stack` class from an another `Stack` class.
  */
-template<typename Type> Stack<Type>::Stack(const Stack<Type>& orig) :
-	_front(node_ptr(NULL)),
+template<typename Type>
+Stack<Type>::Stack(const Stack<Type>& orig) :
+	_front(nullptr),
 	_count(orig._count),
 	_empty(orig._empty)
 {
 	if (!_empty) {
-		_front = make_shared_ptr<Node>(Node(orig._front->value, NULL)); // copy a pointer to the first element.
+		_front = make_shared_ptr<Node>(orig._front->value, nullptr); // copy a pointer to the first element.
 		node_ptr t = _front, temp = orig._front->prev; // gets a pointer to the previous element.
 		while (temp) {
-			t->prev = make_shared_ptr<Node>(Node(temp->value, NULL));
+			t->prev = make_shared_ptr<Node>(temp->value, nullptr);
 			temp = temp->prev;
 			t = t->prev;
 		}
@@ -281,19 +279,21 @@ template<typename Type> Stack<Type>::Stack(const Stack<Type>& orig) :
 /*
  * Move constructor.
  */
-template<typename Type> Stack<Type>::Stack(Stack<Type>&& orig) noexcept :
+template<typename Type>
+Stack<Type>::Stack(Stack<Type>&& orig) noexcept :
 	_front(orig._front),
 	_count(orig._count),
 	_empty(orig._empty)
 {
-	orig._front = node_ptr(NULL), orig._count = 0, orig._empty = true;
+	orig._front = nullptr, orig._count = 0, orig._empty = true;
 }
 
 /*
  * Constructor, for the initializer list.
  */
-template<typename Type> Stack<Type>::Stack(std::initializer_list<Type> lst) :
-	_front(node_ptr(NULL)),
+template<typename Type>
+Stack<Type>::Stack(std::initializer_list<Type> lst) :
+	_front(nullptr),
 	_count(0),
 	_empty(true)
 {
@@ -309,7 +309,8 @@ template<typename Type> Stack<Type>::Stack(std::initializer_list<Type> lst) :
  * Destructor.
  * Removes all the elements from memory.
  */
-template<typename Type> Stack<Type>::~Stack()
+template<typename Type>
+Stack<Type>::~Stack()
 {
 	while (_front) {
 		node_ptr old = _front; // a pointer to the current element.
@@ -335,7 +336,7 @@ template<typename Type>
 Stack<Type>& Stack<Type>::operator=(Stack<Type>&& orig) noexcept
 {
 	_front = orig._front, _count = orig._count, _empty = orig._empty;
-	orig._front = node_ptr(NULL), orig._count = 0, orig._empty = true;
+	orig._front = nullptr, orig._count = 0, orig._empty = true;
 	return *this;
 }
 
@@ -347,7 +348,7 @@ Stack<Type>& Stack<Type>::operator=(Stack<Type>&& orig) noexcept
 template<typename Type>
 void Stack<Type>::push(Type&& element)
 {
-	node_ptr new_node = make_shared_ptr<Node>(Node(std::forward<Type>(element), NULL)); // a new pointer.
+	node_ptr new_node(make_shared_ptr<Node>(std::forward<Type>(element), nullptr)); // a new pointer.
 	if (_empty) {
 		_front = new_node; // front == back.
 		_empty = false;
@@ -393,7 +394,7 @@ Type Stack<Type>::pop() noexcept
 template<typename Type>
 Type Stack<Type>::front() const noexcept
 {
-	return _front != NULL ? _front->value : Type();
+	return _front != nullptr ? _front->value : Type();
 }
 
 /*

@@ -1,12 +1,6 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#ifndef NULL
-#ifdef __cplusplus
-#define NULL nullptr
-#endif
-#endif
-
 #ifdef __cplusplus
 #include "extensions.h"
 #include <initializer_list>
@@ -25,20 +19,21 @@ class Queue
 	 * A linked list structure.
 	 * Used to represent elements in memory.
 	 */
-	struct Node {
+	struct Node
+	{
 		friend class Queue<Type>;
 		friend class iterator;
 		template<typename T>
 		friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
-
-		Type value; // a value.
-	private:
-		std::shared_ptr<Node> next; // a pointer to the next node.
 		/*
 		 * Constructor.
 		 */
 		Node(Type&& v, std::shared_ptr<Node> n);
 		Node(const Type& v, std::shared_ptr<Node> n);
+
+		Type value; // a value.
+	private:
+		std::shared_ptr<Node> next; // a pointer to the next node.
 	};
 private:
 	using node_ptr = std::shared_ptr<Node>;
@@ -244,15 +239,17 @@ public:
 /*
  * Constructor
  */
-template<typename Type> Queue<Type>::Node::Node(Type&& v, std::shared_ptr<Node> n) :
-	value(v),
+template<typename Type>
+Queue<Type>::Node::Node(Type&& v, std::shared_ptr<Node> n) :
+	value(std::forward<Type>(v)),
 	next(n)
 {}
 
 /*
  * Constructor
  */
-template<typename Type> Queue<Type>::Node::Node(const Type& v, std::shared_ptr<Node> n) :
+template<typename Type>
+Queue<Type>::Node::Node(const Type& v, std::shared_ptr<Node> n) :
 	value(v),
 	next(n)
 {}
@@ -261,9 +258,10 @@ template<typename Type> Queue<Type>::Node::Node(const Type& v, std::shared_ptr<N
  * Costructor.
  * Creates a new `Queue` class.
  */
-template<typename Type> Queue<Type>::Queue() :
-	_front(node_ptr(NULL)),
-	_back(node_ptr(NULL)),
+template<typename Type>
+Queue<Type>::Queue() :
+	_front(nullptr),
+	_back(nullptr),
 	_count(0),
 	_empty(true)
 {
@@ -273,19 +271,20 @@ template<typename Type> Queue<Type>::Queue() :
  * Constructor.
  * Creates a new `Queue` class from an another `Queue` class.
  */
-template<typename Type> Queue<Type>::Queue(const Queue<Type>& orig) :
-	_front(node_ptr(NULL)),
-	_back(node_ptr(NULL)),
+template<typename Type>
+Queue<Type>::Queue(const Queue<Type>& orig) :
+	_front(nullptr),
+	_back(nullptr),
 	_count(orig._count),
 	_empty(orig._empty)
 {
 	if (!_empty) {
 		node_ptr t = orig._front; // copy a pointer to the first element.
-		_front = make_shared_ptr<Node>(Node(t->value, NULL)); // creates a new pointer.
+		_front = make_shared_ptr<Node>(t->value, nullptr); // creates a new pointer.
 		_back = _front;
 		t = t->next; // gets a pointer to the next element.
 		while (t) {
-			node_ptr new_node = make_shared_ptr<Node>(Node(t->value, NULL));
+			node_ptr new_node = make_shared_ptr<Node>(t->value, nullptr);
 			_back->next = new_node;
 			_back = new_node;
 			t = t->next;
@@ -296,21 +295,23 @@ template<typename Type> Queue<Type>::Queue(const Queue<Type>& orig) :
 /*
  * Move constructor.
  */
-template<typename Type> Queue<Type>::Queue(Queue<Type>&& orig) noexcept :
+template<typename Type>
+Queue<Type>::Queue(Queue<Type>&& orig) noexcept :
 	_front(orig._front),
 	_back(orig._back),
 	_count(orig._count),
 	_empty(orig._empty)
 {
-	orig._front = node_ptr(NULL), orig._back = node_ptr(NULL), orig._count = 0, orig._empty = true;
+	orig._front = nullptr, orig._back = nullptr, orig._count = 0, orig._empty = true;
 }
 
 /*
  * Constructor, for the style `Queue q = {1, 2, 3}`.
  */
-template<typename Type> Queue<Type>::Queue(std::initializer_list<Type> lst) :
-	_front(node_ptr(NULL)),
-	_back(node_ptr(NULL)),
+template<typename Type>
+Queue<Type>::Queue(std::initializer_list<Type> lst) :
+	_front(nullptr),
+	_back(nullptr),
 	_count(0),
 	_empty(true)
 {
@@ -326,7 +327,8 @@ template<typename Type> Queue<Type>::Queue(std::initializer_list<Type> lst) :
  * Destructor.
  * Removes all the elements from memory.
  */
-template<typename Type> Queue<Type>::~Queue()
+template<typename Type>
+Queue<Type>::~Queue()
 {
 	while (_front) {
 		node_ptr old = _front; // a pointer to the current element.
@@ -352,7 +354,7 @@ template<typename Type>
 Queue<Type>& Queue<Type>::operator=(Queue<Type>&& orig) noexcept
 {
 	_front = orig._front, _back = orig._back, _count = orig._count, _empty = orig.empty;
-	orig._front = node_ptr(NULL), orig._back = node_ptr(NULL), orig._count = 0, orig._empty = true;
+	orig._front = nullptr, orig._back = nullptr, orig._count = 0, orig._empty = true;
 	return *this;
 }
 
@@ -364,7 +366,7 @@ Queue<Type>& Queue<Type>::operator=(Queue<Type>&& orig) noexcept
 template<typename Type>
 void Queue<Type>::enqueue(Type&& element)
 {
-	node_ptr new_node = make_shared_ptr<Node>(Node(std::forward<Type>(element), NULL)); // a new pointer.
+	node_ptr new_node = make_shared_ptr<Node>(std::forward<Type>(element), nullptr); // a new pointer.
 	if (_empty) {
 		_front = _back = new_node;
 		_empty = false;
@@ -412,7 +414,7 @@ Type Queue<Type>::dequeue() noexcept
 template<typename Type>
 Type Queue<Type>::front() const noexcept
 {
-	return _front != NULL ? _front->value : Type();
+	return _front != nullptr ? _front->value : Type();
 }
 
 /*
@@ -423,7 +425,7 @@ Type Queue<Type>::front() const noexcept
 template<typename Type>
 Type Queue<Type>::back() const noexcept
 {
-	return _back != NULL ? _back->value : Type();
+	return _back != nullptr ? _back->value : Type();
 }
 
 /*
@@ -438,7 +440,7 @@ void Queue<Type>::clear() noexcept
 		_front = _front->next; // a pointer to the next element.
 		old.reset();
 	}
-	_front = node_ptr(NULL), _back = node_ptr(NULL), _empty = true, _count = 0;
+	_front = nullptr, _back = nullptr, _empty = true, _count = 0;
 }
 
 /*
