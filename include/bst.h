@@ -1,13 +1,8 @@
 #ifndef BST_H
 #define BST_H
 
-#ifndef NULL
-	#ifdef __cplusplus
-		#define NULL nullptr
-	#endif
-#endif
-
 #ifdef __cplusplus
+#include "extensions.h"
 #include <initializer_list>
 #include <iterator>
 #include <stdexcept>
@@ -16,19 +11,17 @@
 
 namespace bst_exception
 {
-	class BSTIsEmpty : public std::runtime_error
-	{
-	public:
-		explicit BSTIsEmpty(const char * message = "The binary search tree is empty.") :
-			std::runtime_error(message)
-		{}
-		virtual ~BSTIsEmpty()
-		{}
-	};
+class bst_is_empty : public std::runtime_error
+{
+public:
+	explicit bst_is_empty(const char * message = "The binary search tree is empty.");
+	~bst_is_empty() final = default;
+};
+
+bst_is_empty::bst_is_empty(const char * message) :
+	std::runtime_error(message)
+{}
 }
-
-
-using uint = unsigned int;
 
 /*
  * The `bst` class.
@@ -40,32 +33,75 @@ using uint = unsigned int;
 template<typename E>
 class bst
 {
+	/*
+	 * The structure `Node`.
+	 * Used to representing elements in memory.
+	 */
+	struct Node
+	{
+		using ptr_t = std::shared_ptr<Node>;
+		friend class bst<E>;
+		friend class iterator;
+		/*
+		 * Сonstructor.
+		 */
+		Node(E&& e, ptr_t r, ptr_t l, ptr_t p);
+		Node(const E& e, ptr_t r, ptr_t l, ptr_t p);
+		template<typename R,
+		         typename L,
+		         typename P>
+		Node(E&& e, R r, L l, P p) :
+			data(e),
+			right(r),
+			left(l),
+			parent(p)
+		{}
+
+		E data; // a value.
+	private:
+		ptr_t right; // a pointer to the right element.
+		ptr_t left; // a pointer to the left element.
+		ptr_t parent; // a pointer to the parent of this element.
+	};
+
+	using node_ptr = std::shared_ptr<Node>;
 
 	friend class iterator;
-
 	/*
-	 * Sets the friend function for the overloaded operator `<<`.
+	 * Makes the overloaded operator `<<` friend.
 	 */
 	template<typename T>
 	friend std::ostream& operator<<(std::ostream& stream, const bst<E>& tree);
-
 public:
-
 	/*
 	 * Constructor.
 	 */
 	bst();
-
+	/*
+	 * Copy constructor.
+	 * @param orig - another `Queue` class.
+	 */
+	bst(const bst<E>& orig);
+	/*
+	 * Move constructor.
+	 */
+	bst(bst<E>&& orig) noexcept;
 	/*
 	 * Constructor, for the style `bst tree = {3, 2, 1}`.
 	 */
 	bst(std::initializer_list<E> lst);
-
 	/*
 	 * Destructor.
 	 */
 	virtual ~bst();
-
+	/*
+	 * The operator `=`.
+	 */
+	bst<E>& operator=(const bst<E>& orig);
+	/*
+	 * The mode operator `=`.
+	 */
+	bst<E>& operator=(bst<E>&& orig) noexcept;
 	/*
 	 * The `insert` function.
 	 * Inserts an element into the tree. If this element less than the root
@@ -76,12 +112,10 @@ public:
 	 * @param element - an element.
 	 */
 	void insert(E&& element) noexcept;
-
 	/*
 	 * The same `insert` function, but for l-value.
 	 */
 	void insert(const E& element) noexcept;
-
 	/*
 	 * The `remove` function.
 	 * Search for an element in the tree. If an element was found,
@@ -90,41 +124,35 @@ public:
 	 * @param - an element.
 	 */
 	void remove(const E& element);
-
 	/*
 	 * Returns the minimum element of the tree.
 	 * If the tree is empty, throws the `BSTIsEmpty` error.
 	 */
 	E min() const;
-
 	/*
 	 * Returns the maximum element of the tree.
 	 * If the tree is empty, throws the `BSTIsEmpty` error.
 	 */
 	E max() const;
-
 	/*
 	 * Returns the root of the tree.
 	 * If the tree is empty, throws the `BSTIsEmpty` error.
 	 */
 	E root() const;
-
 	/*
 	 * Returns the number of elements.
 	 */
-	uint count() const noexcept
+	inline unsigned int count() const noexcept
 	{
-		return count_;
+		return _count;
 	}
-
 	/*
 	 * Returns `true` if the tree is empty, otherwise returns `false`.
 	 */
-	bool is_empty() const noexcept
+	inline bool is_empty() const noexcept
 	{
-		return empty;
+		return _empty;
 	}
-
 	/*
 	 * The `find` function.
 	 * Search for an element in the tree. If an element was found,
@@ -132,68 +160,42 @@ public:
 	 * If the tree is empty, returns `false`.
 	 */
 	bool find(const E& element) const noexcept;
-
 	/*
 	 * The `clear` function.
 	 * Clears the tree.
 	 */
 	void clear() noexcept;
-
 private:
-
-	/*
-	 * The structure `Node`.
-	 * Used to representing elements in memory.
-	 */
-	struct Node {
-		friend class bst<E>;
-
-		friend class iterator;
-
-		E data; // a value.
-	private:
-		std::shared_ptr<Node> right; // a pointer to the right element.
-		std::shared_ptr<Node> left; // a pointer to the left element.
-		std::shared_ptr<Node> parent; // a pointer to the parent of this element.
-
-		/*
-		 * Сonstructor.
-		 */
-		Node(E&& e, std::shared_ptr<Node> r,
-		     std::shared_ptr<Node> l, std::shared_ptr<Node> p) :
-			data(e),
-			right(r),
-			left(l),
-			parent(p)
-		{}
-	};
-
-	using sptr = std::shared_ptr<Node>;
-
-	/*
-	 * Pseudonym for code: `std::make_shared<Node>(Node(...))`.
-	 */
-	template<typename... Args>
-	auto make_sptr(Args&& ... args)
-	-> decltype(std::make_shared<Node>(std::forward<Args>(args)...))
+	inline void set_parent(node_ptr child, node_ptr parent) const noexcept
 	{
-		return std::make_shared<Node>(std::forward<Args>(args)...);
+		if (child) {
+			child->parent = parent;
+		}
 	}
-
-	sptr root_; // a pointer to the root of the tree.
-	uint count_; // the numbers of elements.
-	bool empty;
-
+	inline void set_child(node_ptr child, node_ptr parent, bool is_left) const noexcept
+	{
+		if (is_left) {
+			parent->left = child;
+			set_parent(child, parent->left);
+		} else {
+			parent->right = child;
+			set_parent(child, parent->right);
+		}
+	}
 private:
-
+	node_ptr _root; // a pointer to the root of the tree.
+	unsigned int _count; // the numbers of elements.
+	bool _empty;
+private:
+	/*
+	 * Copy all the elements from an another tree.
+	 */
+	void assign(node_ptr from, node_ptr& to, node_ptr parent) noexcept;
 	/*
 	 * Destroys all the elements in the tree.
 	 */
-	void destroy(sptr n) noexcept;
-
+	void destroy(node_ptr n) noexcept;
 public:
-	class iterator;
-
 	/*
 	 * The `iterator` class.
 	 * Implements the iterator for the tree.
@@ -201,181 +203,186 @@ public:
 	 */
 	class iterator : public std::iterator<std::forward_iterator_tag, E>
 	{
-
 		friend class bst<E>;
-
 	private:
 		/*
 		 * Constructor.
 		 */
-		explicit iterator(sptr node) : current(node)
-		{
-		}
-
+		explicit iterator(node_ptr node);
 		/*
 		 * Sets the next element as the current element.
 		 */
-		void increment() noexcept
-		{
-			// checks the right child.
-			if (current->right) {
-				current = current->right;
-				// find the minimum element of the right child.
-				while (current->left) {
-					current = current->left;
-				}
-			} else {
-				sptr parent = current->parent; // parent.
-				while (parent && current == parent->right) {
-					current = parent;
-					parent = parent->parent;
-				}
-				// if all the elements is visited.
-				if (!parent) {
-					current = parent;
-					return ;
-				}
-				if (current->right != parent) {
-					current = parent;
-				}
-			}
-		}
-
+		void increment() noexcept;
 	public:
 		// value type.
-		typedef E value_type;
+		using value_type = E;
 		// iterator category
-		typedef std::forward_iterator_tag iterator_category;
-
+		using iterator_category = std::forward_iterator_tag;
 		/*
 		 * Constructor.
 		 */
 		iterator() : current(nullptr) {}
-
 		/*
 		 * The prefix operator `++`.
 		 * Increases the pointer and returns it.
 		 */
-		iterator& operator++() noexcept
+		inline iterator& operator++() noexcept
 		{
 			increment();
 			return *this;
 		}
-
 		/*
 		 * The postfix operator `++`.
 		 * Increases the pointer and returns it.
 		 */
-		iterator operator++([[maybe_unused]] int j) noexcept
+		inline iterator operator++([[maybe_unused]] int j) noexcept
 		{
 			increment();
 			return *this;
 		}
-
 		/*
 		 * The operator `*`.
 		 * Returns a value from the pointer.
 		 */
-		E& operator*() const noexcept
+		inline E& operator*() const noexcept
 		{
 			return current->data;
 		}
-
 		/*
 		 * The operator `->`.
 		 * Returns a pointer to the Node.
 		 */
-		Node * operator->() const noexcept
+		inline Node * operator->() const noexcept
 		{
 			return current.get();
 		}
-
 		/*
 		 * The operator `!=`.
 		 * Compares two iterators. Returns `true` if
 		 * iterators aren`t the same. Otherwise returns `false`.
 		 */
-		bool operator!=(const iterator& rhs) const noexcept
+		inline bool operator!=(const iterator& rhs) const noexcept
 		{
 			return current != rhs.current;
 		}
-
 		/*
 		 * The operator `!=`.
 		 * Returns `true` if the current iterator and `nullptr`
 		 * aren`t the same. Otherwise returns `false`.
 		 */
-		bool operator!=(std::nullptr_t) const noexcept
+		inline bool operator!=(std::nullptr_t) const noexcept
 		{
 			return current != nullptr;
 		}
-
 		/*
 		 * The operator `==`.
 		 * Compares two iterators. Returns `true` if
 		 * iterators are the same. Otherwise returns `false`.
 		 */
-		bool operator==(const iterator& rhs) const noexcept
+		inline bool operator==(const iterator& rhs) const noexcept
 		{
 			return current == rhs.current;
 		}
-
 		/*
 		 * The operator `==`.
 		 * Returns `true` if the current iterator and `nullptr`
 		 * are the same. Otherwise returns `false`.
 		 */
-		bool operator==(std::nullptr_t) const noexcept
+		inline bool operator==(std::nullptr_t) const noexcept
 		{
 			return current == nullptr;
 		}
-
 	private:
-		sptr current; // a pointer to a Node.
-
+		node_ptr current; // a pointer to a Node.
 	};
-
 	/*
 	 * Returns the iterator to the minimum element of the tree.
 	 */
 	iterator begin() const noexcept
 	{
-		sptr temp = root_;
+		node_ptr temp = _root;
 		while (temp && temp->left) {
 			temp = temp->left;
 		}
 		return iterator(temp);
 	}
-
 	/*
 	 * Returns the iterator to the parent of the root of the tree.
-	 * It is usually `NULL`.
+	 * It is usually `nullptr`.
 	 */
-	iterator end() const noexcept
+	inline iterator end() const noexcept
 	{
-		return root_ ? iterator(root_->parent) : iterator(root_);
+		return _root ? iterator(_root->parent) : iterator(_root);
 	}
-
 };
+
+/*
+ * Сonstructor.
+ */
+template<typename E>
+bst<E>::Node::Node(E&& e, node_ptr r, node_ptr l, node_ptr p) :
+	data(std::forward<E>(e)),
+	right(r),
+	left(l),
+	parent(p)
+{}
+
+/*
+ * Сonstructor.
+ */
+template<typename E>
+bst<E>::Node::Node(const E& e, node_ptr r, node_ptr l, node_ptr p) :
+	data(e),
+	right(r),
+	left(l),
+	parent(p)
+{}
 
 /*
  * Constructor.
  * Creates a new binary search tree.
  */
-template<typename E> bst<E>::bst() :
-	root_(sptr(NULL)),
-	count_(0),
-	empty(true)
+template<typename E>
+bst<E>::bst() :
+	_root(nullptr),
+	_count(0),
+	_empty(true)
 {
 }
 
+
 /*
- * constructor for the style `bst tree = {3, 5, 1}`.
+ * Copy constructor.
  */
-template<typename E> bst<E>::bst(std::initializer_list<E> lst) :
-	root_(sptr(NULL)),
-	count_(0),
-	empty(true)
+template<typename E>
+bst<E>::bst(const bst<E>& orig) :
+	_root(nullptr),
+	_count(orig._count),
+	_empty(orig._empty)
+{
+	assign(orig._root, _root, nullptr);
+}
+
+/*
+ * Move constructor.
+ */
+template<typename E>
+bst<E>::bst(bst<E>&& orig) noexcept :
+	_root(orig._root),
+	_count(orig._count),
+	_empty(orig._empty)
+{
+	orig._root = nullptr, orig._empty = true, orig._count = 0;
+}
+
+/*
+ * Constructor for the style `bst tree = {3, 5, 1}`.
+ */
+template<typename E>
+bst<E>::bst(std::initializer_list<E> lst) :
+	_root(nullptr),
+	_count(0),
+	_empty(true)
 {
 	/*
 	 * Just copy all the elements.
@@ -388,17 +395,53 @@ template<typename E> bst<E>::bst(std::initializer_list<E> lst) :
 /*
  * Destructor.
  */
-template<typename E> bst<E>::~bst()
+template<typename E>
+bst<E>::~bst()
 {
-	destroy(root_);
-	root_ = sptr(NULL);
+	destroy(_root);
+	_root = nullptr;
+}
+
+/*
+ * The operator `=`.
+ */
+template<typename E>
+bst<E>& bst<E>::operator=(const bst<E>& orig)
+{
+	destroy(_root);
+	_empty = orig._empty, _count = orig._count;
+	assign(orig._root, _root, nullptr);
+}
+
+/*
+ * The mode operator `=`.
+ */
+template<typename E>
+bst<E>& bst<E>::operator=(bst<E>&& orig) noexcept
+{
+	destroy(_root);
+	_root = orig._root, _empty = orig._empty, _count = orig._count;
+	orig._root = nullptr, orig._empty = true, orig._count = 0;
+}
+
+/*
+ * Copy all the elements from an another tree.
+ */
+template<typename E>
+void bst<E>::assign(node_ptr from, node_ptr& to, node_ptr parent) noexcept
+{
+	if (from) {
+		to = make_shared_ptr<Node>(from->data, nullptr, nullptr, parent);
+		assign(from->right, to->right, to);
+		assign(from->left, to->left, to);
+	}
 }
 
 /*
  * Destroys all the elements in the tree.
  */
 template<typename E>
-void bst<E>::destroy(sptr n) noexcept
+void bst<E>::destroy(node_ptr n) noexcept
 {
 	if (n) {
 		destroy(n->left); // destroys all left elements.
@@ -417,44 +460,43 @@ void bst<E>::destroy(sptr n) noexcept
 template<typename E>
 void bst<E>::insert(E&& element) noexcept
 {
-	if (empty) {
+	if (_empty) {
 		// this code is `std::make_shared<Node>(Node(...))`.
-		root_ = make_sptr(Node(std::move(element), NULL, NULL, NULL));
-		empty = false;
+		_root = make_shared_ptr<Node>(std::forward<E>(element), nullptr, nullptr, nullptr);
+		_empty = false;
 	} else {
-		sptr parent = sptr(NULL);
-		sptr temp = root_;
+		node_ptr parent(nullptr), temp(_root);
 		bool is_left = false;
 		while (temp) {
-			if (element < temp->data) {
+			if (element == temp->data) {
+				// is element is in the tree.
+				return;
+			}
+			is_left = element < temp->data;
+			if (is_left) {
 				// the left side of the tree.
 				parent = temp;
 				temp = temp->left;
-				is_left = true;
-			} else if (element > temp->data) {
+			} else  {
 				// the right side of the tree.
 				parent = temp;
 				temp = temp->right;
-				is_left = false;
-			} else {
-				// is element is in the tree.
-				return ;
 			}
 		}
 
 		if (is_left) {
-			parent->left = make_sptr(Node(std::move(element), NULL, NULL, parent));
+			parent->left = make_shared_ptr<Node>(std::forward<E>(element), nullptr, nullptr, parent);
 		} else {
-			parent->right = make_sptr(Node(std::move(element), NULL, NULL, parent));
+			parent->right = make_shared_ptr<Node>(std::forward<E>(element), nullptr, nullptr, parent);
 		}
 	}
-	++count_;
+	++_count;
 }
 
 template<typename E>
 void bst<E>::insert(const E& element) noexcept
 {
-	insert(std::move(std::remove_const_t<E>(element)));
+	insert(E(element));
 }
 
 /*
@@ -466,78 +508,61 @@ void bst<E>::insert(const E& element) noexcept
 template<typename E>
 void bst<E>::remove(const E& element)
 {
-	if (empty) {
-		throw bst_exception::BSTIsEmpty();
+	if (_empty) {
+		throw bst_exception::bst_is_empty();
 	}
-	sptr temp = root_;
-	sptr parent = sptr(NULL);
+	node_ptr temp = _root, parent = nullptr;
 	bool is_left = false;
 	// search for an element in the tree.
 	while (temp) {
 		if (temp->data == element) {
 			break;
-		} else if (temp->data > element) {
+		}
+		is_left = temp->data > element;
+		if (is_left) {
 			parent = temp;
 			temp = temp->left;
-			is_left = true;
 		} else {
 			parent = temp;
 			temp = temp->right;
-			is_left = false;
 		}
 	}
 	// if an element was not found.
 	if (!temp) {
 		return ;
 	}
-	// the function, sets the parent.
-	constexpr auto set_parent = [](sptr child, sptr new_parent) {
-		if (child) {
-			child->parent = new_parent;
-		}
-	};
-	// the function, sets the child.
-	auto set_child = [&parent, &is_left, &set_parent](sptr child) {
-		if (is_left) {
-			parent->left = child;
-			set_parent(child, parent->left);
-		} else {
-			parent->right = child;
-			set_parent(child, parent->right);
-		}
-	};
 	// case 1.
-	// If the right child and the left child is NULL.
+	// If the right child and the left child is nullptr.
 	// Just removes it.
 	if (!(temp->left) && !(temp->right)) {
 		if (!parent) {
-			if (temp == root_) {
-				root_ = sptr(NULL);
+			if (temp == _root) {
+				_root = nullptr;
+				_empty = true;
 			}
 		} else {
-			set_child(sptr(NULL));
+			set_child(nullptr, parent, is_left);
 		}
 		temp.reset();
 	} else if (!(temp->left) || !(temp->right)) {
 		// case 2.
-		// If the right child or the left child is NULL.
+		// If the right child or the left child is nullptr.
 		// Removes this node, and replaces it with the right or left child.
-		sptr child = temp->left ? temp->left : temp->right;
+		node_ptr child = temp->left ? temp->left : temp->right;
 		if (!parent) {
-			if (temp == root_) {
-				root_ = child;
+			if (temp == _root) {
+				_root = child;
 			}
 		} else {
-			set_child(child);
+			set_child(child, parent, is_left);
 		}
 		temp.reset();
 	} else {
 		// case 3.
-		// If the right child and the left child is not NULL.
+		// If the right child and the left child is not nullptr.
 		// Removes this Node, and replaces it with the left child.
 		// And replaces the left child with the right child.
-		sptr parent_rep_node = temp;
-		sptr rep_node = temp->left;
+		node_ptr parent_rep_node = temp, rep_node = temp->left;
 		is_left = true;
 		while (rep_node->right) {
 			parent_rep_node = rep_node;
@@ -556,8 +581,8 @@ void bst<E>::remove(const E& element)
 		}
 		rep_node.reset();
 	}
-	count_--;
-	empty = count_ == 0 ? true : false;
+	--_count;
+	//_empty = _count == 0;
 }
 
 /*
@@ -567,13 +592,13 @@ void bst<E>::remove(const E& element)
 template<typename E>
 E bst<E>::min() const
 {
-	if (empty) {
-		throw bst_exception::BSTIsEmpty();
+	if (_empty) {
+		throw bst_exception::bst_is_empty();
 	}
-	if (!root_->left) {
-		return root_->data;
+	if (!_root->left) {
+		return _root->data;
 	}
-	sptr temp = root_->left;
+	node_ptr temp = _root->left;
 	while (temp->left) {
 		temp = temp->left;
 	}
@@ -587,13 +612,13 @@ E bst<E>::min() const
 template<typename E>
 E bst<E>::max() const
 {
-	if (empty) {
-		throw bst_exception::BSTIsEmpty();
+	if (_empty) {
+		throw bst_exception::bst_is_empty();
 	}
-	if (!root_->right) {
-		return root_->data;
+	if (!_root->right) {
+		return _root->data;
 	}
-	sptr temp = root_->right;
+	node_ptr temp = _root->right;
 	while (temp->right) {
 		temp = temp->right;
 	}
@@ -607,10 +632,10 @@ E bst<E>::max() const
 template<typename E>
 E bst<E>::root() const
 {
-	if (empty) {
-		throw bst_exception::BSTIsEmpty();
+	if (_empty) {
+		throw bst_exception::bst_is_empty();
 	}
-	return root_->data;
+	return _root->data;
 }
 
 /*
@@ -622,11 +647,12 @@ E bst<E>::root() const
 template<typename E>
 bool bst<E>::find(const E& element) const noexcept
 {
-	sptr temp = root_;
+	node_ptr temp = _root;
 	while (temp) {
 		if (element == temp->data) {
 			return true;
-		} else if (element < temp->data) {
+		}
+		if (element < temp->data) {
 			temp = temp->left;
 		} else {
 			temp = temp->right;
@@ -641,15 +667,52 @@ bool bst<E>::find(const E& element) const noexcept
 template<typename E>
 void bst<E>::clear() noexcept
 {
-	if (empty) {
+	if (_empty) {
 		return ;
 	}
-	destroy(root_);
-	root_ = sptr(NULL);
-	count_ = 0;
-	empty = true;
+	destroy(_root);
+	_root = nullptr;
+	_count = 0;
+	_empty = true;
 }
 
+/*
+ * Constructor.
+ */
+template<typename E>
+bst<E>::iterator::iterator(node_ptr node) :
+	current(node)
+{}
+
+/*
+ * Sets the next element as the current element.
+ */
+template<typename E>
+void bst<E>::iterator::increment() noexcept
+{
+	// checks the right child.
+	if (current->right) {
+		current = current->right;
+		// find the minimum element of the right child.
+		while (current->left) {
+			current = current->left;
+		}
+	} else {
+		node_ptr parent = current->parent; // parent.
+		while (parent && current == parent->right) {
+			current = parent;
+			parent = parent->parent;
+		}
+		// if all the elements is visited.
+		if (!parent) {
+			current = parent;
+			return ;
+		}
+		if (current->right != parent) {
+			current = parent;
+		}
+	}
+}
 
 /*
  * The overloaded `<<` operator for the binary search tree.
@@ -661,11 +724,11 @@ template<typename T>
 std::ostream& operator<<(std::ostream& stream, const bst<T>& tree)
 {
 	stream << "[";
+	std::size_t i = 0;
 	for (auto it = tree.begin(); it != tree.end(); it++) {
-		stream << it->data << ", ";
+		stream << it->data << ( i + 1 < tree._count ? ", " : "");
+		++i;
 	}
-	stream << "\b\b";
-	stream << "";
 	stream << "]";
 	return stream;
 }
