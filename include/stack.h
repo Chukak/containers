@@ -15,6 +15,11 @@
 template<typename Type>
 class Stack
 {
+	static_assert(std::disjunction_v <
+	              std::is_default_constructible<Type>,
+	              std::is_nothrow_default_constructible<Type>
+	              >,
+	              "Type must have a trivial constructor.");
 	/*
 	 * A linked list structure.
 	 * Used to represent elements in memory.
@@ -107,8 +112,8 @@ public:
 	}
 private:
 	node_ptr _front; // a pointer to the first element.
-	unsigned int _count; // the numbers of elements.
-	bool _empty;
+	unsigned int _count{0}; // the numbers of elements.
+	bool _empty{true};
 public:
 	/*
 	 * The `iterator` class.
@@ -249,9 +254,7 @@ Stack<Type>::Node::Node(const Type& v, std::shared_ptr<Node> p) :
  */
 template<typename Type>
 Stack<Type>::Stack() :
-	_front(nullptr),
-	_count(0),
-	_empty(true)
+	_front(nullptr)
 {
 }
 
@@ -293,9 +296,7 @@ Stack<Type>::Stack(Stack<Type>&& orig) noexcept :
  */
 template<typename Type>
 Stack<Type>::Stack(std::initializer_list<Type> lst) :
-	_front(nullptr),
-	_count(0),
-	_empty(true)
+	_front(nullptr)
 {
 	/*
 	 * Just copy all the elements.

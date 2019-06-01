@@ -15,6 +15,11 @@
 template<typename Type>
 class Queue
 {
+	static_assert(std::disjunction_v <
+	              std::is_default_constructible<Type>,
+	              std::is_nothrow_default_constructible<Type>
+	              >,
+	              "Type must have a trivial constructor.");
 	/*
 	 * A linked list structure.
 	 * Used to represent elements in memory.
@@ -117,8 +122,8 @@ public:
 private:
 	node_ptr _front; // a pointer to the first element.
 	node_ptr _back; // a pointer to the last element.
-	unsigned int _count; // the numbers of elements.
-	bool _empty;
+	unsigned int _count{0}; // the numbers of elements.
+	bool _empty{true};
 
 public:
 	/*
@@ -261,9 +266,7 @@ Queue<Type>::Node::Node(const Type& v, std::shared_ptr<Node> n) :
 template<typename Type>
 Queue<Type>::Queue() :
 	_front(nullptr),
-	_back(nullptr),
-	_count(0),
-	_empty(true)
+	_back(nullptr)
 {
 }
 
@@ -311,9 +314,7 @@ Queue<Type>::Queue(Queue<Type>&& orig) noexcept :
 template<typename Type>
 Queue<Type>::Queue(std::initializer_list<Type> lst) :
 	_front(nullptr),
-	_back(nullptr),
-	_count(0),
-	_empty(true)
+	_back(nullptr)
 {
 	/*
 	 * Just copy all the elements.

@@ -33,6 +33,11 @@ bst_is_empty::bst_is_empty(const char * message) :
 template<typename E>
 class bst
 {
+	static_assert(std::disjunction_v <
+	              std::is_default_constructible<E>,
+	              std::is_nothrow_default_constructible<E>
+	              >,
+	              "Type must have a trivial constructor.");
 	/*
 	 * The structure `Node`.
 	 * Used to representing elements in memory.
@@ -184,8 +189,8 @@ private:
 	}
 private:
 	node_ptr _root; // a pointer to the root of the tree.
-	unsigned int _count; // the numbers of elements.
-	bool _empty;
+	unsigned int _count{0}; // the numbers of elements.
+	bool _empty{true};
 private:
 	/*
 	 * Copy all the elements from an another tree.
@@ -344,9 +349,7 @@ bst<E>::Node::Node(const E& e, node_ptr r, node_ptr l, node_ptr p) :
  */
 template<typename E>
 bst<E>::bst() :
-	_root(nullptr),
-	_count(0),
-	_empty(true)
+	_root(nullptr)
 {
 }
 
@@ -380,9 +383,7 @@ bst<E>::bst(bst<E>&& orig) noexcept :
  */
 template<typename E>
 bst<E>::bst(std::initializer_list<E> lst) :
-	_root(nullptr),
-	_count(0),
-	_empty(true)
+	_root(nullptr)
 {
 	/*
 	 * Just copy all the elements.
