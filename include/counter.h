@@ -269,7 +269,8 @@ public:
 template<typename T,
          bool SortFirst>
 template<typename IteratorBegin,
-         typename IteratorEnd> Counter<T, SortFirst>::Counter(IteratorBegin _begin, IteratorEnd _end) :
+         typename IteratorEnd>
+Counter<T, SortFirst>::Counter(IteratorBegin _begin, IteratorEnd _end) :
 	_elements(),
 	_current()
 {
@@ -415,7 +416,8 @@ void Counter<T, SortFirst>::most_common(Array& list, int n)
  */
 template<typename T,
          bool SortFirst>
-template<typename IteratorBegin, typename IteratorEnd>
+template<typename IteratorBegin,
+         typename IteratorEnd>
 void Counter<T, SortFirst>::update(IteratorBegin _begin, IteratorEnd _end)
 {
 	for (auto it = _begin; it != _end; it++) {
@@ -428,7 +430,8 @@ void Counter<T, SortFirst>::update(IteratorBegin _begin, IteratorEnd _end)
  * Constructor.
  */
 template<typename T,
-         bool SortFirst> Counter<T, SortFirst>::iterator::iterator(vc_it it, vc_it end) :
+         bool SortFirst>
+Counter<T, SortFirst>::iterator::iterator(vc_it it, vc_it end) :
 	_begin(it),
 	_end(end)
 {}
