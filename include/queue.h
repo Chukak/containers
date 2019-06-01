@@ -120,6 +120,11 @@ public:
 	 */
 	void clear() noexcept;
 private:
+	/*
+	 * Copy all the elements from an another queue.
+	 */
+	void assign(node_ptr front);
+private:
 	node_ptr _front; // a pointer to the first element.
 	node_ptr _back; // a pointer to the last element.
 	unsigned int _count{0}; // the numbers of elements.
@@ -281,18 +286,7 @@ Queue<Type>::Queue(const Queue<Type>& orig) :
 	_count(orig._count),
 	_empty(orig._empty)
 {
-	if (!_empty) {
-		node_ptr t = orig._front; // copy a pointer to the first element.
-		_front = make_shared_ptr<Node>(t->value, nullptr); // creates a new pointer.
-		_back = _front;
-		t = t->next; // gets a pointer to the next element.
-		while (t) {
-			node_ptr new_node = make_shared_ptr<Node>(t->value, nullptr);
-			_back->next = new_node;
-			_back = new_node;
-			t = t->next;
-		}
-	}
+	assign(orig._front);
 }
 
 /*
@@ -344,7 +338,9 @@ Queue<Type>::~Queue()
 template<typename Type>
 Queue<Type>& Queue<Type>::operator=(const Queue<Type>& orig)
 {
-	_front = orig._front, _back = orig._back, _count = orig._count, _empty = orig.empty;
+	clear();
+	_count = orig._count, _empty = orig.empty;
+	assign(orig._front);
 	return *this;
 }
 
@@ -427,6 +423,25 @@ template<typename Type>
 Type Queue<Type>::back() const noexcept
 {
 	return _back != nullptr ? _back->value : Type();
+}
+
+/*
+ * Copy all the elements from an another queue.
+ */
+template<typename Type>
+void Queue<Type>::assign(node_ptr front)
+{
+	if (!_empty) {
+		node_ptr t = front; // copy a pointer to the first element.
+		_front = _back = make_shared_ptr<Node>(t->value, nullptr); // creates a new pointer.
+		t = t->next; // gets a pointer to the next element.
+		while (t) {
+			node_ptr new_node = make_shared_ptr<Node>(t->value, nullptr);
+			_back->next = new_node;
+			_back = new_node;
+			t = t->next;
+		}
+	}
 }
 
 /*

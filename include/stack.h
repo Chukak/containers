@@ -111,6 +111,15 @@ public:
 		return _empty;
 	}
 private:
+	/*
+	 * Copy all the elements from an another stack.
+	 */
+	void assign(node_ptr front);
+	/*
+	 * Delete all the elements.
+	 */
+	void destroy();
+private:
 	node_ptr _front; // a pointer to the first element.
 	unsigned int _count{0}; // the numbers of elements.
 	bool _empty{true};
@@ -268,15 +277,7 @@ Stack<Type>::Stack(const Stack<Type>& orig) :
 	_count(orig._count),
 	_empty(orig._empty)
 {
-	if (!_empty) {
-		_front = make_shared_ptr<Node>(orig._front->value, nullptr); // copy a pointer to the first element.
-		node_ptr t = _front, temp = orig._front->prev; // gets a pointer to the previous element.
-		while (temp) {
-			t->prev = make_shared_ptr<Node>(temp->value, nullptr);
-			temp = temp->prev;
-			t = t->prev;
-		}
-	}
+	assign(orig._front);
 }
 
 /*
@@ -313,11 +314,7 @@ Stack<Type>::Stack(std::initializer_list<Type> lst) :
 template<typename Type>
 Stack<Type>::~Stack()
 {
-	while (_front) {
-		node_ptr old = _front; // a pointer to the current element.
-		_front = _front->prev; // a pointer to the previous element.
-		old.reset();
-	}
+	destroy();
 }
 
 /*
@@ -326,7 +323,9 @@ Stack<Type>::~Stack()
 template<typename Type>
 Stack<Type>& Stack<Type>::operator=(const Stack<Type>& orig)
 {
-	_front = orig._front, _count = orig._count, _empty = orig._empty;
+	destroy();
+	_count = orig._count, _empty = orig._empty;
+	assign(orig._front);
 	return *this;
 }
 
@@ -396,6 +395,36 @@ template<typename Type>
 Type Stack<Type>::front() const noexcept
 {
 	return _front != nullptr ? _front->value : Type();
+}
+
+/*
+ * Copy all the elements from an another stack.
+ */
+template<typename Type>
+void Stack<Type>::assign(node_ptr front)
+{
+	if (!_empty) {
+		_front = make_shared_ptr<Node>(front->value, nullptr); // copy a pointer to the first element.
+		node_ptr t = _front, temp = front->prev; // gets a pointer to the previous element.
+		while (temp) {
+			t->prev = make_shared_ptr<Node>(temp->value, nullptr);
+			temp = temp->prev;
+			t = t->prev;
+		}
+	}
+}
+
+/*
+ * Removes all the elements.
+ */
+template<typename Type>
+void Stack<Type>::destroy()
+{
+	while (_front) {
+		node_ptr old = _front; // a pointer to the current element.
+		_front = _front->prev; // a pointer to the previous element.
+		old.reset();
+	}
 }
 
 /*
