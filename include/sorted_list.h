@@ -235,7 +235,7 @@ private:
 		case index::FIRST:
 			// compares the first element.
 			return (reversed ? _front->value <= element : _front->value >= element);
-		case index::MIDDLE:
+		default:
 			// compares the middle element.
 			// Calls the function `greater` if the order of the list is reversed,
 			// otherwise calls the function `less`.
