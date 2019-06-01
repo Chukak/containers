@@ -10,67 +10,45 @@ TEST_CASE("[sorted_list] Initialization the sorted list.", "[sorted list]") {
 	 */
 	SECTION("Testing the initialization №1.") {
 		sorted_list<int> list;
-
-		REQUIRE(&list != nullptr);
 		CHECK(list.is_empty());
 		REQUIRE(list.count() == 0);
-
-		list.~sorted_list();
 	}
 	/*
 	 * Testing the initialization `sotred_list s = {1,2,3}`.
 	 */
 	SECTION("Testing the initialization №2.") {
 		sorted_list<int> list = {1, 5, 2, 6, 3, 4};
-
-		REQUIRE(&list != nullptr);
 		CHECK_FALSE(list.is_empty());
 		REQUIRE(list.count() == 6);
 		REQUIRE(list.back() == 6);
 		REQUIRE(list.front() == 1);
-
-		list.~sorted_list();
 	}
 	/*
 	 * Testing the initialization of the sorted list from another sorted list.
 	 */
 	SECTION("Testing the initialization №3.") {
 		sorted_list<int> orig = {3, 2, 1};
-		REQUIRE(&orig != nullptr);
-
 		sorted_list<int> list(orig);
-		orig.~sorted_list();
-
-		REQUIRE(&list != nullptr);
 		CHECK_FALSE(list.is_empty());
 		REQUIRE(list.count() == 3);
 		REQUIRE(list.back() == 3);
 		REQUIRE(list.front() == 1);
-
-		list.~sorted_list();
 	}
 	/*
 	 * Testing the initialization of the sorted list from another sorted list.
 	 */
 	SECTION("Testing the initialization №3.") {
 		sorted_list<int> orig = {3, 2, 1};
-		REQUIRE(&orig != nullptr);
-
 		sorted_list<int> list(std::move(orig));
 
 		REQUIRE(orig.count() == 0);
 		CHECK(orig.is_empty());
 		REQUIRE_FALSE(orig.front() == 1);
 		REQUIRE_FALSE(orig.back() == 3);
-
-		REQUIRE(&list != nullptr);
 		CHECK_FALSE(list.is_empty());
 		REQUIRE(list.count() == 3);
 		REQUIRE(list.back() == 3);
 		REQUIRE(list.front() == 1);
-
-		orig.~sorted_list();
-		list.~sorted_list();
 	}
 }
 
@@ -95,8 +73,6 @@ TEST_CASE("[sorted_list] Testing the insertion in the sorted list.", "[sorted li
 		REQUIRE(list.back() == 109);
 		CHECK_FALSE(list.is_empty());
 		REQUIRE(list.count() == 9);
-
-		list.~sorted_list();
 	}
 	SECTION("Testing the insertion №2.") {
 		sorted_list<int> list = {-75, 1, 865};
@@ -115,8 +91,6 @@ TEST_CASE("[sorted_list] Testing the insertion in the sorted list.", "[sorted li
 		REQUIRE(list.back() == 865);
 		CHECK_FALSE(list.is_empty());
 		REQUIRE(list.count() == 12);
-
-		list.~sorted_list();
 	}
 }
 
@@ -151,8 +125,6 @@ TEST_CASE("[sorted_list] Testing the removing from the sorted_list.", "[sorted l
 
 		CHECK(list.is_empty());
 		REQUIRE(list.count() == 0);
-
-		list.~sorted_list();
 	}
 	SECTION("Testing the removing №2.") {
 		sorted_list<int> list;
@@ -181,8 +153,6 @@ TEST_CASE("[sorted_list] Testing the removing from the sorted_list.", "[sorted l
 
 		CHECK(list.is_empty());
 		REQUIRE(list.count() == 0);
-
-		list.~sorted_list();
 	}
 }
 
@@ -218,8 +188,6 @@ TEST_CASE("[sorted_list] Testing the front and back elements from the sorted lis
 
 		CHECK(list.is_empty());
 		REQUIRE(list.count() == 0);
-
-		list.~sorted_list();
 	}
 	SECTION("Testing the back element.") {
 		sorted_list<int> list;
@@ -249,8 +217,6 @@ TEST_CASE("[sorted_list] Testing the front and back elements from the sorted lis
 
 		CHECK(list.is_empty());
 		REQUIRE(list.count() == 0);
-
-		list.~sorted_list();
 	}
 }
 
@@ -274,11 +240,9 @@ TEST_CASE("[sorted_list] Testing an element from a position from the sorted list
 
 		int t = -25;
 		for (unsigned int i = 0; i < list.count(); i++) {
-			REQUIRE(t == list[i]);
+			REQUIRE(t == list[static_cast<int>(i)]);
 			t += 5;
-		}
-
-		list.~sorted_list();
+		};
 	}
 	SECTION("Testing the function `at()`.") {
 		sorted_list<int> list;
@@ -296,11 +260,9 @@ TEST_CASE("[sorted_list] Testing an element from a position from the sorted list
 
 		int t = -25;
 		for (unsigned int i = 0; i < list.count(); i++) {
-			REQUIRE(t == list.at(i));
+			REQUIRE(t == list.at(static_cast<int>(i)));
 			t += 5;
 		}
-
-		list.~sorted_list();
 	}
 }
 
@@ -323,12 +285,10 @@ TEST_CASE("[sorted_list] Testing the removing an element from the position from 
 		list.push(15);
 
 		int t = -25;
-		for (unsigned int i = 0; i != list.count();) {
+		for (std::size_t i = 0; i != list.count();) {
 			REQUIRE(t == list.remove(0));
 			t += 5;
 		}
-
-		list.~sorted_list();
 	}
 	SECTION("Testing the function `remove` №2.") {
 		sorted_list<int> list;
@@ -344,8 +304,6 @@ TEST_CASE("[sorted_list] Testing the removing an element from the position from 
 		REQUIRE(10 == list.remove(2));
 		REQUIRE(-5 == list.remove(0));
 		REQUIRE(5 == list.remove(0));
-
-		list.~sorted_list();
 	}
 }
 
@@ -360,7 +318,7 @@ TEST_CASE("[sorted_list] Testing the iterators of the sorted list.", "[sorted li
 		REQUIRE_FALSE(iter == nullptr);
 		REQUIRE(iter != nullptr);
 
-		unsigned test_var = -12;
+		int test_var = -12;
 		for (auto it = list.begin(); it != list.end(); ++it) {
 			test_var += 2;
 			REQUIRE(*it == test_var);
@@ -376,8 +334,6 @@ TEST_CASE("[sorted_list] Testing the iterators of the sorted list.", "[sorted li
 
 		REQUIRE_FALSE(list.begin() == list.end());
 		REQUIRE(list.begin() != list.end());
-
-		list.~sorted_list();
 	}
 	SECTION("Testing the iterators №2.") {
 		sorted_list<int> list = {10, -8, 6, 0, 8, -10, -2, 2, 4, -4, -6};
@@ -406,8 +362,6 @@ TEST_CASE("[sorted_list] Testing the iterators of the sorted list.", "[sorted li
 
 		REQUIRE_FALSE(list.begin() == list.end());
 		REQUIRE(list.begin() != list.end());
-
-		list.~sorted_list();
 	}
 	SECTION("Testing that the iterators and nullptr are the same.") {
 		sorted_list<int> list;
@@ -415,8 +369,6 @@ TEST_CASE("[sorted_list] Testing the iterators of the sorted list.", "[sorted li
 		REQUIRE(list.begin() == list.end());
 		REQUIRE(list.begin() == nullptr);
 		REQUIRE(list.end() == nullptr);
-
-		list.~sorted_list();
 	}
 }
 
@@ -444,8 +396,6 @@ TEST_CASE("[sorted_list] Testing the reverse the sorted list.", "[sorted list]")
 
 		REQUIRE(list.front() == 20);
 		REQUIRE(list.back() == -25);
-
-		list.~sorted_list();
 	}
 	SECTION("Testing the function `reverse` № 2.") {
 		sorted_list<int> list;
@@ -474,8 +424,6 @@ TEST_CASE("[sorted_list] Testing the reverse the sorted list.", "[sorted list]")
 		REQUIRE(list.back() == -30);
 		list.push(15);
 		REQUIRE(list.count() == 13);
-
-		list.~sorted_list();
 	}
 }
 
@@ -502,8 +450,6 @@ TEST_CASE("[sorted_list] Testing the cleaning of the sorted list.", "[sorted lis
 		list.clear();
 
 		REQUIRE(list.count() == 0);
-
-		list.~sorted_list();
 	}
 }
 
@@ -512,8 +458,8 @@ TEST_CASE("[sorted_list] Testing the cleaning of the sorted list.", "[sorted lis
  */
 TEST_CASE("[sorted_list] Testing the custom function to compare elements in the list.", "[sorted list]") {
 	SECTION("Testing the custom function.") {
-		auto f = [](int a, int b, int c) {
-			return a < b && b <= c;
+		auto f = [](int a, int b) {
+			return a <= b;
 		};
 		sorted_list<int> list(f);
 
@@ -531,18 +477,14 @@ TEST_CASE("[sorted_list] Testing the custom function to compare elements in the 
 		REQUIRE(5 == list.pop_front());
 		REQUIRE(10 == list.pop_front());
 
-		list.~sorted_list();
-
-		auto f2 = [](int a, int b, int c) {
-			return a > b && b >= c;
+		auto f2 = [](int a, int b) {
+			return a > b;
 		};
 		sorted_list<int> list2({6, 8, -12}, f2);
 
 		REQUIRE(8 == list2.pop_front());
 		REQUIRE(6 == list2.pop_front());
 		REQUIRE(-12 == list2.pop_front());
-
-		list2.~sorted_list();
 	}
 }
 

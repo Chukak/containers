@@ -10,63 +10,42 @@ TEST_CASE("[Stack] Initialization stack.", "[stack]") {
 	 */
 	SECTION("Testing the initialization №1.") {
 		Stack<int> s;
-
-		REQUIRE(&s != nullptr);
 		CHECK(s.is_empty());
 		REQUIRE(s.count() == 0);
-
-		s.~Stack();
 	}
 	/*
 	 * Testing the initialization `Stack s = {1,2,3}`.
 	 */
 	SECTION("Testing the initialization №2.") {
 		Stack<int> s = {1, 2, 3, 4, 5, 6};
-
-		REQUIRE(&s != nullptr);
 		CHECK_FALSE(s.is_empty());
 		REQUIRE(s.count() == 6);
 		REQUIRE(s.front() == 6);
-
-		s.~Stack();
 	}
 	/*
 	 * Testing the initialization of the stack from another stack.
 	 */
 	SECTION("Testing the initialization №3.") {
 		Stack<int> orig = {1, 2, 3};
-		REQUIRE(&orig != nullptr);
-
 		Stack<int> s(orig);
 		orig.~Stack();
-
-		REQUIRE(&s != nullptr);
 		CHECK_FALSE(s.is_empty());
 		REQUIRE(s.count() == 3);
 		REQUIRE(s.front() == 3);
-
-		s.~Stack();
 	}
 	/*
 	 * Testing the initialization of the stack from another stack.
 	 */
 	SECTION("Testing the initialization №4.") {
 		Stack<int> orig = {1, 2, 3};
-		REQUIRE(&orig != nullptr);
-
 		Stack<int> s(std::move(orig));
 
 		REQUIRE(orig.count() == 0);
 		CHECK(orig.is_empty());
 		REQUIRE_FALSE(orig.front() == 3);
-
-		REQUIRE(&s != nullptr);
 		CHECK_FALSE(s.is_empty());
 		REQUIRE(s.count() == 3);
 		REQUIRE(s.front() == 3);
-
-		orig.~Stack();
-		s.~Stack();
 	}
 }
 
@@ -84,8 +63,6 @@ TEST_CASE("[Stack] Testing the insertion in the stack.", "[stack]") {
 		REQUIRE(s.front() == 512);
 		CHECK_FALSE(s.is_empty());
 		REQUIRE(s.count() == 9);
-
-		s.~Stack();
 	}
 	SECTION("Testing the insertion №2.") {
 		Stack<int> s = {2, 4, 8};
@@ -97,8 +74,6 @@ TEST_CASE("[Stack] Testing the insertion in the stack.", "[stack]") {
 		REQUIRE(s.front() == 512);
 		CHECK_FALSE(s.is_empty());
 		REQUIRE(s.count() == 9);
-
-		s.~Stack();
 	}
 }
 
@@ -122,8 +97,6 @@ TEST_CASE("[Stack] Testing the removing from the stack.", "[stack]") {
 
 		CHECK(s.is_empty());
 		REQUIRE(s.count() == 0);
-
-		s.~Stack();
 	}
 	SECTION("Testing the removing №2.") {
 		Stack<int> s = {2, 4, 8};
@@ -145,8 +118,6 @@ TEST_CASE("[Stack] Testing the removing from the stack.", "[stack]") {
 
 		CHECK(s.is_empty());
 		REQUIRE(s.count() == 0);
-
-		s.~Stack();
 	}
 }
 
@@ -176,8 +147,6 @@ TEST_CASE("[Stack] Testing the front element from the stack.", "[stack]") {
 
 		CHECK(s.is_empty());
 		REQUIRE(s.count() == 0);
-
-		s.~Stack();
 	}
 }
 
@@ -208,8 +177,6 @@ TEST_CASE("[Stack] Testing the iterators of the stack.", "[stack]") {
 
 		CHECK_FALSE(s.begin() == s.end());
 		CHECK(s.begin() != s.end());
-
-		s.~Stack();
 	}
 	SECTION("Testing that the iterators and nullptr are the same.") {
 		Stack<int> s;
@@ -217,7 +184,5 @@ TEST_CASE("[Stack] Testing the iterators of the stack.", "[stack]") {
 		REQUIRE(s.begin() == s.end());
 		REQUIRE(s.begin() == nullptr);
 		REQUIRE(s.end() == nullptr);
-
-		s.~Stack();
 	}
 }
