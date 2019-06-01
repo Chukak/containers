@@ -288,7 +288,8 @@ private:
 			_back = new_node; // changes the last element.
 			break;
 		}
-		case index::MIDDLE: {
+		case index::MIDDLE:
+		default: {
 			/*
 			 * Creates a new node with arguments:
 			 * 1) element - a new element.
