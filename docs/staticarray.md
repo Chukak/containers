@@ -58,7 +58,7 @@ Some extensions located in the `extensions.h` header file.
 
 ### Constexpr loop
 
-For-loop at compile time! But, at the moment it does not work in `g++-8` compiler. See problem: [https://stackoverflow.com/questions/56409068/why-is-this-a-non-constant-condition-for-g8](Stackoverflow) 
+For-loop at compile time! But, at the moment it does not work in `g++-8` compiler. See problem: [Stackoverflow](https://stackoverflow.com/questions/56409068/why-is-this-a-non-constant-condition-for-g8) 
 
 ```cpp
 constexpr StaticArray<unsigned, 10> array = {9u, 8u, 7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u};
