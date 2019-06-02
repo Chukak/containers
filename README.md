@@ -5,6 +5,7 @@
 * [Sorted list](https://github.com/Chukak/containers/blob/master/docs/sorted_list.md)
 * [Binary search tree](https://github.com/Chukak/containers/blob/master/docs/bst.md)
 * [Counter](https://github.com/Chukak/containers/blob/master/docs/counter.md)
+* [Static array](https://github.com/Chukak/containers/blob/master/docs/staticarray.md)
 
 ### Python
 * [Python module](https://github.com/Chukak/containers/blob/master/python/README.md)
