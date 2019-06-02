@@ -4,9 +4,9 @@ CXX_LIB=""
 PLACE_LIB=""
 PLACE_HEADERS=""
 COMMONDIR="containers"
-CONTAINERS=(queue stack sorted_list bst counter)
+CONTAINERS=(queue stack sorted_list bst counter staticarray)
 declare -A SOURCES
-SOURCES=([queue]=queue [stack]=stack [sorted_list]=sorted_list [bst]=bst [counter]=counter)
+SOURCES=([queue]=queue [stack]=stack [sorted_list]=sorted_list [bst]=bst [counter]=counter [staticarray]=staticarray)
 
 check_return_code() {
     until eval $1;
