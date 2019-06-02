@@ -2,6 +2,7 @@
 #include <staticarray.h>
 #include <extensions.h>
 
+
 using namespace constexpr_extensions;
 
 TEST_CASE("[static array] Initialization of the static array.", "[static array]") {
@@ -131,12 +132,15 @@ TEST_CASE("[static array] Testing operators of StaticArray", "[static array]") {
 		static_assert(array[8] == 1);
 		static_assert(array[9] == 0);
 
+		// See: https://stackoverflow.com/questions/56409068/why-is-this-a-non-constant-condition-for-g8
+#if __GNUC__ != 8
 		constexpr std::array<unsigned, 10> checker = {9u, 8u, 7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u};
 
 		CONSTEXPR_LOOP<10>([&](auto i) constexpr {
 			static_assert(array[Index<i>()] == checker[i]);
 			static_assert(array[i] == checker[i]);
 		});
+#endif
 	}
 }
 
