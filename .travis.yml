@@ -41,15 +41,15 @@ script:
   - cd ../
   - rm -rf build
   # python module and tests
-  - mkdir build && cd build
-  - cmake ../python/
-  - make
-  - cp ./containers.so ../python/tests/containers.so
-  - cd ../python/tests/
-  - python3 -m unittest discover -s ./ -p "tst_*.py"
-  - rm containers.so
-  - cd ../../
-  - rm -rf build
+  #- mkdir build && cd build
+  #- cmake ../python/
+  #- make
+  #- cp ./containers.so ../python/tests/containers.so
+  #- cd ../python/tests/
+  #- python3 -m unittest discover -s ./ -p "tst_*.py"
+  #- rm containers.so
+  #- cd ../../
+  #- rm -rf build
   # check build_library.sh script
   - mkdir libdir
   -  ./build_library.sh libdir libdir -g++=/usr/bin/g++-7
