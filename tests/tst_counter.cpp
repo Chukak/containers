@@ -46,7 +46,6 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 		REQUIRE(v3.at(2).second == 5);
 		REQUIRE(v3.at(3).first == "v5");
 		REQUIRE(v3.at(3).second == 4);
-
 	}
 
 	/*
@@ -67,7 +66,6 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 
 		Counter<std::string> c(v.begin(), v.end());
 		REQUIRE(c.size() == 10);
-		//std::vector<std::string> v2;
 		std::list<std::string> v2;
 		c.most_common(v2);
 		REQUIRE(v2.size() == 10);
@@ -103,7 +101,6 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 		v3.pop_front();
 		REQUIRE(v3.front() == "v5");
 		v3.pop_front();
-
 	}
 
 	/*
@@ -127,7 +124,7 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 		std::vector<std::string> v2 = {
 			"v1", "v2", "v7", "v5", "v8", "v3", "v4", "v6", "v11", "v9"
 		};
-		int i = 0;
+		std::size_t i = 0;
 		for (Counter<std::string>::iterator it = c.begin(); it != c.end(); ++it) {
 			REQUIRE(*it == v2.at(i));
 			i++;
@@ -189,12 +186,11 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 
 		Counter<std::string> c(v.begin(), v.end());
 		Counter<std::string>::vector_t v3 = c.most_common();
-		int i = 0;
+		std::size_t i = 0;
 		for (const std::pair<std::string, unsigned int>& p : v3) {
 			REQUIRE(p.first == v2.at(i).first);
 			REQUIRE(p.second == v2.at(i).second);
 			i++;
 		}
-
 	}
 }

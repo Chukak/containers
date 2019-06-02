@@ -4,8 +4,8 @@ project(containers LANGUAGES CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-set(CMAKE_CXX_STANDART 17)
-set(CMAKE_CXX_STANDART_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(ENABLE_PYTHON3 ON)
 set(PYTHON_EXECUTABLE_PATH)
@@ -37,7 +37,7 @@ endif()
 
 add_definitions("-g -O -Wall -Werror -fPIC")
 
-include_directories("../src")
+include_directories("../include")
 
 file(GLOB_RECURSE sources "src/*.cpp")
 

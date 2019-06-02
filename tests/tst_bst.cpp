@@ -10,25 +10,45 @@ TEST_CASE("[bst] Initialization the binary search tree.", "[binary search tree]"
 	 */
 	SECTION("Testing the initialization №1.") {
 		bst<int> tree;
-
-		REQUIRE(&tree != nullptr);
 		CHECK(tree.is_empty());
 		REQUIRE(tree.count() == 0);
-
-		tree.~bst();
 	}
 	/*
 	 * Testing the initialization `bst tree = {1,2,3}`.
 	 */
 	SECTION("Testing the initialization №2.") {
 		bst<int> tree = {1, 5, 2, 6, 3, 4};
-
-		REQUIRE(&tree != nullptr);
 		CHECK_FALSE(tree.is_empty());
 		REQUIRE(tree.count() == 6);
 		REQUIRE(tree.root() == 1);
-
-		tree.~bst();
+	}
+	SECTION("Testing the initialization №3.") {
+		bst<int> orig = {1, 5, 2, 6, 3, 4};
+		bst<int> tree(orig);
+		CHECK_FALSE(tree.is_empty());
+		REQUIRE(tree.count() == 6);
+		REQUIRE(tree.root() == 1);
+	}
+	SECTION("Testing the initialization №4.") {
+		bst<int>&& orig = {1, 5, 2, 6, 3, 4};
+		bst<int> tree(std::forward<bst<int>>(orig));
+		CHECK_FALSE(tree.is_empty());
+		REQUIRE(tree.count() == 6);
+		REQUIRE(tree.root() == 1);
+	}
+	SECTION("Testing the initialization №5.") {
+		bst<int> orig = {1, 5, 2, 6, 3, 4};
+		bst<int> tree = orig;
+		CHECK_FALSE(tree.is_empty());
+		REQUIRE(tree.count() == 6);
+		REQUIRE(tree.root() == 1);
+	}
+	SECTION("Testing the initialization №6.") {
+		bst<int>&& orig = {1, 5, 2, 6, 3, 4};
+		bst<int> tree = std::forward<bst<int>>(orig);
+		CHECK_FALSE(tree.is_empty());
+		REQUIRE(tree.count() == 6);
+		REQUIRE(tree.root() == 1);
 	}
 }
 
@@ -54,8 +74,6 @@ TEST_CASE("[bst] Testing the insertion in the binary search tree.", "[binary sea
 		REQUIRE(tree.max() == 100);
 		CHECK_FALSE(tree.is_empty());
 		REQUIRE(tree.count() == 9);
-
-		tree.~bst();
 	}
 	SECTION("Testing the insertion №2.") {
 		bst<int> tree = {-75, 1, 865};
@@ -75,8 +93,6 @@ TEST_CASE("[bst] Testing the insertion in the binary search tree.", "[binary sea
 		REQUIRE(tree.max() == 865);
 		CHECK_FALSE(tree.is_empty());
 		REQUIRE(tree.count() == 11);
-
-		tree.~bst();
 	}
 }
 
@@ -111,8 +127,6 @@ TEST_CASE("[bst] Testing the removing from the binary search tree.", "[binary se
 
 		CHECK(tree.is_empty());
 		REQUIRE(tree.count() == 0);
-
-		tree.~bst();
 	}
 }
 
@@ -149,8 +163,6 @@ TEST_CASE("[bst] Testing the min and max elements from the binary search tree.",
 
 		CHECK(tree.is_empty());
 		REQUIRE(tree.count() == 0);
-
-		tree.~bst();
 	}
 }
 
@@ -178,8 +190,6 @@ TEST_CASE("[bst] Testing the removing an element from the binary search tree.", 
 			tree.remove(t);
 			t += 5;
 		}
-
-		tree.~bst();
 	}
 }
 
@@ -210,8 +220,6 @@ TEST_CASE("[bst] Testing the search in the binary search tree.", "[binary search
 		CHECK_FALSE(tree.find(-11));
 		CHECK_FALSE(tree.find(100));
 		CHECK_FALSE(tree.find(-4));
-
-		tree.~bst();
 	}
 	SECTION("Testing the function `find` №2.") {
 		bst<int> tree;
@@ -226,8 +234,6 @@ TEST_CASE("[bst] Testing the search in the binary search tree.", "[binary search
 		tree.remove(4);
 
 		CHECK_FALSE(tree.find(4));
-
-		tree.~bst();
 	}
 }
 
@@ -238,16 +244,16 @@ TEST_CASE("[bst] Testing the errors of the binary search tree.", "[binary search
 	SECTION("Testing the errors.") {
 		bst<int> tree;
 
-		REQUIRE_THROWS_AS(tree.remove(5), bst_exception::BSTIsEmpty);
+		REQUIRE_THROWS_AS(tree.remove(5), bst_exception::bst_is_empty);
 		REQUIRE_THROWS_WITH(tree.remove(5), "The binary search tree is empty.");
 
-		REQUIRE_THROWS_AS(tree.root(), bst_exception::BSTIsEmpty);
+		REQUIRE_THROWS_AS(tree.root(), bst_exception::bst_is_empty);
 		REQUIRE_THROWS_WITH(tree.root(), "The binary search tree is empty.");
 
-		REQUIRE_THROWS_AS(tree.min(), bst_exception::BSTIsEmpty);
+		REQUIRE_THROWS_AS(tree.min(), bst_exception::bst_is_empty);
 		REQUIRE_THROWS_WITH(tree.min(), "The binary search tree is empty.");
 
-		REQUIRE_THROWS_AS(tree.max(), bst_exception::BSTIsEmpty);
+		REQUIRE_THROWS_AS(tree.max(), bst_exception::bst_is_empty);
 		REQUIRE_THROWS_WITH(tree.max(), "The binary search tree is empty.");
 	}
 
@@ -264,7 +270,7 @@ TEST_CASE("[bst] Testing the iterators of the binary search tree.", "[binary sea
 		REQUIRE_FALSE(iter == nullptr);
 		REQUIRE(iter != nullptr);
 
-		unsigned test_var = -12;
+		int test_var = -12;
 		for (auto it = tree.begin(); it != tree.end(); ++it) {
 			test_var += 2;
 			REQUIRE(*it == test_var);
@@ -280,8 +286,6 @@ TEST_CASE("[bst] Testing the iterators of the binary search tree.", "[binary sea
 
 		REQUIRE_FALSE(tree.begin() == tree.end());
 		REQUIRE(tree.begin() != tree.end());
-
-		tree.~bst();
 	}
 	SECTION("Testing that the iterators and nullptr are the same.") {
 		bst<int> tree;
@@ -289,8 +293,6 @@ TEST_CASE("[bst] Testing the iterators of the binary search tree.", "[binary sea
 		REQUIRE(tree.begin() == tree.end());
 		REQUIRE(tree.begin() == nullptr);
 		REQUIRE(tree.end() == nullptr);
-
-		tree.~bst();
 	}
 }
 
@@ -317,7 +319,5 @@ TEST_CASE("[bst] Testing the cleaning of the binary search tree.", "[binary sear
 		tree.clear();
 
 		REQUIRE(tree.count() == 0);
-
-		tree.~bst();
 	}
 }

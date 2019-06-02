@@ -10,52 +10,35 @@ TEST_CASE("[Queue] Initialization a queue.", "[queue]") {
 	 */
 	SECTION("Testing the initialization №1.") {
 		Queue<int> q;
-
-		REQUIRE(&q != nullptr);
 		CHECK(q.is_empty());
 		REQUIRE(q.count() == 0);
-
-		q.~Queue();
 	}
 	/*
 	 * Testing the initialization `Queue q = {1,2,3}`.
 	 */
 	SECTION("Testing the initialization №2.") {
 		Queue<int> q = {1, 2, 3, 4, 5, 6};
-
-		REQUIRE(&q != nullptr);
 		CHECK_FALSE(q.is_empty());
 		REQUIRE(q.count() == 6);
 		REQUIRE(q.back() == 6);
 		REQUIRE(q.front() == 1);
-
-		q.~Queue();
 	}
 	/*
 	 * Testing the initialization of the queue from another queue.
 	 */
 	SECTION("Testing the initialization №3.") {
 		Queue<int> orig = {1, 2, 3};
-		REQUIRE(&orig != nullptr);
-
 		Queue<int> q(orig);
-		orig.~Queue();
-
-		REQUIRE(&q != nullptr);
 		CHECK_FALSE(q.is_empty());
 		REQUIRE(q.count() == 3);
 		REQUIRE(q.back() == 3);
 		REQUIRE(q.front() == 1);
-
-		q.~Queue();
 	}
 	/*
 	 * Testing the initialization of the queue from another queue.
 	 */
 	SECTION("Testing the initialization №4.") {
 		Queue<int> orig = {1, 2, 3};
-		REQUIRE(&orig != nullptr);
-
 		Queue<int> q(std::move(orig));
 
 		REQUIRE(orig.count() == 0);
@@ -63,14 +46,11 @@ TEST_CASE("[Queue] Initialization a queue.", "[queue]") {
 		REQUIRE_FALSE(orig.front() == 1);
 		REQUIRE_FALSE(orig.back() == 3);
 
-		REQUIRE(&q != nullptr);
+		//REQUIRE(&q != nullptr);
 		CHECK_FALSE(q.is_empty());
 		REQUIRE(q.count() == 3);
 		REQUIRE(q.back() == 3);
 		REQUIRE(q.front() == 1);
-
-		orig.~Queue();
-		q.~Queue();
 	}
 }
 
@@ -89,8 +69,6 @@ TEST_CASE("[Queue] Testing the insertion in the queue.", "[queue]") {
 		REQUIRE(q.back() == 512);
 		CHECK_FALSE(q.is_empty());
 		REQUIRE(q.count() == 9);
-
-		q.~Queue();
 	}
 	SECTION("Testing the insertion №2.") {
 		Queue<int> q = {2, 4, 8};
@@ -103,8 +81,6 @@ TEST_CASE("[Queue] Testing the insertion in the queue.", "[queue]") {
 		REQUIRE(q.back() == 512);
 		CHECK_FALSE(q.is_empty());
 		REQUIRE(q.count() == 9);
-
-		q.~Queue();
 	}
 }
 
@@ -128,8 +104,6 @@ TEST_CASE("[Queue] Testing the removing from the queue.", "[queue]") {
 
 		CHECK(q.is_empty());
 		REQUIRE(q.count() == 0);
-
-		q.~Queue();
 	}
 	SECTION("Testing the removing №2.") {
 		Queue<int> q = {2, 4, 8};
@@ -151,8 +125,6 @@ TEST_CASE("[Queue] Testing the removing from the queue.", "[queue]") {
 
 		CHECK(q.is_empty());
 		REQUIRE(q.count() == 0);
-
-		q.~Queue();
 	}
 }
 
@@ -182,8 +154,6 @@ TEST_CASE("[Queue] Testing the front and back elements from the queue.", "[queue
 
 		CHECK(q.is_empty());
 		REQUIRE(q.count() == 0);
-
-		q.~Queue();
 	}
 	SECTION("Testing the back element.") {
 		Queue<int> q;
@@ -203,8 +173,6 @@ TEST_CASE("[Queue] Testing the front and back elements from the queue.", "[queue
 
 		CHECK(q.is_empty());
 		REQUIRE(q.count() == 0);
-
-		q.~Queue();
 	}
 }
 
@@ -235,8 +203,6 @@ TEST_CASE("[Queue] Testing the iterators of the queue.", "[queue]") {
 
 		REQUIRE_FALSE(q.begin() == q.end());
 		REQUIRE(q.begin() != q.end());
-
-		q.~Queue();
 	}
 	SECTION("Testing that the iterators and nullptr are the same.") {
 		Queue<int> q;
@@ -244,7 +210,5 @@ TEST_CASE("[Queue] Testing the iterators of the queue.", "[queue]") {
 		REQUIRE(q.begin() == q.end());
 		REQUIRE(q.begin() == nullptr);
 		REQUIRE(q.end() == nullptr);
-
-		q.~Queue();
 	}
 }
