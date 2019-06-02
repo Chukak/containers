@@ -21,8 +21,7 @@ constexpr void _loop(F&& func, std::index_sequence<Is ...>) noexcept
  */
 template<typename T,
          typename ... Args>
-inline auto make_shared_ptr(Args&& ... args)
-- > decltype(std::make_shared<T>(std::forward<Args>(args)...))
+inline auto make_shared_ptr(Args&& ... args) -> decltype(std::make_shared<T>(std::forward<Args>(args)...))
 {
 	return std::make_shared<T>(std::forward<Args>(args)...);
 }
