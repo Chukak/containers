@@ -10,8 +10,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(ENABLE_PYTHON3 ON)
 set(PYTHON_EXECUTABLE_PATH)
 
-#TODO
-#fix for travis
+# check command line
+if (DEFINED PY_MODULE_WRAP_METHODS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPY_MODULE_WRAP_METHODS")
+endif()
+
 find_package(Boost 1.52.0 COMPONENTS python-py36 QUIET)
 if (NOT Boost_FOUND)
     find_package(Boost 1.52.0 COMPONENTS python-py35 QUIET)

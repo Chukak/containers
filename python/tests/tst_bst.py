@@ -14,11 +14,11 @@ class TestBST(unittest.TestCase):
         self.assertEqual(tree.count, 0)
         self.assertTrue(tree.is_empty)
         try:
-            self.assertEqual(tree.min, None)
+            self.assertEqual(tree.min(), None)
         except Exception as e:
             self.assertIsInstance(e, RuntimeError)
         try:
-            self.assertEqual(tree.max, None)
+            self.assertEqual(tree.max(), None)
         except Exception as e:
             self.assertIsInstance(e, RuntimeError)
         try:
@@ -73,16 +73,16 @@ class TestBST(unittest.TestCase):
 
         self.assertEqual(tree.count, 13)
         self.assertFalse(tree.is_empty)
-        self.assertEqual(tree.min, -934)
-        self.assertEqual(tree.max, 1290)
+        self.assertEqual(tree.min(), -934)
+        self.assertEqual(tree.max(), 1290)
         self.assertEqual(tree.root, 1)
 
         tree.remove(1)
 
         self.assertEqual(tree.count, 12)
         self.assertFalse(tree.is_empty)
-        self.assertEqual(tree.min, -934)
-        self.assertEqual(tree.max, 1290)
+        self.assertEqual(tree.min(), -934)
+        self.assertEqual(tree.max(), 1290)
         self.assertEqual(tree.root, 0)
 
         tree.remove(-934)
@@ -91,8 +91,8 @@ class TestBST(unittest.TestCase):
 
         self.assertEqual(tree.count, 9)
         self.assertFalse(tree.is_empty)
-        self.assertEqual(tree.min, -123)
-        self.assertEqual(tree.max, 678)
+        self.assertEqual(tree.min(), -123)
+        self.assertEqual(tree.max(), 678)
         self.assertEqual(tree.root, -34)
 
 
