@@ -40,7 +40,7 @@ static void check_element(const void * e)
 }
 
 /*
- * Creates a queue and returns a pointer to it.
+ * Creates a new queue and returns the pointer to queue.
  */
 queue * queue_create()
 {
@@ -68,7 +68,7 @@ void queue_delete(queue * q)
 }
 
 /*
- * Inserts an element into the queue.
+ * Inserts a new element into the queue.
  * Increases the size of the queue.
  */
 void queue_enqueue(queue * q, const void * element)
@@ -77,7 +77,7 @@ void queue_enqueue(queue * q, const void * element)
 	check_element(element);
 	queue_node * new_node = new queue_node(); // a new node.
 	new_node->next = NULL;
-	new_node->value = copy_value(element); // copies a value.
+	new_node->value = copy_value(element); // copy a value.
 	if (q->empty) {
 		q->_front = new_node;
 		q->_back = new_node;
@@ -90,7 +90,7 @@ void queue_enqueue(queue * q, const void * element)
 }
 
 /*
- * Removes the first element of the queue and returns this element.
+ * Removes the first element from the queue and returns this element.
  * Reduces the size of the queue.
  */
 void * queue_dequeue(queue * q)

@@ -1,3 +1,8 @@
+/**
+ * @file staticarray.h
+ *
+ * Contains the class `StaticArray`.
+ */
 #ifndef STATICARRAY_H
 #define STATICARRAY_H
 
@@ -6,9 +11,11 @@
 #include <type_traits>
 #include <utility>
 
-/*
+/**
  * The `StaticArray` class.
- * This class a bit like std::array, you can use at compile time.
+ * This class a bit like std::array, which you can use at compile time.
+ * @tparam T type of elements.
+ * @tparam Size size of array.
  */
 template<typename T,
          std::size_t Size>
@@ -20,13 +27,15 @@ class StaticArray
 	              >,
 	              "Type must have a trivial constructor.");
 public:
-	/*
+	/**
 	 * Constructor.
 	 */
 	constexpr StaticArray() noexcept;
-	/*
-	 * Constructor with arguments.
+	/**
+	 * Constructor with arguments. Use this by default.
+	 * @code
 	 * For example: constexpr StaticArray<int, 2> a = {1, 2};.
+	 * @endcode
 	 */
 	template<typename ... Args,
 	         std::enable_if_t<
@@ -38,69 +47,76 @@ public:
 	constexpr StaticArray(Args && ... list) noexcept;
 	constexpr StaticArray(const StaticArray& a) = delete;
 	constexpr StaticArray(StaticArray&& a) = delete;
-	/*
+	/**
 	 * Destructor.
 	 */
 	~StaticArray() noexcept = default;
 
 	constexpr StaticArray& operator=(const StaticArray& a) = delete;
 	constexpr StaticArray& operator=(StaticArray&& a) = delete;
-	/*
-	 * The `operator[]`. Takes a integral constant with std::size_t type.
+	/**
+	 * The `operator[]`. Takes an integral constant with std::size_t type.
 	 * This method will check ranges!
+	 * @param i index. For example: array[Index<I>()].
+	 * @return a value from the position.
 	 */
 	template<std::size_t I>
 	constexpr const T& operator[](constexpr_extensions::Index<I> i) const noexcept;
-	/*
+	/**
 	 * The `operator[]`.
 	 * This method will not check ranges!
+	 * @param i index.
+	 * @return a value from the position.
 	 */
 	constexpr const T& operator[](std::size_t i) const noexcept;
-	/*
-	 * Returns numbers of elements.
+	/**
+	 * @return numbers of elements.
 	 */
 	constexpr inline std::size_t count() const noexcept
 	{
 		return _count;
 	}
-	/*
+	/**
 	 * Returns a capacity of this array.
 	 * For example: If you create an empty array with size = 10.
 	 * capacity will equall 20, and each element will have undefined behavior.
+	 * @return a capacity of this array.
 	 */
 	constexpr inline std::size_t capacity() const noexcept
 	{
 		return _capacity;
 	}
-	/*
-	 * The `make_sequence` method.
+	/**
 	 * Creates an array with the sequence.
+	 * @code
 	 * For example: constexpr auto a = StaticArray<int, 5>::make_sequence(); // {1, 2, 3, 4, 5}
+	 * @endcode
+	 * @return an array with the sequence.
 	 */
 	static constexpr StaticArray<T, Size> make_sequence() noexcept;
 private:
-	/*
+	/**
 	 * Makes sequence.
 	 */
 	template<T... Is>
 	static constexpr auto make_sequence_p(std::integer_sequence<T, Is ...>) noexcept;
 private:
-	T _data[Size]; // array
+	T _data[Size]; //! array
 	std::size_t _capacity;
 	std::size_t _count;
-	/*
+	/**
 	 * Sets data to array.
 	 */
 	template<typename Arg,
 	         std::size_t I>
 	constexpr void set_data(constexpr_extensions::Index<I> i, Arg&& arg) noexcept;
-	/*
+	/**
 	 * Unpacks arguments from constructor.
 	 */
 	template<typename ... Args,
 	         std::size_t ... Indices>
 	constexpr void unpack(std::index_sequence<Indices ...>, Args&& ... args) noexcept;
-	/*
+	/**
 	 * Creates indexes.
 	 */
 	template<typename ... Args>

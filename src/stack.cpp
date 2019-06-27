@@ -20,7 +20,7 @@ static void * copy_value(const void * pointer)
 
 /*
  * Checks the pointer to the stack.
- * If the pointer to the stack is NULL, throws the `runtime_error` error.
+ * If the pointer to the stack is NULL, throws the `runtime_error` exception.
  */
 static void check_stack(const void * s)
 {
@@ -31,7 +31,7 @@ static void check_stack(const void * s)
 
 /*
  * Checks the pointer to the element.
- * If a pointer is NULL, throws `runtime_error`.
+ * If a pointer is NULL, throws `runtime_error` exception.
  */
 static void check_element(const void * e)
 {
@@ -68,7 +68,7 @@ void stack_delete(stack * s)
 }
 
 /*
- * Inserts an element into the stack.
+ * Inserts a new element into the stack.
  * Increases the size of the stack.
  */
 void stack_push(stack * s, const void * element)
@@ -89,7 +89,7 @@ void stack_push(stack * s, const void * element)
 }
 
 /*
- * Removes the last element of the stack and returns the deleted element.
+ * Removes the last element from the stack and returns the deleted element.
  * Reduces the size of the stack.
  */
 void * stack_pop(stack * s)

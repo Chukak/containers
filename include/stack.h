@@ -1,3 +1,8 @@
+/**
+ * @file stack.h
+ *
+ * Contains the class `Stack`.
+ */
 #ifndef STACK_H
 #define STACK_H
 
@@ -8,9 +13,9 @@
 #include <ostream>
 #include <memory>
 
-/*
- * The `Stack` class.
+/**
  * The stack is the structure "Last-In-First-Out".
+ * @tparam Type type of elements.
  */
 template<typename Type>
 class Stack
@@ -20,8 +25,8 @@ class Stack
 	              std::is_nothrow_default_constructible<Type>
 	              >,
 	              "Type must have a trivial constructor.");
-	/*
-	 * A linked list structure.
+	/**
+	 * The structure `Node`.
 	 * Used to represent elements in memory.
 	 */
 	struct Node
@@ -30,208 +35,219 @@ class Stack
 		friend class iterator;
 		template<typename T>
 		friend std::ostream& operator<<(std::ostream& stream, const Stack<T>& s);
-		/*
+		/**
 		 * Constructor.
 		 */
 		Node(Type&& v, std::shared_ptr<Node> p);
 		Node(const Type& v, std::shared_ptr<Node> p);
 
-		Type value; // a value.
+		Type value; //! a value.
 	private:
-		std::shared_ptr<Node> prev; // the pointer to the previous element.
+		std::shared_ptr<Node> prev; //! the pointer to the previous element.
 	};
 private:
 	using node_ptr = std::shared_ptr<Node>;
-	/*
+	/**
 	 * Makes the overloaded operator `<<` friend.
 	 */
 	template<typename T>
 	friend std::ostream& operator<<(std::ostream& stream, const Stack<T>& s);
 public:
-	/*
+	/**
 	 * Constructor.
 	 */
 	Stack();
-	/*
+	/**
 	 * Copy constructor.
 	 * @param orig - another `Stack` class.
 	 */
 	Stack(const Stack<Type>& orig);
-	/*
+	/**
 	 * Move constructor.
+	 * @param orig - another `Stack` class.
 	 */
 	Stack(Stack<Type>&& orig) noexcept;
-	/*
-	 * Constructor, for the initializer list.
+	/**
+	 * Constructor.
+	 * @param lst initializer list ({ ... }).
 	 */
 	Stack(std::initializer_list<Type> lst);
-	/*
+	/**
 	 * Destructor.
 	 */
 	virtual ~Stack();
-	/*
+	/**
 	 * The operator `=`.
+	 * @param orig the `Stack` class, l-value.
+	 * @return this class.
 	 */
 	Stack<Type>& operator=(const Stack<Type>& orig);
-	/*
+	/**
 	 * The move operator `=`.
+	 * @param orig the `Stack` class, l-value.
+	 * @return this class.
 	 */
 	Stack<Type>& operator=(Stack<Type>&& orig) noexcept;
-	/*
-	 * The `push` function.
-	 * Inserts an elements into the stack.
-	 * @param element - an element.
+	/**
+	 * Inserts a new elements into the stack.
+	 * @param element - a new element.
 	 */
 	void push(Type&& element);
-	/*
+	/**
 	 * The same `insert` function, but for l-value.
+	 * @param element - a new element.
 	 */
 	void push(const Type& element);
-	/*
-	 * The `pop` funciton.
+	/**
 	 * Removes the first element from the stack.
+	 * @return the first element of the stack.
 	 */
 	Type pop() noexcept;
-	/*
-	 * Returns the number of elements.
+	/**
+	 * @return the number of elements.
 	 */
 	inline unsigned int count() const noexcept
 	{
 		return _count;
 	}
-	/*
-	 * Returns the first element in the stack.
+	/**
+	 * @return the first element in the stack.
 	 */
 	Type front() const noexcept;
-	/*
-	 * Returns `true` if the stack is empty, otherwise returns `false`.
+	/**
+	 * @return `true` if the stack is empty, otherwise returns `false`.
 	 */
 	inline bool is_empty() const noexcept
 	{
 		return _empty;
 	}
 private:
-	/*
-	 * Copy all the elements from an another stack.
+	/**
+	 * Copy all the elements to this stack.
 	 */
 	void assign(node_ptr front);
-	/*
-	 * Delete all the elements.
+	/**
+	 * Removes all the elements.
 	 */
 	void destroy();
 private:
-	node_ptr _front; // a pointer to the first element.
-	unsigned int _count{0}; // the numbers of elements.
+	node_ptr _front; //! a pointer to the first element.
+	unsigned int _count{0}; //! the numbers of elements.
 	bool _empty{true};
 public:
-	/*
-	 * The `iterator` class.
+	/**
 	 * Implements the iterator of the stackc class.
 	 * The iterator is `forward_iterator`.
 	 */
 	class iterator : public std::iterator<std::forward_iterator_tag, Type>
 	{
-		/*
+		/**
 		 * Makes the Stack class friend.
 		 */
 		friend class Stack<Type>;
 	private:
-		/*
+		/**
 		 * Constructor.
 		 */
 		explicit iterator(node_ptr node);
 	public:
-		using value_type = Type; // value type.
-		using iterator_category = std::forward_iterator_tag; // iterator category
+		using value_type = Type; //! iterator value type.
+		using iterator_category = std::forward_iterator_tag; //! iterator category
 	public:
-		/*
+		/**
 		 * Default constructor.
 		 */
 		iterator() = default;
-		/*
+		/**
 		 * The prefix operator `++`.
 		 * Increases the pointer and returns it.
+		 * @return incremented iterator.
 		 */
 		inline iterator& operator++() noexcept
 		{
 			_node = _node->prev;
 			return *this;
 		}
-		/*
+		/**
 		 * The postfix operator `++`.
 		 * Increases the pointer and returns it.
+		 * @return incremented iterator.
 		 */
 		inline iterator operator++([[maybe_unused]] int j) noexcept
 		{
 			_node = _node->prev;
 			return *this;
 		}
-		/*
-		 * The operator `*`.
+		/**
 		 * Returns a value from the pointer.
+		 * @return a value.
 		 */
 		inline Type& operator*() const noexcept
 		{
 			return _node->value;
 		}
-		/*
-		 * The operator `->`.
+		/**
 		 * Returns a pointer to the Node.
+		 * @return the node.
 		 */
 		inline Node * operator->() const noexcept
 		{
 			return _node.get();
 		}
-		/*
-		 * The operator `!=`.
+		/**
 		 * Compares two iterators. Returns `true` if
-		 * iterators aren`t the same. Otherwise returns `false`.
+		 * iterators aren`t the same, otherwise `false`.
+		 * @param rhs another iterator.
+		 * @return result of comparison
 		 */
 		inline bool operator!=(const iterator& rhs) const noexcept
 		{
 			return _node != rhs._node;
 		}
-		/*
-		 * The operator `!=`.
+		/**
 		 * Returns `true` if the current iterator and `nullptr`
-		 * aren`t the same. Otherwise returns `false`.
+		 * aren`t the same, otherwise `false`.
+		 * @return result of comparison
 		 */
 		inline bool operator!=(std::nullptr_t) const noexcept
 		{
 			return _node != nullptr;
 		}
-		/*
-		 * The operator `==`.
+		/**
 		 * Compares two iterators. Returns `true` if
-		 * iterators are the same. Otherwise returns `false`.
+		 * iterators are the same, otherwise `false`.
+		 * @param rhs another iterator.
+		 * @return result of comparison
 		 */
 		inline bool operator==(const iterator& rhs) const noexcept
 		{
 			return _node == rhs._node;
 		}
-		/*
+		/**
 		 * The operator `==`.
 		 * Returns `true` if the current iterator and `nullptr`
-		 * are the same. Otherwise returns `false`.
+		 * are the same, otherwise `false`.
+		 * @return result of comparison
 		 */
 		inline bool operator==(std::nullptr_t) const noexcept
 		{
 			return _node == nullptr;
 		}
 	private:
-		node_ptr _node; // a pointer to a Node.
+		node_ptr _node; //! a pointer to a Node.
 	};
 public:
-	/*
-	 * Returns the iterator to the first element in the stack.
+	/**
+	 * @return the iterator to the first element in the stack.
 	 */
 	inline iterator begin() const noexcept
 	{
 		return iterator(_front);
 	}
-	/*
-	 * Returns the iterator to the end of the stack.
+	/**
+	 * Return the iterator to the end of the stack.
 	 * It is usually `nullptr`.
+	 * @return iterator.
 	 */
 	inline iterator end() const noexcept
 	{
@@ -258,8 +274,7 @@ Stack<Type>::Node::Node(const Type& v, std::shared_ptr<Node> p) :
 {}
 
 /*
- * Constructor.
- * Creates a new `Stack` class.
+ * Default constructor.
  */
 template<typename Type>
 Stack<Type>::Stack() :
@@ -268,8 +283,7 @@ Stack<Type>::Stack() :
 }
 
 /*
- * Constructor.
- * Creates a new `Stack` class from an another `Stack` class.
+ * Copy constructor.
  */
 template<typename Type>
 Stack<Type>::Stack(const Stack<Type>& orig) :
@@ -293,7 +307,7 @@ Stack<Type>::Stack(Stack<Type>&& orig) noexcept :
 }
 
 /*
- * Constructor, for the initializer list.
+ * Constructor, using initializer list.
  */
 template<typename Type>
 Stack<Type>::Stack(std::initializer_list<Type> lst) :
@@ -342,7 +356,7 @@ Stack<Type>& Stack<Type>::operator=(Stack<Type>&& orig) noexcept
 
 /*
  * The `push` function.
- * Inserts an element into the stack.
+ * Inserts a new element into the stack.
  * Increases the size of the stack.
  */
 template<typename Type>
@@ -350,7 +364,7 @@ void Stack<Type>::push(Type&& element)
 {
 	node_ptr new_node(make_shared_ptr<Node>(std::forward<Type>(element), nullptr)); // a new pointer.
 	if (_empty) {
-		_front = new_node; // front == back.
+		_front = new_node;
 		_empty = false;
 	} else {
 		new_node->prev = _front; // sets the previous element.
@@ -367,7 +381,7 @@ void Stack<Type>::push(const Type& element)
 
 /*
  * The `pop` function.
- * Removes the first element of the stack.
+ * Removes the first element from the stack.
  * Reduces the size of the stack.
  * If the stack is empty, the result has an undefined behavior.
  */
@@ -398,13 +412,13 @@ Type Stack<Type>::front() const noexcept
 }
 
 /*
- * Copy all the elements from an another stack.
+ * Copy all the elements to this stack.
  */
 template<typename Type>
 void Stack<Type>::assign(node_ptr front)
 {
 	if (!_empty) {
-		_front = make_shared_ptr<Node>(front->value, nullptr); // copy a pointer to the first element.
+		_front = make_shared_ptr<Node>(front->value, nullptr);
 		node_ptr t = _front, temp = front->prev; // gets a pointer to the previous element.
 		while (temp) {
 			t->prev = make_shared_ptr<Node>(temp->value, nullptr);
@@ -427,10 +441,12 @@ void Stack<Type>::destroy()
 	}
 }
 
-/*
+/**
  * The overloaded `<<` operator for the stack.
- * Prints all the elements in the stack in the format: `(1, ...,100)`.
- * Returns ostream.
+ * Prints all the elements of the stack in the format: `(1, ...,100)`.
+ * @param stream std::ostream.
+ * @param s stack.
+ * @return std::ostream.
  */
 template<typename Type>
 std::ostream& operator<<(std::ostream& stream, const Stack<Type>& s)
@@ -468,72 +484,61 @@ extern "C" {
 
 namespace pure_c
 {
-/*
+/**
  * The node structure for the stack.
  */
 typedef struct stack_node
 {
-	void * value; // a pointer to a value.
-	stack_node * prev; // a pointer to the next node.
+	void * value; //! a pointer to a value.
+	stack_node * prev; //! a pointer to the next node.
 } stack_node;
-/*
+/**
  * The structure `stack`.
  * The stack is the structure "Last-In-First-Out".
- *
  */
 typedef struct
 {
-	stack_node * front; // a pointer to the first node.
-	unsigned int count; // a pointer to the last node.
+	stack_node * front; //! a pointer to the first node.
+	unsigned int count; //! a pointer to the last node.
 	int empty;
 } stack;
-/*
+/**
  * The `stack_create_stack` function.
- * Creates a stack and returns the pointer to it.
+ * @return a new stack.
  */
 stack * stack_create();
-/*
- * The `stack_push` function.
- * Inserts an element into the stack.
- * Takes two arguments:
- * `s` - a pointer to the stack.
- * `element` - a pointer to the element.
+/**
+ * Inserts a new element into the stack.
+ * @param s a pointer to the stack.
+ * @param element a pointer to the element.
  */
 void stack_push(stack * s, const void * element);
-/*
- * The `stack_pop` function.
- * Removes the first element in the stack.
+/**
+ * Removes the first element from the stack.
  * Returns a pointer to the deleted element.
  * If the stack is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `s` - a pointer to the stack.
+ * @param s a pointer to the stack.
+ * @return the deleted element.
  */
 void * stack_pop(stack * s);
-
-/*
- * The `stack_front` function.
- * Returns a pointer to the first element from the stack.
+/**
+ * Returns a pointer to the first element of the stack.
  * If the stack is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `s` - a pointer to the stack.
+ * @param s - a pointer to the stack.
+ * @return the first element.
  */
 void * stack_front(stack * s);
-
-/*
- * The `stack_count` function.
+/**
  * Returns the size of the stack.
- * Takes one argument:
- * `s` - a pointer to the stack.
  * Use this function, if necessary.
  * Or instead this function, use `stack->count`.
+ * @param s a pointer to the stack.
+ * @return the number of elements.
  */
 unsigned int stack_count(stack * s);
-
-/*
- * The `stack_delete_stack` function.
+/**
  * Removes the stack from memory.
- * Takes one argument:
- * `s` - a pointer to the stack.
+ * @param s a pointer to the stack.
  */
 void stack_delete(stack * s);
 }

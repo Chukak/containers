@@ -1,3 +1,8 @@
+/**
+ * @file queue.h
+ *
+ * Contains the class `Queue`.
+ */
 #ifndef QUEUE_H
 #define QUEUE_H
 
@@ -8,9 +13,10 @@
 #include <ostream>
 #include <memory>
 
-/*
+/**
  * The `Queue` class.
  * The queue is the structure "First-In-First-Out".
+ * @tparam Type type of elements.
  */
 template<typename Type>
 class Queue
@@ -20,8 +26,8 @@ class Queue
 	              std::is_nothrow_default_constructible<Type>
 	              >,
 	              "Type must have a trivial constructor.");
-	/*
-	 * A linked list structure.
+	/**
+	 * The structure `Node`. The node is a linked list structure.
 	 * Used to represent elements in memory.
 	 */
 	struct Node
@@ -30,215 +36,227 @@ class Queue
 		friend class iterator;
 		template<typename T>
 		friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
-		/*
+		/**
 		 * Constructor.
 		 */
 		Node(Type&& v, std::shared_ptr<Node> n);
 		Node(const Type& v, std::shared_ptr<Node> n);
 
-		Type value; // a value.
+		Type value; //! a value.
 	private:
-		std::shared_ptr<Node> next; // a pointer to the next node.
+		std::shared_ptr<Node> next; //! a pointer to the next node.
 	};
 private:
 	using node_ptr = std::shared_ptr<Node>;
-	/*
+	/**
 	 * Make the overloaded operator `<<` friend.
 	 */
 	template<typename T>
 	friend std::ostream& operator<<(std::ostream& stream, const Queue<T>& q);
 public:
-	/*
-	 * Constructor.
+	/**
+	 * Default constructor.
 	 */
 	Queue();
-	/*
+	/**
 	 * Copy constructor.
-	 * @param orig - another `Queue` class.
+	 * @param orig another `Queue` class.
 	 */
 	Queue(const Queue<Type>& orig);
-	/*
+	/**
 	 * Move constructor.
+	 * @param orig another `Queue` class.
 	 */
 	Queue(Queue<Type>&& orig) noexcept;
-	/*
-	 * Constructor, for the initializer list.
+	/**
+	 * Constructor.
+	 * @param lst initializer list ({ ... }).
 	 */
 	Queue(std::initializer_list<Type> lst);
-	/*
+	/**
 	 * Destructor.
 	 */
 	virtual ~Queue();
-	/*
+	/**
 	 * The operator `=`.
+	 * @param orig the `Queue` class, l-value.
+	 * @return this class.
 	 */
 	Queue<Type>& operator=(const Queue<Type>& orig);
-	/*
-	 * The mode operator `=`.
+	/**
+	 * The move operator `=`.
+	 * @param orig the `Queue` class, r-value.
+	 * @return this class.
 	 */
 	Queue<Type>& operator=(Queue<Type>&& orig) noexcept;
-	/*
-	 * The `enqueue` function.
-	 * Inserts an element into the queue.
-	 * @param element - an element.
+	/**
+	 * Inserts a new element into the queue.
+	 * @param element a new element.
 	 */
 	void enqueue(Type&& element);
-	/*
+	/**
 	 * The same `insert` function, but for l-value.
+	 * @param element a new element.
 	 */
 	void enqueue(const Type& element);
-	/*
-	 * The `dequeue` funciton.
+	/**
 	 * Removes the first element from the queue and returns it.
+	 * @return the first element of the queue.
 	 */
 	Type dequeue() noexcept;
-	/*
-	 * Returns the number of elements.
+	/**
+	 * @return the number of elements.
 	 */
 	inline unsigned int count() const noexcept
 	{
 		return _count;
 	}
-	/*
-	 * Returns the first element in the queue.
+	/**
+	 * @return the first element in the queue.
 	 */
 	Type front() const noexcept;
-	/*
-	 * Returns the last element in the queue.
+	/**
+	 * @return the last element in the queue.
 	 */
 	Type back() const noexcept;
-	/*
-	 * Returns `true` if the queue is empty, otherwise returns `false`.
+	/**
+	 * @return `true` if the queue is empty, otherwise `false`.
 	 */
 	inline bool is_empty() const noexcept
 	{
 		return _empty;
 	}
-	/*
-	 * The `clear` function.
+	/**
 	 * Clears the queue.
 	 */
 	void clear() noexcept;
 private:
-	/*
-	 * Copy all the elements from an another queue.
+	/**
+	 * Copy all the elements to this queue.
 	 */
 	void assign(node_ptr front);
 private:
-	node_ptr _front; // a pointer to the first element.
-	node_ptr _back; // a pointer to the last element.
-	unsigned int _count{0}; // the numbers of elements.
+	node_ptr _front; //! a pointer to the first element.
+	node_ptr _back; //! a pointer to the last element.
+	unsigned int _count{0}; //! the numbers of elements.
 	bool _empty{true};
 
 public:
-	/*
-	 * The `iterator` class.
+	/**
 	 * Implements the iterator of the queue.
 	 * The iterator is `forward_iterator`.
 	 */
 	class iterator : public std::iterator<std::forward_iterator_tag, Type>
 	{
-		/*
-		 *  Make the Queue class friend.
+		/**
+		 * Make the Queue class friend.
 		 */
 		friend class Queue<Type>;
 	private:
-		/*
+		/**
 		 * Constructor.
 		 */
 		explicit iterator(node_ptr node);
 	public:
-		using value_type = Type; // value type.
-		using iterator_category = std::forward_iterator_tag; // iterator category
-		/*
+		using value_type = Type; //! iterator value type.
+		using iterator_category = std::forward_iterator_tag; //! iterator category
+		/**
 		 * Default constructor.
 		 */
 		iterator() = default;
-		/*
+		/**
 		 * The prefix operator `++`.
 		 * Increases the pointer and returns it.
+		 * @return incremented iterator.
 		 */
 		inline iterator& operator++() noexcept
 		{
 			_node = _node->next;
 			return *this;
 		}
-		/*
+		/**
 		 * The postfix operator `++`.
 		 * Increases the pointer and returns it.
+		 * @return incremented iterator.
 		 */
 		inline iterator operator++([[maybe_unused]] int j) noexcept
 		{
 			_node = _node->next;
 			return *this;
 		}
-		/*
+		/**
 		 * The operator `*`.
 		 * Returns a value from the pointer.
+		 * @return a value.
 		 */
 		inline Type& operator*() const noexcept
 		{
 			return _node->value;
 		}
-		/*
+		/**
 		 * The operator `->`.
 		 * Returns a pointer to the Node.
+		 * @return the node.
 		 */
 		inline Node * operator->() const noexcept
 		{
 			return _node.get();
 		}
-		/*
-		 * The operator `!=`.
+		/**
 		 * Compares two iterators. Returns `true` if
-		 * iterators aren`t the same. Otherwise returns `false`.
+		 * iterators aren`t the same, otherwise `false`.
+		 * @param rhs another iterator.
+		 * @return result of comparison.
 		 */
 		inline bool operator!=(const iterator& rhs) const noexcept
 		{
 			return _node != rhs._node;
 		}
-		/*
-		 * The operator `!=`.
+		/**
 		 * Returns `true` if the current iterator and `nullptr`
-		 * aren`t the same. Otherwise returns `false`.
+		 * aren`t the same, otherwise `false`.
+		 * @return result of comparison.
 		 */
 		inline bool operator!=(std::nullptr_t) const noexcept
 		{
 			return _node != nullptr;
 		}
-		/*
-		 * The operator `==`.
+		/**
 		 * Compares two iterators. Returns `true` if
-		 * iterators are the same. Otherwise returns `false`.
+		 * iterators are the same, otherwise `false`.
+		 * @param rhs another iterator.
+		 * @return result of comparison.
 		 */
 		inline bool operator==(const iterator& rhs) const noexcept
 		{
 			return _node == rhs._node;
 		}
-		/*
-		 * The operator `==`.
+		/**
 		 * Returns `true` if the current iterator and `nullptr`
-		 * are the same. Otherwise returns `false`.
+		 * are the same, otherwise `false`.
+		 * @return result of comparison.
 		 */
 		inline bool operator==(std::nullptr_t) const noexcept
 		{
 			return _node == nullptr;
 		}
 	private:
-		node_ptr _node; // a pointer to a Node.
+		node_ptr _node; //! a pointer to the Node.
 	};
 public:
-	/*
+	/**
 	 * Returns the iterator to the first element of the queue.
+	 * @return iterator
 	 */
 	inline iterator begin() const noexcept
 	{
 		return iterator(_front);
 	}
-	/*
+	/**
 	 * Returns the iterator to the end of the queue.
 	 * The iterator points to the element after the
 	 * last element from the queue.
+	 * @return iterator
 	 */
 	inline iterator end() const noexcept
 	{
@@ -266,7 +284,7 @@ Queue<Type>::Node::Node(const Type& v, std::shared_ptr<Node> n) :
 
 /*
  * Costructor.
- * Creates a new `Queue` class.
+ * Creates a new queue.
  */
 template<typename Type>
 Queue<Type>::Queue() :
@@ -276,8 +294,7 @@ Queue<Type>::Queue() :
 }
 
 /*
- * Constructor.
- * Creates a new `Queue` class from an another `Queue` class.
+ * Copy constructor.
  */
 template<typename Type>
 Queue<Type>::Queue(const Queue<Type>& orig) :
@@ -303,7 +320,7 @@ Queue<Type>::Queue(Queue<Type>&& orig) noexcept :
 }
 
 /*
- * Constructor, for the style `Queue q = {1, 2, 3}`.
+ * Constructor using initializer list.
  */
 template<typename Type>
 Queue<Type>::Queue(std::initializer_list<Type> lst) :
@@ -357,7 +374,7 @@ Queue<Type>& Queue<Type>::operator=(Queue<Type>&& orig) noexcept
 
 /*
  * The `enqueue` function.
- * Inserts an element into the queue.
+ * Inserts a new element into the queue.
  * Increases the size of the queue.
  */
 template<typename Type>
@@ -426,13 +443,13 @@ Type Queue<Type>::back() const noexcept
 }
 
 /*
- * Copy all the elements from an another queue.
+ * Copy all the elements to this queue.
  */
 template<typename Type>
 void Queue<Type>::assign(node_ptr front)
 {
 	if (!_empty) {
-		node_ptr t = front; // copy a pointer to the first element.
+		node_ptr t = front; // a pointer to the first element.
 		_front = _back = make_shared_ptr<Node>(t->value, nullptr); // creates a new pointer.
 		t = t->next; // gets a pointer to the next element.
 		while (t) {
@@ -459,10 +476,12 @@ void Queue<Type>::clear() noexcept
 	_front = nullptr, _back = nullptr, _empty = true, _count = 0;
 }
 
-/*
+/**
  * The overloaded `<<` operator for the queue.
  * Prints all the elements from the queue in the format: `(1, ...,100)`.
- * Returns ostream.
+ * @param stream std::ostream.
+ * @param q the queue.
+ * @return std::ostream.
  */
 template<typename Type>
 std::ostream& operator<<(std::ostream& stream, const Queue<Type>& q)
@@ -499,76 +518,68 @@ extern "C" {
 
 namespace pure_c
 {
-/*
+/**
  * The node structure for the queue.
  */
 typedef struct queue_node {
-	void * value; // a pointer to a value.
-	queue_node * next; // a pointer to the next node.
+	void * value; //! a pointer to the value.
+	queue_node * next; //! a pointer to the next node.
 } queue_node;
-/*
+/**
  * The structure `queue`.
  * The queue is the structure "First-In-First-Out".
- *
  */
 typedef struct {
-	queue_node * _front; // a pointer to the first node.
-	queue_node * _back; // a pointer to the last node.
+	queue_node * _front; //! a pointer to the first node.
+	queue_node * _back; //! a pointer to the last node.
 	unsigned int count;
 	int empty;
 } queue;
-/*
- * The `queue_create_queue` function.
- * Creates a queue and returns a pointer to it.
+/**
+ * Creates a new queue and returns the pointer to queue.
+ * @return a new queue.
  */
 queue * queue_create(void);
-/*
- * The `queue_enqueue` function.
- * Inserts an element into the queue.
- * Takes two arguments:
- * `q` - a pointer to the queue.
- * `element` - a pointer to the element.
+/**
+ * Inserts a new element into the queue.
+ * @param q the pointer to the queue.
+ * @param element the pointer to the element.
  */
 void queue_enqueue(queue * q, const void * element);
-/*
- * The `queue_dequeue` function.
+/**
  * Removes the first element from the queue.
- * Returns a pointer to the deleted element.
+ * Returns the pointer to the deleted element.
  * If the queue is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `q` - a pointer to the queue.
+ * @param q the pointer to the queue.
+ * @return the deleted element.
  */
 void * queue_dequeue(queue * q);
-/*
- * The `queue_front` function.
+/**
  * Returns a pointer to the first element in the queue.
  * If the queue is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `q` - a pointer to the queue.
+ * @param q a pointer to the queue.
+ * @return the first element.
  */
 void * queue_front(queue * q);
-/*
- * The `queue_back` function.
+/**
  * Returns a pointer to the last element in the queue.
  * If the queue is empty, returns the `NULL` pointer.
- * Takes one argument:
- * `q` - a pointer to the queue.
+ * @param q a pointer to the queue.
+ * @return the last element.
  */
 void * queue_back(queue * q);
-/*
- * The `queue_count` function.
+/**
  * Returns the size of the queue.
- * Takes one argument:
- * `q` - a pointer to the queue.
  * Use this function, if necessary.
  * or instead this function, use `queue->count`.
+ * @param q a pointer to the queue.
+ * @return the number of elements.
  */
 unsigned int queue_count(queue * q);
-/*
+/**
  * The `queue_delete_queue` function.
  * Removes the queue from memory.
- * Takes one argument:
- * `q` - a pointer to the queue.
+ * @param q a pointer to the queue.
  */
 void queue_delete(queue * q);
 }
