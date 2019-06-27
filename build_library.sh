@@ -38,7 +38,7 @@ config_cmake() {
         echo "Package `cmake` not found."
         exit 1;
     fi
-    cmake_version="$(cmake --version | grep -E "^cmake version [3-9]\.([7-9]|10)\.[0-9]")"
+    cmake_version="$(cmake --version | grep -E "^cmake version [3-9]\.([7-9]|[1-9][0-9])\.[0-9]")"
     if ! [[ $cmake_version ]]; then
         echo "You need 'cmake' 3.7.2 version and newer."
         exit 1
