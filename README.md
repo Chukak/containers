@@ -11,7 +11,8 @@
 * [Python module](https://github.com/Chukak/containers/blob/master/python/README.md)
 
 ## How to compile
-In Linux, you need `g++` version 7 or newer, CMake version 3.7.2 or newer for branch `master`, and `g++` version 5 or newer, CMake version 3.4 or newer for btanch `old`.
+In Linux, you need `g++` version 7 or newer, CMake version 3.7.2 or newer for branch `master`. Also `g++` version 5 or newer, CMake version 3.4 or newer for btanch `old`, **but** theese branches not updated at the moment.
+
 Clone this repository. You can compile the library using the `CMake` command or the `build_library.sh` script.
 * Run make:
 ```bash
@@ -40,6 +41,6 @@ To get more information:
 ## Tests
 For testing check this [page](https://github.com/Chukak/containers/blob/master/tests/README.md).
 
-## Performance
+## Performance 
 To show the performance of containers check this [page](https://github.com/Chukak/containers/tree/master/tests/performance).
 

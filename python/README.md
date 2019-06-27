@@ -40,7 +40,7 @@ Stack - an abstract data type, representing a list of elements, organized by the
 #### Methods 
 
 ##### Create a stack
-To create a stack, just call the class `stack`.
+To create a stack, use the class `stack`.
 
 ```python
 s = stack()
@@ -48,7 +48,7 @@ s = stack()
 
 ##### Add elements
 
-To add elements to the stack, use the `push` method. 
+To add elements into the stack, use the `push` method. 
 
 ```python
 s = stack()
@@ -88,7 +88,7 @@ Queue - an abstract data type, has an implementation of access to elements by th
 
 ##### Create an queue
 
-To create a queue, just call the class `queue`.
+To create a queue, use the class `queue`.
 
 ```python
 q = queue()
@@ -96,7 +96,7 @@ q = queue()
 
 ##### Add elements
 
-To add elements to the queue, use the `enqueue` method. 
+To add elements into the queue, use the `enqueue` method. 
 
 ```python
 q = queue()
@@ -134,7 +134,7 @@ q.enqueue(1)
 q.enqueue(2)
 ...
 q.clear();
-q.is_empty(); // True
+q.is_empty(); # True
 ```
 
 #### Members
@@ -151,14 +151,22 @@ Binary search tree - a sorted binary tree, stores objects in memory, can find, i
 
 #### Methods
 
+##### Create a binary search tree
+
+To create a binary search tree, use the class `bst`.
+
+```python
+tree = bst()
+```
+
 ##### Insert elements
 
-To insert elements into the in the tree, use the `insert` method. 
+To insert elements into the tree, use the `insert` method. 
  
 ```python
 tree = bst();
 ...
-tree.insert(1); // the root of the tree
+tree.insert(1); # the root of the tree
 tree.insert(5);
 tree.insert(-10);
 ```
@@ -175,7 +183,7 @@ tree.insert(5);
 ...
 tree.remove(5);
 ...
-tree.remove(7); // RuntimeError
+tree.remove(7); # RuntimeError, because tree has not 7
 ```
 
 ##### Find elements(if the tree has this element)
@@ -189,9 +197,9 @@ tree = bst();
 tree.insert(1);
 tree.insert(5);
 ...
-tree.find(1); // True
+tree.find(1); # True
 ...
-tree.find(10); // False
+tree.find(10); # False
 ```
 
 ### Clear the tree
@@ -205,15 +213,28 @@ tree.insert(1);
 tree.insert(5);
 ...
 tree.clear(); 
-tree.is_empty(); // true
+tree.is_empty(); # True
+```
+
+### Get the minimum element(the leftmost element)
+
+To get the minimum element of the tree, use the `min` method. Returns the minimum element of the tree.
+
+```python
+tree.min()
+```
+### Get the maximum element(the rightmost element)
+
+To get the maximum element of the tree, use the `max` method. Returns the maximum element of the tree.
+
+```python
+tree.max()
 ```
 
 #### Members
 
 * `bst.count` - the number of elements.
 * `bst.is_empty` - `True` if the queue is empty, otherwise `False`.
-* `bst.min` - the minimum element of the tree.
-* `bst.max` - the maximum element of the tree.
 * `bst.root` - the root of the tree.
 
 

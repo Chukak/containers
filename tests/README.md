@@ -36,13 +36,13 @@ make -f Makefile
 The test for some classes has two test files. 
 The `tst_name.cpp` file has tests for C++ code, for example: `tst_queue.cpp`.
 The `tst_name_c.cpp` file has tests for C code, for example: `tst_queue_c.cpp`.
-The `main.cpp` file is a main test file, has `CATCH_CONFIG_MAIN` macro.
+The `main.cpp` file has `CATCH_CONFIG_MAIN` macro.
 
 ## Coverage
-If you want to see coverage of tests, you need lcov 1.10 or newer. 
+If you want to see coverage of tests, you need `lcov 1.10` or newer. 
 You need to create a `Makefile` file using CMake and create tests using Make.
 ```bash
-cmame --DCMAKE_BUILD_TYPE="Coverage" CMakeLists.txt
+cmake -DCMAKE_BUILD_TYPE="Coverage" CMakeLists.txt
 ```
 
 <hr>
