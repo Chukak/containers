@@ -1,16 +1,16 @@
 # Counter
 
-Counter - class for counting the number of elements in some sequences. If you have a sequence, 
+Counter - a class for counting the number of elements in some sequences. If you have a sequence, 
 and if you want to count the number of elements in this sequence, you can use this class. 
 
 
 ## Header 
 
-The `Counter` class is implemented in the counter.h header file, which is located in the category counter. 
+The `Counter` class is implemented in the `counter.h` header file, which is located in the category `counter`. 
 To include the header file:
 
 ```cpp
-#include "containers/counter/counter.h"
+#include <containers/counter/counter.h>
 ```
 
 ## Create a counter 
@@ -28,11 +28,11 @@ Counter<int> c(v.begin(), v.end()); // int - type of elements in vector
 
 To get most common elements, use the `most_common` method. The counter has two such methods.
 
-### 1.`std::vector<std::pair<T, uint>> most_common(int n = -1)`
+### 1.`std::vector<std::pair<T, unsigned int>> most_common(int n = -1)`
 
-Counts number of elements in the sequence. Return vector of pairs. 
+Counts number of elements in the sequence. Return the vector of pairs. 
 
-The pairs contains two values: (the element in the sequence, the number of such elements).
+The pairs contains two values: 1. the element in the sequence, 2. the number of such elements.
 For example: 
 
 ```cpp
@@ -41,7 +41,7 @@ vector<char> v = {'a', 'a', 'c', 'c', 'd', 'a', 'a', 'b', 'a', 'c', 'a', 'd'};
 Counter<char> c(v.begin(), v.end());
 auto result = c.most_common(); // {('a', 6), ('c', 3), ('d', 2), ('b', 1)}
 // or 
-Counter<char>::vector_t result = c.most_common(); 
+Counter<char>::vector_t result = c.most_common(); // {('a', 6), ('c', 3), ('d', 2), ('b', 1)}
 ```
 
 If you want to get the certain number of elements, pass a number as the first parameter.
@@ -53,7 +53,7 @@ auto result = c.most_common(2); // {('a', 6), ('c', 3)}
 ### 2. `void most_common(Array& list, int n = -1)`
 
 Counts number of elements in the sequence sorts it by the greater number of elements.
-After it, this function writes result in the array, which was passed as the first argument, but this function
+After this, this function writes result in the array, which was passed as the first argument, but this function
 writes only the elements in the sequence, without number of elements.
 
 For example:
@@ -90,22 +90,22 @@ c.update(v2.begin(), v2.end()); // {('a', 6), ('c', 3), ('d', 2), ('g', 2), ('h'
 
 ### Get `std::map`
 
-To get `std::map`, use the static `map` method. Counts number of elemnts in the sequence. 
-Returns `std::map<T, int>`, where `T` - your type. 
+To get `std::map`, use the static `map` method. Counts the number of elemnts in the sequence. 
+Returns `std::map<T, int>`, where `T` - type of elements. 
 
 For example:
 
 ```cpp
 vector<char> v = {'a', 'a', 'c', 'c', 'd', 'a', 'a', 'b', 'a', 'c', 'a', 'd'};
 ...
-auto m = Counter<char>::map(v.begin(), v.end()); {('a', 6), ('c', 3), ('d', 2), ('b', 1)}
+auto m = Counter<char>::map(v.begin(), v.end()); // {('a', 6), ('c', 3), ('d', 2), ('b', 1)}
 // or
 Counter<char>::map_t m = map(v.begin(), v.end());
 ```
 
 ### Count the elements
 
-To count the elements in the sequence, use static `count` method. 
+To count the elements in the sequence, use the static `count` method. 
 This method gets three argument - your array/container, and iterators.
 Counts number of elements in the sequence and sorts it by the greater number of elements. 
 Return your array of pairs.
@@ -117,21 +117,21 @@ vector<char> v = {'a', 'a', 'c', 'c', 'd', 'a', 'a', 'b', 'a', 'c', 'a', 'd'};
 ...
 std::vector<Counter<std::string>::pair_t> v2 = Counter<std::string>::count<std::vector>(v.begin(), v.end());
 // or 
-auto v2 = Counter<std::string>::count<std::vector>(v.begin(), v.end());
+auto v2 = Counter<std::string>::count<std::vector>(v.begin(), v.end()); // vector{('a', 6), ('c', 3), ('d', 2), ('b', 1)}
 ...
 
 ...
-std::set<Counter<std::string>::pair_t> set = Counter<std::string>::count<std::set>(v.begin(), v.end());
+std::set<Counter<std::string>::pair_t> set = Counter<std::string>::count<std::set>(v.begin(), v.end()); // set{('a', 6), ('c', 3), ('d', 2), ('b', 1)}
 // or 
 auto v2 = Counter<std::string>::count<std::set>(v.begin(), v.end());
 ```
-Just pass your array/container type in `<>` brackets.
+Just pass your array/container type as template argument.
 
 ## Iterators
 
-To get the iterator on the pair element of the counter, use the `begin()` method. 
+To get the iterator to the first pair of the counter, use the `begin()` method. 
 Returns the iterator to the first pair of the counter. 
-You can increase the iterator. But, don`t reduce this iterator!
+You can increase the iterator. But, do not reduce this iterator!
 
 For example:
 
