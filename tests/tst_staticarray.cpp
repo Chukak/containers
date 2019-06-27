@@ -5,8 +5,8 @@
 
 using namespace constexpr_extensions;
 
-TEST_CASE("[static array] Initialization of the static array.", "[static array]") {
-	SECTION("Testing the initialiation №1") {
+TEST_CASE("[static array] Testing the initialization of the static array.", "[static array]") {
+	SECTION("Testing the initialiation №1.") {
 		constexpr StaticArray<int, 20> array;
 		static_assert(array[Index<0>()] == 0);
 		static_assert(array[Index<1>()] == 0);
@@ -52,8 +52,7 @@ TEST_CASE("[static array] Initialization of the static array.", "[static array]"
 		REQUIRE(array.capacity() == 20);
 		REQUIRE(array.count() == 0);
 	}
-
-	SECTION("Testing the initialization №2") {
+	SECTION("Testing the initialization №2.") {
 		constexpr StaticArray<int, 10> array = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
 		static_assert(array[Index<0>()] == 1);
 		static_assert(array[Index<1>()] == 2);
@@ -79,8 +78,7 @@ TEST_CASE("[static array] Initialization of the static array.", "[static array]"
 		REQUIRE(array.capacity() == 10);
 		REQUIRE(array.count() == 10);
 	}
-
-	SECTION("Testing the initialization №3") {
+	SECTION("Testing the initialization №3.") {
 		constexpr StaticArray<int, 10> array{1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
 		static_assert(array[Index<0>()] == 1);
 		static_assert(array[Index<1>()] == 2);
@@ -108,8 +106,8 @@ TEST_CASE("[static array] Initialization of the static array.", "[static array]"
 	}
 }
 
-TEST_CASE("[static array] Testing operators of StaticArray", "[static array]") {
-	SECTION("get operators") {
+TEST_CASE("[static array] Testing the operators of StaticArray.", "[static array]") {
+	SECTION("Testing the getting operators.") {
 		constexpr StaticArray<unsigned, 10> array = {9u, 8u, 7u, 6u, 5u, 4u, 3u, 2u, 1u, 0u};
 		static_assert(array[Index<0>()] == 9);
 		static_assert(array[Index<1>()] == 8);
@@ -144,8 +142,8 @@ TEST_CASE("[static array] Testing operators of StaticArray", "[static array]") {
 	}
 }
 
-TEST_CASE("[static array] Testing make_sequence", "[static array]") {
-	SECTION("make_sequence") {
+TEST_CASE("[static array] Testing the `make_sequence` method.", "[static array]") {
+	SECTION("Section №1.") {
 		constexpr auto array = StaticArray<unsigned, 15>::make_sequence();
 		static_assert(array[Index<0>()] == 0);
 		static_assert(array[Index<1>()] == 1);

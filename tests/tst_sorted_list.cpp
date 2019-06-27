@@ -1,32 +1,21 @@
 #include <catch.hpp>
 #include "sorted_list.h"
 
-/*
- * Testing the initialization of the sorted list.
- */
-TEST_CASE("[sorted_list] Initialization the sorted list.", "[sorted list]") {
-	/*
-	 * Testing the standart initialization.
-	 */
-	SECTION("Testing the initialization №1.") {
+
+TEST_CASE("[sorted_list] Testing the initialization of the sorted list.", "[sorted list]") {
+	SECTION("Testing the default constructor.") {
 		sorted_list<int> list;
 		CHECK(list.is_empty());
 		REQUIRE(list.count() == 0);
 	}
-	/*
-	 * Testing the initialization `sotred_list s = {1,2,3}`.
-	 */
-	SECTION("Testing the initialization №2.") {
+	SECTION("Testing the initializer list.") {
 		sorted_list<int> list = {1, 5, 2, 6, 3, 4};
 		CHECK_FALSE(list.is_empty());
 		REQUIRE(list.count() == 6);
 		REQUIRE(list.back() == 6);
 		REQUIRE(list.front() == 1);
 	}
-	/*
-	 * Testing the initialization of the sorted list from another sorted list.
-	 */
-	SECTION("Testing the initialization №3.") {
+	SECTION("Testing the copy constructor.") {
 		sorted_list<int> orig = {3, 2, 1};
 		sorted_list<int> list(orig);
 		CHECK_FALSE(list.is_empty());
@@ -34,10 +23,7 @@ TEST_CASE("[sorted_list] Initialization the sorted list.", "[sorted list]") {
 		REQUIRE(list.back() == 3);
 		REQUIRE(list.front() == 1);
 	}
-	/*
-	 * Testing the initialization of the sorted list from another sorted list.
-	 */
-	SECTION("Testing the initialization №3.") {
+	SECTION("Testing the move constructor.") {
 		sorted_list<int> orig = {3, 2, 1};
 		sorted_list<int> list(std::move(orig));
 
@@ -52,10 +38,7 @@ TEST_CASE("[sorted_list] Initialization the sorted list.", "[sorted list]") {
 	}
 }
 
-/*
- * Testing the insertion in the sorted_list.
- */
-TEST_CASE("[sorted_list] Testing the insertion in the sorted list.", "[sorted list]") {
+TEST_CASE("[sorted_list] Testing the insertion into the sorted list.", "[sorted list]") {
 	SECTION("Testing the insertion №1.") {
 		sorted_list<int> list;
 
@@ -94,9 +77,6 @@ TEST_CASE("[sorted_list] Testing the insertion in the sorted list.", "[sorted li
 	}
 }
 
-/*
- * Testing the removing from the sorted list.
- */
 TEST_CASE("[sorted_list] Testing the removing from the sorted_list.", "[sorted list]") {
 	SECTION("Testing the removing №1.") {
 		sorted_list<int> list;
@@ -156,11 +136,8 @@ TEST_CASE("[sorted_list] Testing the removing from the sorted_list.", "[sorted l
 	}
 }
 
-/*
- * Testing the front and back elements from the sorted list.
- */
-TEST_CASE("[sorted_list] Testing the front and back elements from the sorted list.", "[sorted list]") {
-	SECTION("Testing the front element.") {
+TEST_CASE("[sorted_list] Testing the getting front and back elements from the sorted list.", "[sorted list]") {
+	SECTION("Testing the getting front element.") {
 		sorted_list<int> list;
 
 		list.push(-15);
@@ -189,7 +166,7 @@ TEST_CASE("[sorted_list] Testing the front and back elements from the sorted lis
 		CHECK(list.is_empty());
 		REQUIRE(list.count() == 0);
 	}
-	SECTION("Testing the back element.") {
+	SECTION("Testing the getting back element.") {
 		sorted_list<int> list;
 
 		list.push(-15);
@@ -220,11 +197,8 @@ TEST_CASE("[sorted_list] Testing the front and back elements from the sorted lis
 	}
 }
 
-/*
- * Testing an element from a position from the sorted list.
- */
-TEST_CASE("[sorted_list] Testing an element from a position from the sorted list.", "[sorted list]") {
-	SECTION("Testing operator [].") {
+TEST_CASE("[sorted_list] Testing the getting an element from a position from the sorted list.", "[sorted list]") {
+	SECTION("Testing the operator [].") {
 		sorted_list<int> list;
 
 		list.push(-15);
@@ -266,11 +240,8 @@ TEST_CASE("[sorted_list] Testing an element from a position from the sorted list
 	}
 }
 
-/*
- * Testing the removing an element from the position from the sorted list.
- */
 TEST_CASE("[sorted_list] Testing the removing an element from the position from the sorted list.", "[sorted list]") {
-	SECTION("Testing the function `remove`.") {
+	SECTION("Testing the function `remove` №1.") {
 		sorted_list<int> list;
 
 		list.push(-15);
@@ -307,11 +278,8 @@ TEST_CASE("[sorted_list] Testing the removing an element from the position from 
 	}
 }
 
-/*
- * Testing the iterators of the sorted list.
- */
 TEST_CASE("[sorted_list] Testing the iterators of the sorted list.", "[sorted list]") {
-	SECTION("Testing the iterators.") {
+	SECTION("Testing the iterators №1.") {
 		sorted_list<int> list = {10, -8, 6, 0, 8, -10, -2, 2, 4, -4, -6};
 
 		sorted_list<int>::iterator iter = list.begin();
@@ -372,11 +340,8 @@ TEST_CASE("[sorted_list] Testing the iterators of the sorted list.", "[sorted li
 	}
 }
 
-/*
- * Testing the reverse of the sorted list.
- */
 TEST_CASE("[sorted_list] Testing the reverse the sorted list.", "[sorted list]") {
-	SECTION("Testing the function `reverse`.") {
+	SECTION("Testing the function `reverse` №1.") {
 		sorted_list<int> list;
 
 		list.push(-15);
@@ -397,7 +362,7 @@ TEST_CASE("[sorted_list] Testing the reverse the sorted list.", "[sorted list]")
 		REQUIRE(list.front() == 20);
 		REQUIRE(list.back() == -25);
 	}
-	SECTION("Testing the function `reverse` № 2.") {
+	SECTION("Testing the function `reverse` №2.") {
 		sorted_list<int> list;
 
 		list.push(-15);
@@ -427,9 +392,6 @@ TEST_CASE("[sorted_list] Testing the reverse the sorted list.", "[sorted list]")
 	}
 }
 
-/*
- * Testing the cleaning of the sorted list.
- */
 TEST_CASE("[sorted_list] Testing the cleaning of the sorted list.", "[sorted list]") {
 	SECTION("Testing the function `clear`.") {
 		sorted_list<int> list;
@@ -453,9 +415,6 @@ TEST_CASE("[sorted_list] Testing the cleaning of the sorted list.", "[sorted lis
 	}
 }
 
-/*
- * Testing the custom function to compare elements in the list.
- */
 TEST_CASE("[sorted_list] Testing the custom function to compare elements in the list.", "[sorted list]") {
 	SECTION("Testing the custom function.") {
 		auto f = [](int a, int b) {

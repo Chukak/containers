@@ -6,12 +6,9 @@
 #include <set>
 
 /*
- * Testing the `Counter` class.
+ * Common testing the `Counter` class.
  */
 TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
-	/*
-	 * Testing the `Counter` class № 1.
-	 */
 	SECTION("Testing the `Counter` class № 1.") {
 		std::vector<std::string> v = {
 			"v1", "v2", "v3", "v4", "v5",
@@ -47,10 +44,6 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 		REQUIRE(v3.at(3).first == "v5");
 		REQUIRE(v3.at(3).second == 4);
 	}
-
-	/*
-	 * Testing the `Counter` class № 2.
-	 */
 	SECTION("Testing the `Counter` class № 2.") {
 		std::vector<std::string> v = {
 			"v1", "v2", "v3", "v4", "v5",
@@ -102,10 +95,6 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 		REQUIRE(v3.front() == "v5");
 		v3.pop_front();
 	}
-
-	/*
-	 * Testing the `Counter` class № 4.
-	 */
 	SECTION("Testing the `Counter` class № 4.") {
 		std::vector<std::string> v = {
 			"v1", "v2", "v3", "v4", "v5",
@@ -144,10 +133,6 @@ TEST_CASE("[Counter] The `Counter` class.", "[counter]") {
 			i++;
 		}
 	}
-
-	/*
-	 * Testing the `Counter` class № 5.
-	 */
 	SECTION("Testing the `Counter` class № 5.") {
 		std::vector<std::string> v = {
 			"v1", "v2", "v3", "v4", "v5",

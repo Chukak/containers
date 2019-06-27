@@ -4,8 +4,8 @@
 
 using namespace pure_c;
 
-TEST_CASE("[queue] Initialization of the queue in C.", "[queue_c]") {
-	SECTION("Initialization 1.") {
+TEST_CASE("[queue] Testing the initialization of the queue in C code.", "[queue_c]") {
+	SECTION("Testing the initialization 1.") {
 		queue * q = queue_create();
 
 		REQUIRE(q != NULL);
@@ -14,7 +14,7 @@ TEST_CASE("[queue] Initialization of the queue in C.", "[queue_c]") {
 
 		queue_delete(q);
 	}
-	SECTION("Initialization the NULL pointer.") {
+	SECTION("Testing the initialization the NULL pointer.") {
 		queue * q = (queue *)NULL;
 
 		REQUIRE(q == NULL);
@@ -23,8 +23,8 @@ TEST_CASE("[queue] Initialization of the queue in C.", "[queue_c]") {
 	}
 }
 
-TEST_CASE("[queue] Testing of insertion in the queue and removing from the queue in C.", "[queue_c]") {
-	SECTION("Testing of insertion.") {
+TEST_CASE("[queue] Testing the insertion into the queue and removing from the queue in C code.", "[queue_c]") {
+	SECTION("Testing the insertion.") {
 		queue * q = queue_create();
 
 		for (int i = 2; i < 520; i = i * 2) {
@@ -42,7 +42,7 @@ TEST_CASE("[queue] Testing of insertion in the queue and removing from the queue
 		delete front;
 		delete back;
 	}
-	SECTION("Testing of removing.") {
+	SECTION("Testing the removing.") {
 		queue * q = queue_create();
 
 		for (int i = 2; i < 520; i = i * 2) {
@@ -66,8 +66,8 @@ TEST_CASE("[queue] Testing of insertion in the queue and removing from the queue
 	}
 }
 
-TEST_CASE("[queue] Testing of front and back elements from the queue in C.", "[queue_c]") {
-	SECTION("Testiong of front element.") {
+TEST_CASE("[queue] Testing the getting front and back elements from the queue in C.", "[queue_c]") {
+	SECTION("Testiong the getting front element.") {
 		queue * q = queue_create();
 
 		for (int i = 2; i < 520; i = i * 2) {
@@ -102,7 +102,7 @@ TEST_CASE("[queue] Testing of front and back elements from the queue in C.", "[q
 		delete front;
 		delete temp;
 	}
-	SECTION("Testing of back element.") {
+	SECTION("Testing the getting back element.") {
 		queue * q = queue_create();
 
 		for (int i = 2; i < 520; i = i * 2) {

@@ -4,8 +4,8 @@
 
 using namespace pure_c;
 
-TEST_CASE("[Stack] Initialization of the stack in C.", "[stack_c]") {
-	SECTION("Initialization 1.") {
+TEST_CASE("[Stack] Testing the initialization of the stack in C code.", "[stack_c]") {
+	SECTION("Testing the initialization 1.") {
 		stack * s = stack_create();
 
 		REQUIRE(s != NULL);
@@ -14,7 +14,7 @@ TEST_CASE("[Stack] Initialization of the stack in C.", "[stack_c]") {
 
 		stack_delete(s);
 	}
-	SECTION("Initialization the NULL pointer.") {
+	SECTION("Testing the initialization the NULL pointer.") {
 		stack * s = (stack *)NULL;
 
 		REQUIRE(s == NULL);
@@ -23,8 +23,8 @@ TEST_CASE("[Stack] Initialization of the stack in C.", "[stack_c]") {
 	}
 }
 
-TEST_CASE("[Stack] Testing of insertion in the stack and removing from the stack in C.", "[stack_c]") {
-	SECTION("Testing of insertion.") {
+TEST_CASE("[Stack] Testing the insertion into the stack and removing from the stack in C.", "[stack_c]") {
+	SECTION("Testing the insertion.") {
 		stack * s = stack_create();
 
 		for (int i = 2; i < 520; i = i * 2) {
@@ -39,7 +39,7 @@ TEST_CASE("[Stack] Testing of insertion in the stack and removing from the stack
 		stack_delete(s);
 		delete front;
 	}
-	SECTION("Testing of removing.") {
+	SECTION("Testing the removing.") {
 		stack * s = stack_create();
 
 		for (int i = 2; i < 520; i = i * 2) {
@@ -63,8 +63,8 @@ TEST_CASE("[Stack] Testing of insertion in the stack and removing from the stack
 	}
 }
 
-TEST_CASE("[Stack] Testing of front element from the stack in C.", "[stack_c]") {
-	SECTION("Testiong of front element.") {
+TEST_CASE("[Stack] Testing the getting front element from the stack in C.", "[stack_c]") {
+	SECTION("Testiong the getting front element.") {
 		stack * s = stack_create();
 
 		for (int i = 2; i < 520; i = i * 2) {
