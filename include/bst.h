@@ -25,16 +25,12 @@ public:
 	/**
 	 * Default constructor.
 	 */
-	explicit bst_is_empty(const char * message = "The binary search tree is empty.");
+	explicit bst_is_empty(const char * message = "The binary search tree is empty.") : std::runtime_error(message) {}
 	/**
 	 * Destructor.
 	 */
 	~bst_is_empty() final = default;
 };
-
-bst_is_empty::bst_is_empty(const char * message) :
-	std::runtime_error(message)
-{}
 }
 
 /**
