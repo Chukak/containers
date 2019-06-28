@@ -5,143 +5,198 @@
 #include "performance.h"
 #include <vector>
 #include <iostream>
-#include <cassert>
+#include <algorithm>
+#include <random>
 
-class BSTPerformance : public Performance {
+class BinarySearchTreePerfomance : public Perfomance, public perf_clock::Timer, public print::Output
+{
 public:
-	explicit BSTPerformance()
-	{}
-
-public:
-	enum ACTION {
-		INSERTION,
-		DELETION,
-		CLEARING,
+	enum ACTION
+	{
+		INSERT,
+		DELETE,
+		CLEAR,
 		SEARCH
 	};
 private:
-	void insertions(const int& num)
+	std::vector<ACTION> actions{};
+	int number{1000};
+public:
+	BinarySearchTreePerfomance() = default;
+	inline void set_number(int n) noexcept {
+		number = n;
+	}
+	template<typename ... Args>
+	inline void add_actions(Args&& ... acts) noexcept {
+		(actions.push_back(std::forward<Args>(acts)), ...);
+	}
+
+	void run() final
 	{
+		reset_timer();
+		for (auto act : actions) {
+			switch (act) {
+			case ACTION::INSERT:
+				insert(number);
+				break;
+			case ACTION::DELETE:
+				remove(number);
+				break;
+			case ACTION::CLEAR:
+				clear(number);
+				break;
+			case ACTION::SEARCH:
+				search(number);
+				break;
+			}
+		}
+	}
+private:
+	void print_name() final
+	{
+		std::cout << "Binary search tree:\n" << std::endl;
+	}
+	void print_ms() final
+	{
+		std::cout << cast_to<perf_clock::ms>() << " milliseconds.\n" << std::endl;
+	}
+private:
+	void insert(int num)
+	{
+		print_line_separator();
+		print_name();
+		std::cout << "Insert " << num << " values. Perfomance: ";
 		bst<int> tree;
 
-		srand(static_cast<uint>(time(nullptr)));
-
-		std::vector<int> random_elements;
-
-		for (int i = 0; i < num; i++) {
-			random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
-		}
+		std::vector<int> random_elements(num);
+		std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<> dist(5 * -num, 5 * num);
+		std::iota(random_elements.begin(), random_elements.end(), -num / 2);
+		std::shuffle(random_elements.begin(), random_elements.end(), gen);
 
 		start_timer();
-		for (uint s = 0; s < random_elements.size(); s++) {
-			tree.insert(random_elements[s]);
+		for (int i : random_elements) {
+			tree.insert(i);
 		}
 		finish_timer();
 
-		assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
+		if (tree.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: bst.count() != " << num << std::endl;
+			print_line_separator();
+			return;
+		}
 
-		tree.~bst();
+		print_ms();
+		print_line_separator();
 	}
 
-	void deletions(const int& num)
+	void remove(int num)
 	{
+		print_line_separator();
+		print_name();
+		std::cout << "Delete " << num << " values. Wait for inserting values ...";
 		bst<int> tree;
 
-		std::vector<int> random_elements;
+		std::vector<int> random_elements(num);
+		std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<> dist(5 * -num, 5 * num);
+		std::iota(random_elements.begin(), random_elements.end(), -num / 2);
+		std::shuffle(random_elements.begin(), random_elements.end(), gen);
 
-		for (int i = 0; i < num; i++) {
-			random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
+		for (int i : random_elements) {
+			tree.insert(i);
 		}
 
-		for (uint s = 0; s < random_elements.size(); s++) {
-			tree.insert(random_elements[s]);
+		if (tree.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: bst.count() != " << num << std::endl;
+			print_line_separator();
+			return;
 		}
-
-		assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
+		std::cout << "done.\nPerfomance: ";
 
 		start_timer();
 		try {
-			for (uint j = 0; j < random_elements.size(); j++) {
-				tree.remove(random_elements[j]);
+			for (int i : random_elements) {
+				tree.remove(i);
 			}
-		} catch (const bst_exception::BSTIsEmpty& e) {
-			std::cerr << e.what() << "\n";
+		} catch (const bst_exception::bst_is_empty& e) {
+			std::cerr << "Error: " << e.what() << "\n";
+			print_line_separator();
+			return;
 		}
 		finish_timer();
-
-		tree.~bst();
+		print_ms();
+		print_line_separator();
 	}
 
-	void search(const int& num)
+	void search(int num)
 	{
+		print_line_separator();
+		print_name();
+		std::cout << "Search " << num << " values. Wait for inserting values ...";
 		bst<int> tree;
 
-		std::vector<int> random_elements;
+		std::vector<int> random_elements(num);
+		std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<> dist(5 * -num, 5 * num);
+		std::iota(random_elements.begin(), random_elements.end(), -num / 2);
+		std::shuffle(random_elements.begin(), random_elements.end(), gen);
 
-		for (int i = 0; i < num; i++) {
-			random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
+		for (int i : random_elements) {
+			tree.insert(i);
 		}
 
-		for (uint s = 0; s < random_elements.size(); s++) {
-			tree.insert(random_elements[s]);
+		if (tree.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: bst.count() != " << num << std::endl;
+			print_line_separator();
+			return;
 		}
-
-		assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
+		std::cout << "done.\nPerfomance: ";
 
 		start_timer();
-		for (uint j = 0; j < random_elements.size(); j++) {
-			tree.find(random_elements[j]);
+		for (int i :  random_elements) {
+			if (!tree.find(i)) {
+				std::cout << "Error: bst.find() != true" << std::endl;
+				print_line_separator();
+				return;
+			}
 		}
 		finish_timer();
-
-		tree.~bst();
+		print_ms();
+		print_line_separator();
 	}
 
-	void clearing(const int& num)
+	void clear(int num)
 	{
+		print_line_separator();
+		print_name();
+		std::cout << "Clear " << num << " values. Wait for inserting values ...";
 		bst<int> tree;
 
-		std::vector<int> random_elements;
+		std::vector<int> random_elements(num);
+		std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<> dist(5 * -num, 5 * num);
+		std::iota(random_elements.begin(), random_elements.end(), -num / 2);
+		std::shuffle(random_elements.begin(), random_elements.end(), gen);
 
-		for (int i = 0; i < num; i++) {
-			random_elements.push_back((rand() % (num * 10) + 1) + (-50000));
+		for (int i : random_elements) {
+			tree.insert(i);
 		}
 
-		for (uint s = 0; s < random_elements.size(); s++) {
-			tree.insert(random_elements[s]);
+		if (tree.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: bst.count() != " << num << std::endl;
+			print_line_separator();
+			return;
 		}
-
-		assert(tree.count() > 0 && tree.count() <= static_cast<uint>(num));
+		std::cout << "done.\nPerfomance: ";
 
 		start_timer();
 		tree.clear();
 		finish_timer();
-
-		tree.~bst();
-	}
-
-public:
-
-	void run(const ACTION& action, const int& number)
-	{
-		reset();
-		switch (action) {
-		case ACTION::INSERTION:
-			insertions(number);
-			break;
-		case ACTION::DELETION:
-			deletions(number);
-			break;
-		case ACTION::SEARCH:
-			search(number);
-			break;
-		case ACTION::CLEARING:
-			clearing(number);
-			break;
-		}
+		print_ms();
+		print_line_separator();
 	}
 };
-
 
 #endif /* BST_PERF_H */
 

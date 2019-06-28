@@ -4,127 +4,172 @@
 #include "sorted_list.h"
 #include "performance.h"
 #include <vector>
-#include <cassert>
-#include <iostream>
+#include <random>
+#include <algorithm>
 
-class SListPerformance : public Performance {
-public:
-	explicit SListPerformance()
-	{}
-
+class SortedListPerfomance : public Perfomance, public perf_clock::Timer, public print::Output
+{
 public:
 	enum ACTION {
-		INSERTION,
-		DELETION,
-		CLEARING,
+		INSERT,
+		DELETE,
+		CLEAR,
 		REVERSE
 	};
 private:
-	void insertions(const int& num)
+	std::vector<ACTION> actions{};
+	int number{10000};
+public:
+	SortedListPerfomance() = default;
+	inline void set_number(int n) noexcept {
+		number = n;
+	}
+	template<typename ... Args>
+	inline void add_actions(Args&& ... acts) noexcept {
+		(actions.push_back(std::forward<Args>(acts)), ...);
+	}
+
+	void run() final
 	{
+		reset_timer();
+		for (auto act : actions) {
+			switch (act) {
+			case ACTION::INSERT:
+				insert(number);
+				break;
+			case ACTION::DELETE:
+				remove(number);
+				break;
+			case ACTION::CLEAR:
+				clear(number);
+				break;
+			case ACTION::REVERSE:
+				reverse(number);
+				break;
+			}
+		}
+	}
+private:
+	void print_name() final
+	{
+		std::cout << "Sorted list:\n" << std::endl;
+	}
+	void print_ms() final
+	{
+		std::cout << cast_to<perf_clock::ms>() << " milliseconds.\n" << std::endl;
+	}
+private:
+	void insert(int num)
+	{
+		print_line_separator();
+		print_name();
+		std::cout << "Insert " << num << " values. Perfomance: ";
 		sorted_list<int> list;
 
-		srand(static_cast<uint>(time(nullptr)));
-
-		std::vector<int> random_elements;
-
-		for (int i = 0; i < num; i++) {
-			random_elements.push_back((rand() % num + 1));// - (50000));
-		}
+		std::vector<int> random_elements(num);
+		std::mt19937 gen(std::random_device{}());
+		std::uniform_int_distribution<> dist(5 * -num, 5 * num);
+		std::iota(random_elements.begin(), random_elements.end(), -num / 2);
+		std::shuffle(random_elements.begin(), random_elements.end(), gen);
 
 		start_timer();
-		for (uint s = 0; s < random_elements.size(); s++) {
-			list.push(random_elements[s]);
+		for (int i : random_elements) {
+			list.push(i);
 		}
 		finish_timer();
 
-		assert(list.count() == static_cast<uint>(num));
+		if (list.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: sorted_list.count() != " << num << std::endl;
+			print_line_separator();
+			return;
+		}
 
-		list.~sorted_list();
+		print_ms();
+		print_line_separator();
 	}
 
-	void deletions(const int& num)
+	void remove(int num)
 	{
+		print_line_separator();
+		print_name();
+		std::cout << "Delete " << num << " values. Wait for inserting values ...";
 		sorted_list<int> list;
 
 		for (int i = 0; i < num; i++) {
 			list.push(i);
 		}
 
-		assert(list.count() == static_cast<uint>(num));
+		if (list.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: sorted_list.count() != " << num << std::endl;
+			print_line_separator();
+			return;
+		}
+		std::cout << "done.\nPerfomance: ";
 
 		srand(static_cast<uint>(time(nullptr)));
 
 		start_timer();
 		try {
-			for (int i = 0; static_cast<uint>(i) != list.count();) {
+			for (unsigned int i = 0; i != list.count();) {
 				list.remove(static_cast<int>(rand() % static_cast<int>(list.count())));
 			}
 		} catch (std::out_of_range& e) {
-			std::cerr << e.what() << "\n";
+			std::cout << "Error: " << e.what() << std::endl;
+			return;
 		}
 		finish_timer();
-
-		list.~sorted_list();
+		print_ms();
+		print_line_separator();
 	}
 
-	void clearing(const int& num)
+	void clear(int num)
 	{
+		print_line_separator();
+		print_name();
+		std::cout << "Clear " << num << " values. Wait for inserting values ...";
 		sorted_list<int> list;
 
 		for (int i = 0; i < num; i++) {
 			list.push(i);
 		}
 
-		assert(list.count() == static_cast<uint>(num));
+		if (list.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: sorted_list.count() != " << num << std::endl;
+			print_line_separator();
+			return;
+		}
+		std::cout << "done.\nPerfomance: ";
 
 		start_timer();
 		list.clear();
 		finish_timer();
-
-		assert(list.count() == 0);
-
-		list.~sorted_list();
+		print_ms();
+		print_line_separator();
 	}
 
-	void reverse(const int& num)
+	void reverse(int num)
 	{
+		print_line_separator();
+		print_name();
+		std::cout << "Reverse " << num << " values. Wait for inserting values ...";
 		sorted_list<int> list;
 
 		for (int i = 0; i < num; i++) {
 			list.push(i);
 		}
 
-		assert(list.count() == static_cast<uint>(num));
+		if (list.count() != static_cast<unsigned int>(num)) {
+			std::cout << "Error: sorted_list.count() != " << num << std::endl;
+			print_line_separator();
+			return;
+		}
+		std::cout << "done.\nPerfomance: ";
 
 		start_timer();
 		list.reverse();
 		finish_timer();
-
-		assert(list.front() == (num - 1));
-
-		list.~sorted_list();
-	}
-
-public:
-
-	void run(const ACTION& action, const int& number)
-	{
-		reset();
-		switch (action) {
-		case ACTION::INSERTION:
-			insertions(number);
-			break;
-		case ACTION::DELETION:
-			deletions(number);
-			break;
-		case ACTION::CLEARING:
-			clearing(number);
-			break;
-		case ACTION::REVERSE:
-			reverse(number);
-			break;
-		}
+		print_ms();
+		print_line_separator();
 	}
 };
 
