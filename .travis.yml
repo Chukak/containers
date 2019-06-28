@@ -40,6 +40,13 @@ script:
   #- genhtml cov.info -o coverage
   - cd ../
   - rm -rf build
+  # perfomance 
+  - mkdir build && cd build
+  - cmake ../tests/performance
+  - make
+  - ./performance
+  - cd ../
+  - rm -rf build
   # python module and tests
   - mkdir build && cd build
   - cmake -DPY_MODULE_WRAP_METHODS=1 ../python/
