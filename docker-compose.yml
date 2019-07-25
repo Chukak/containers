@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+    containers-tests:
+        image: docker-contaniers-test
+        build: .
+        command: bash -c "
+            cd /containers/build-containers-tests && 
+            ./containers_tests
+            "
+    containers-tests-coverage:
+        image: docker-contaniers-test
+        build: .
+        command: bash -c "
+            cd /containers/build-containers-tests-coverage && 
+            ./containers_tests && 
+            lcov --base-directory . --directory . -c -o coverage.info > /dev/null && 
+            lcov --remove coverage.info '/usr/*' '*submodules*' '*tests/tst_*' -o coverage.info > /dev/null && 
+            lcov --summary coverage.info
+            "
+    containers-performance:
+        image: docker-contaniers-test 
+        build: .
+        command: bash -c "
+            cd /containers/build-containers-performance && 
+            ./performance
+            "
+    containers-python-module:
+        image: docker-contaniers-test 
+        build: .
+        command: bash -c "
+            cd /containers/python/tests/ && 
+            python3 -m unittest discover -s ./ -p 'tst_*.py'
+            "
+    containers-build-library:
+        image: docker-containers-test
+        build: .
+        command: bash -c "
+            cd /containers && 
+            ./build_library.sh /containers/build-containers-lib /containers/build-containers-lib -g++=/usr/bin/g++-7 && 
+            ls /containers/build-containers-lib/containers && 
+            ls /containers/build-containers-lib/containers/queue && 
+            ls /containers/build-containers-lib/containers/queue/queue.h && 
+            ls /containers/build-containers-lib/containers/stack && 
+            ls /containers/build-containers-lib/containers/stack/stack.h && 
+            ls /containers/build-containers-lib/containers/bst && 
+            ls /containers/build-containers-lib/containers/bst/bst.h && 
+            ls /containers/build-containers-lib/containers/sorted_list && 
+            ls /containers/build-containers-lib/containers/sorted_list/sorted_list.h && 
+            ls /containers/build-containers-lib/containers/counter && 
+            ls /containers/build-containers-lib/containers/counter/counter.h && 
+            ls /containers/build-containers-lib/containers/staticarray && 
+            ls /containers/build-containers-lib/containers/staticarray/staticarray.h 
+            "
+            
+            

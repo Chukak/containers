@@ -1,72 +1,69 @@
 language: cpp
+dist: bionic
 
-matrix:
-  include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - gcc-7
-            - g++-7
-            - lcov
-            - libboost-all-dev
-            - realpath
-      env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-
+os: 
+  -linux
+  
 before_install:
-  - eval "${MATRIX_EVAL}"
-  - sudo apt-get -y install python3-dev
+  - sudo apt-get update
+  - sudo apt-get install -y lcov libboost-all-dev python3-dev
 
-install: true
+install: true  
 
-script: 
-  - mkdir build && cd build
-  - cmake ../tests/
-  - make
-  - ./containers_tests
-  - cd ../
-  - rm -rf build
-  # for coverage
-  - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE="Coverage" ../tests/
-  - make
-  - ./containers_tests
-  - lcov --base-directory . --directory . -c -o coverage.info
-  - lcov --remove coverage.info "/usr/*" "*submodules*" "*tests/tst_*" -o coverage.info 
-  - lcov --summary coverage.info
-  #- genhtml cov.info -o coverage
-  - cd ../
-  - rm -rf build
-  # perfomance 
-  - mkdir build && cd build
-  - cmake ../tests/performance
-  - make
-  - ./performance
-  - cd ../
-  - rm -rf build
-  # python module and tests
-  - mkdir build && cd build
-  - cmake -DPY_MODULE_WRAP_METHODS=1 ../python/
-  - make
-  - cp ./containers.so ../python/tests/containers.so
-  - cd ../python/tests/
-  - python3 -m unittest discover -s ./ -p "tst_*.py"
-  - rm containers.so
-  - cd ../../
-  - rm -rf build
-  # check build_library.sh script
-  - mkdir libdir
-  -  ./build_library.sh libdir libdir -g++=/usr/bin/g++-7
-  - ls libdir/containers &> /dev/null
-  - ls libdir/containers/queue &> /dev/null
-  - ls libdir/containers/stack &> /dev/null
-  - ls libdir/containers/bst &> /dev/null
-  - ls libdir/containers/sorted_list &> /dev/null
-  - ls libdir/containers/counter &> /dev/null
-  - rm -rf libdir
-  
+services: 
+  - docker
 
-  
+jobs:
+  include:
+    - stage: build-library
+      script:
+        - rm -rf build && mkdir build && cd build
+        - cmake ../tests/
+        - make
+        - ./containers_tests
+    - stage: build-coverage
+      script:
+        - rm -rf build && mkdir build && cd build
+        - cmake -DCMAKE_BUILD_TYPE="Coverage" ../tests/
+        - make
+        - ./containers_tests
+        - lcov --base-directory . --directory . -c -o coverage.info
+        - lcov --remove coverage.info "/usr/*" "*submodules*" "*tests/tst_*" -o coverage.info 
+        - lcov --summary coverage.info
+    - stage: build-performance
+      script:
+        - rm -rf build && mkdir build && cd build
+        - cmake ../tests/performance
+        - make
+        - ./performance
+    - stage: build-python-module
+      script:
+        - rm -rf build && mkdir build && cd build
+        - cmake -DPY_MODULE_WRAP_METHODS=1 ../python/
+        - make
+        - cp ./containers.so ../python/tests/containers.so
+        - cd ../python/tests/
+        - python3 -m unittest discover -s ./ -p "tst_*.py"
+    - stage: build-library-script
+      script:
+        - rm -rf build && mkdir build
+        - ./build_library.sh build build -g++=/usr/bin/g++-7 
+        - ls build/containers 
+        - ls build/containers/queue 
+        - ls build/containers/queue/queue.h 
+        - ls build/containers/stack 
+        - ls build/containers/stack/stack.h 
+        - ls build/containers/bst 
+        - ls build/containers/bst/bst.h 
+        - ls build/containers/sorted_list 
+        - ls build/containers/sorted_list/sorted_list.h 
+        - ls build/containers/counter 
+        - ls build/containers/counter/counter.h 
+        - ls build/containers/staticarray 
+        - ls build/containers/staticarray/staticarray.h 
+    - stage: run-docker-tests
+      script:
+        - ./run_docker_tests.sh
+
+script:
+  - echo ""
