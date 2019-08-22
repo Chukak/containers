@@ -7,6 +7,7 @@ COMMONDIR="containers"
 CONTAINERS=(queue stack sorted_list bst counter staticarray)
 declare -A SOURCES
 SOURCES=([queue]=queue [stack]=stack [sorted_list]=sorted_list [bst]=bst [counter]=counter [staticarray]=staticarray)
+EXTRA_HEADERS=(extensions)
 
 check_return_code() {
     until eval $1;
@@ -76,6 +77,9 @@ build_library() {
         echo "Create $lib directory."
         check_return_code "mkdir $PLACE_HEADERS/$COMMONDIR/$lib"
         check_return_code "cp ../include/${SOURCES[$lib]}.h $PLACE_HEADERS/$COMMONDIR/$lib/"
+        for extra in ${EXTRA_HEADERS[@]}; do
+            check_return_code "cp ../include/$extra.h $PLACE_HEADERS/$COMMONDIR/$lib/"
+        done
     done
     check_return_code "cd ../"
     check_return_code "rm -rf build_lib"
@@ -164,4 +168,4 @@ unset PLACE_HEADERS
 unset SOURCES
 unset COMMONDIR
 unset CONTAINERS
-
+unset EXTRA_HEADERS

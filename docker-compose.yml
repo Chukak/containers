@@ -50,7 +50,13 @@ services:
             ls /containers/build-containers-lib/containers/counter && 
             ls /containers/build-containers-lib/containers/counter/counter.h && 
             ls /containers/build-containers-lib/containers/staticarray && 
-            ls /containers/build-containers-lib/containers/staticarray/staticarray.h 
+            ls /containers/build-containers-lib/containers/staticarray/staticarray.h &&
+            ls /containers/build-containers-lib/containers/queue/extensions.h && 
+            ls /containers/build-containers-lib/containers/stack/extensions.h && 
+            ls /containers/build-containers-lib/containers/bst/extensions.h && 
+            ls /containers/build-containers-lib/containers/sorted_list/extensions.h && 
+            ls /containers/build-containers-lib/containers/counter/extensions.h && 
+            ls /containers/build-containers-lib/containers/staticarray/extensions.h
             "
             
             

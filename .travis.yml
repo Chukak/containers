@@ -61,6 +61,7 @@ jobs:
         - ls build/containers/counter/counter.h 
         - ls build/containers/staticarray 
         - ls build/containers/staticarray/staticarray.h 
+        - for dir in build/containers/*; do ls $dir/extensions.h ; done
     - stage: run-docker-tests
       script:
         - ./run_docker_tests.sh
