@@ -5,25 +5,9 @@ RUN apt-get install -y gcc-7 g++-7 build-essential cmake lcov libboost-all-dev p
 
 ADD . /containers
 
-RUN mkdir /containers/build-containers-tests && \
-    cd /containers/build-containers-tests && \
-    cmake ../tests/ && \
+RUN mkdir /containers/build-containers && \
+    cd /containers/build-containers && \
+    cmake -DBUILD_TESTS=1 -DBUILD_ASAN=1 -DBUILD_PYTHON=1 -DPY_MODULE_WRAP_METHODS=1 -DCMAKE_BUILD_TYPE="Coverage" ../ && \
     make
-
-RUN mkdir /containers/build-containers-tests-coverage && \
-    cd /containers/build-containers-tests-coverage && \
-    cmake -DCMAKE_BUILD_TYPE='Coverage' ../tests/ && \
-    make
-
-RUN mkdir /containers/build-containers-performance && \
-    cd /containers/build-containers-performance && \
-    cmake ../tests/performance && \
-    make
-
-RUN mkdir /containers/build-containers-python-module && \
-    cd /containers/build-containers-python-module && \
-    cmake -DPY_MODULE_WRAP_METHODS=1 ../python/ && \
-    make && \
-    cp ./containers.so ../python/tests/containers.so
 
 RUN mkdir /containers/build-containers-lib

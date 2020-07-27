@@ -4,16 +4,13 @@ services:
     containers-tests:
         image: docker-contaniers-test
         build: .
-        command: bash -c "
-            cd /containers/build-containers-tests && 
-            ./containers_tests
-            "
+        command: bash -c "cd /containers/build-containers && ASAN_OPTIONS=detect_leaks=0 make test"
     containers-tests-coverage:
         image: docker-contaniers-test
         build: .
         command: bash -c "
-            cd /containers/build-containers-tests-coverage && 
-            ./containers_tests && 
+            cd /containers/build-containers/tests && 
+            ASAN_OPTIONS=detect_leaks=0 ./containers_tests && 
             lcov --base-directory . --directory . -c -o coverage.info > /dev/null && 
             lcov --remove coverage.info '/usr/*' '*submodules*' '*tests/tst_*' -o coverage.info > /dev/null && 
             lcov --summary coverage.info
@@ -22,15 +19,8 @@ services:
         image: docker-contaniers-test 
         build: .
         command: bash -c "
-            cd /containers/build-containers-performance && 
-            ./performance
-            "
-    containers-python-module:
-        image: docker-contaniers-test 
-        build: .
-        command: bash -c "
-            cd /containers/python/tests/ && 
-            python3 -m unittest discover -s ./ -p 'tst_*.py'
+            cd /containers/build-containers/tests/performance && 
+            ./containers_performance
             "
     containers-build-library:
         image: docker-containers-test

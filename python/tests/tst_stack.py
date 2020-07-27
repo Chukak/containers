@@ -4,7 +4,7 @@ import os, sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from containers import stack
+from containers_py import stack
 
 
 class TestStack(unittest.TestCase):

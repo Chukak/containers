@@ -76,9 +76,9 @@ build_library() {
     for lib in ${CONTAINERS[@]}; do
         echo "Create $lib directory."
         check_return_code "mkdir $PLACE_HEADERS/$COMMONDIR/$lib"
-        check_return_code "cp ../include/${SOURCES[$lib]}.h $PLACE_HEADERS/$COMMONDIR/$lib/"
+        check_return_code "cp ../src/${SOURCES[$lib]}.h $PLACE_HEADERS/$COMMONDIR/$lib/"
         for extra in ${EXTRA_HEADERS[@]}; do
-            check_return_code "cp ../include/$extra.h $PLACE_HEADERS/$COMMONDIR/$lib/"
+            check_return_code "cp ../src/$extra.h $PLACE_HEADERS/$COMMONDIR/$lib/"
         done
     done
     check_return_code "cd ../"

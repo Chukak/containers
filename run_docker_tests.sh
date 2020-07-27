@@ -8,5 +8,4 @@ docker-compose up > /dev/null
 docker-compose logs containers-tests
 docker-compose logs containers-tests-coverage
 docker-compose logs containers-performance
-docker-compose logs containers-python-module
 docker-compose logs containers-build-library

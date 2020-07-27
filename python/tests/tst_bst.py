@@ -4,7 +4,7 @@ import os, sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from containers import bst
+from containers_py import bst
 import random
 
 class TestBST(unittest.TestCase):

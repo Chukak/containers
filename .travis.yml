@@ -15,35 +15,20 @@ services:
 
 jobs:
   include:
-    - stage: build-library
+    - stage: building
       script:
-        - rm -rf build && mkdir build && cd build
-        - cmake ../tests/
+        - mkdir -p build && cd build
+        - cmake -DBUILD_TESTS=1 -DBUILD_ASAN=1 -DBUILD_PYTHON=1 -DPY_MODULE_WRAP_METHODS=1 -DCMAKE_BUILD_TYPE="Coverage" ../
         - make
-        - ./containers_tests
-    - stage: build-coverage
-      script:
-        - rm -rf build && mkdir build && cd build
-        - cmake -DCMAKE_BUILD_TYPE="Coverage" ../tests/
-        - make
+        - env CTEST_OUTPUT_ON_FAILURE=1  make test
+        - cd tests/performance
+        - ./containers_performance
+        - echo "Coverage"
+        - cd ../
         - ./containers_tests
         - lcov --base-directory . --directory . -c -o coverage.info
         - lcov --remove coverage.info "/usr/*" "*submodules*" "*tests/tst_*" -o coverage.info 
         - lcov --summary coverage.info
-    - stage: build-performance
-      script:
-        - rm -rf build && mkdir build && cd build
-        - cmake ../tests/performance
-        - make
-        - ./performance
-    - stage: build-python-module
-      script:
-        - rm -rf build && mkdir build && cd build
-        - cmake -DPY_MODULE_WRAP_METHODS=1 ../python/
-        - make
-        - cp ./containers.so ../python/tests/containers.so
-        - cd ../python/tests/
-        - python3 -m unittest discover -s ./ -p "tst_*.py"
     - stage: build-library-script
       script:
         - rm -rf build && mkdir build
